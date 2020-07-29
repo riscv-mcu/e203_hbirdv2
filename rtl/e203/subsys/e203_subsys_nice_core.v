@@ -121,26 +121,19 @@ module e203_subsys_nice_core (
    // custom3:
    // Supported format: only R type here
    // Supported instr:
-   //  1. custom3 lbuf: burst 4 load(4 cycles) data in memory to row_buf
+   //  1. custom3 lbuf: load data(in memory) to row_buf
    //     lbuf (a1)
    //     .insn r opcode, func3, func7, rd, rs1, rs2    
-   //  2. custom3 sbuf: burst 4 store(4 cycles) row_buf to memory
+   //  2. custom3 sbuf: store data(in row_buf) to memory
    //     sbuf (a1)
    //     .insn r opcode, func3, func7, rd, rs1, rs2    
    //  3. custom3 acc rowsum: load data from memory(@a1), accumulate row datas and write back 
-   //     rowsum rd, a1, x0(N cycles)
+   //     rowsum rd, a1, x0
    //     .insn r opcode, func3, func7, rd, rs1, rs2    
    ////////////////////////////////////////////////////////////
-   // matrix_cfg:
-   // 32------------------------------------------------1----------0
-   // |                        reserved                 |  rownum  |
-   // |-------------------------------------------------|----------|
-   // 
-   // row_buf size: 4 word(typical), can be configured through ROWBUF_DP 
-   ////////////////////////////////////////////////////////////
-   wire custom3_lbuf     = opcode_custom3 & rv32_func3_010 & rv32_func7_0000001; // 4 cycles
-   wire custom3_sbuf     = opcode_custom3 & rv32_func3_010 & rv32_func7_0000010; // 4 cycles
-   wire custom3_rowsum   = opcode_custom3 & rv32_func3_110 & rv32_func7_0000110; // multi cycles
+   wire custom3_lbuf     = opcode_custom3 & rv32_func3_010 & rv32_func7_0000001; 
+   wire custom3_sbuf     = opcode_custom3 & rv32_func3_010 & rv32_func7_0000010; 
+   wire custom3_rowsum   = opcode_custom3 & rv32_func3_110 & rv32_func7_0000110; 
 
    ////////////////////////////////////////////////////////////
    //  multi-cyc op 
