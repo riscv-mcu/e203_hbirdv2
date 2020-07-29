@@ -1,0 +1,4 @@
+generated/*.spike.rpt
+rv32imc_*
+Makefile_*
+
