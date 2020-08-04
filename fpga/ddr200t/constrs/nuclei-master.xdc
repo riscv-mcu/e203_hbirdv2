@@ -91,15 +91,15 @@ set_property PACKAGE_PIN L15  [get_ports {gpioA[10]}]
 set_property PACKAGE_PIN L14  [get_ports {gpioA[9]}]      
 ## TFT scl
 set_property PACKAGE_PIN M16  [get_ports {gpioA[8]}]
-## key_in 4
+## key_in C
 set_property PACKAGE_PIN A15  [get_ports {gpioA[7]}]
-## key_in 3
+## key_in R
 set_property PACKAGE_PIN A13  [get_ports {gpioA[6]}]
-## key_in 2
+## key_in L
 set_property PACKAGE_PIN B17  [get_ports {gpioA[5]}]
-## key_in 1
+## key_in D
 set_property PACKAGE_PIN A16  [get_ports {gpioA[4]}]
-## key_in 0
+## key_in U
 set_property PACKAGE_PIN A14  [get_ports {gpioA[3]}]
 ## RGB B
 set_property PACKAGE_PIN B13  [get_ports {gpioA[2]}]
