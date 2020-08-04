@@ -514,7 +514,7 @@ localparam PLIC_PEND_ARRAY = (((PLIC_IRQ_NUM-1)/32) + 1);
          icb_complete_irq[i] = 1'b0;
 
                                        // The read data (claimed ID) is equal to the interrupt source ID
-         icb_claim_irq   [i] = icb_claim_irq[i] | ((icb_rsp_rdata == i) & icb_cmd_sel_clam & icb_cmd_rd_hsked);
+         icb_claim_irq   [i] = icb_claim_irq[i] | ((rsp_rdata == i) & icb_cmd_sel_clam & icb_cmd_rd_hsked);
                                        // The write data (complete ID) is equal to the interrupt source ID
          icb_complete_irq[i] = icb_complete_irq[i] | ((icb_cmd_wdata[PLIC_IRQ_NUM_LOG2-1:0] == i) & icb_cmd_sel_clam & icb_cmd_wr_hsked);
 
