@@ -15,6 +15,8 @@ In this new version, we have following updates.
 * Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in System Verilog language, so it's easy for user to understand. 
 * Add new development board(DDR200T) support for Hummingbirdv2 SoC. 
 
+**Welcome to visit https://github.com/riscv-mcu/hbird-sdk/ to use software development kit for the Hummingbird E203.**
+
 Welcome to visit https://www.rvmcu.com/community-community.html to participate in the discussion of the Hummingbird E203.
 
 Welcome to visit http://www.rvmcu.com/ for more comprehensive information of availiable RISC-V MCU chips and embedded development. 
@@ -48,6 +50,11 @@ In order to easy user to study RISC-V in a quick and easy way, we have made a de
 ![Debugger](pics/debugger.JPG)
 
 The detailed introduction and the relevant documentation can be seen from https://nucleisys.com/developboard.php.
+
+HummingBird SDK
+---------------
+
+Click https://github.com/riscv-mcu/hbird-sdk for software development kit.
 
 Release History
 ---------------
