@@ -1,4 +1,6 @@
 // Copyright 2017 ETH Zurich and University of Bologna.
+// -- Adaptable modifications made for hbirdv2 SoC. -- 
+// Copyright 2020 Nuclei System Technology, Inc.
 // Copyright and related rights are licensed under the Solderpad Hardware
 // License, Version 0.51 (the “License”); you may not use this file except in
 // compliance with the License.  You may obtain a copy of the License at
@@ -52,11 +54,9 @@ module spi_master_apb_if
     output logic               [15:0] spi_dummy_wr,
     output logic [LOG_BUFFER_DEPTH:0] spi_int_th_tx,
     output logic [LOG_BUFFER_DEPTH:0] spi_int_th_rx,
-    output logic [LOG_BUFFER_DEPTH:0] spi_int_cnt_tx,
-    output logic [LOG_BUFFER_DEPTH:0] spi_int_cnt_rx,
     output logic                      spi_int_en,
-    output logic                      spi_int_cnt_en,
     output logic                      spi_int_rd_sta,
+    input  logic               [31:0] spi_int_status,
     output logic                      spi_swrst,
     output logic                      spi_rd,
     output logic                      spi_wr,
@@ -102,9 +102,6 @@ module spi_master_apb_if
             spi_csreg         <=  '0;
             spi_int_th_tx     <=  '0;
             spi_int_th_rx     <=  '0;
-            spi_int_cnt_tx    <=  '0;
-            spi_int_cnt_rx    <=  '0;
-            spi_int_cnt_en    <= 1'b0; 
             spi_int_en        <= 1'b0; 
         end
         else  if (PSEL && PENABLE && PWRITE)
@@ -160,9 +157,6 @@ module spi_master_apb_if
                   begin
                       spi_int_th_tx  <= PWDATA[     LOG_BUFFER_DEPTH: 0];
                       spi_int_th_rx  <= PWDATA[ 8 + LOG_BUFFER_DEPTH: 8];
-                      spi_int_cnt_tx <= PWDATA[16 + LOG_BUFFER_DEPTH:16];
-                      spi_int_cnt_rx <= PWDATA[24 + LOG_BUFFER_DEPTH:24];
-                      spi_int_cnt_en <= PWDATA[30];
                       spi_int_en     <= PWDATA[31];
                   end
                   endcase
@@ -202,11 +196,10 @@ module spi_master_apb_if
             PRDATA                           = '0;
             PRDATA[     LOG_BUFFER_DEPTH: 0] = spi_int_th_tx;
             PRDATA[ 8 + LOG_BUFFER_DEPTH: 8] = spi_int_th_rx;
-            PRDATA[16 + LOG_BUFFER_DEPTH:16] = spi_int_cnt_tx;
-            PRDATA[24 + LOG_BUFFER_DEPTH:24] = spi_int_cnt_rx;
-            PRDATA[30]                       = spi_int_cnt_en;
             PRDATA[31]                       = spi_int_en;
         end
+        `REG_INTSTA:
+            PRDATA = spi_int_status;
         default:
             PRDATA = '0;
       endcase

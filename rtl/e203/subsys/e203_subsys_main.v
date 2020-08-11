@@ -616,9 +616,9 @@ module e203_subsys_main(
     .rst_n         (core_rst_n) 
   );
 
-  wire       qspi0_irq; 
-  wire[1:0]  qspi1_irq;
-  wire[1:0]  qspi2_irq;
+  wire  qspi0_irq; 
+  wire  qspi1_irq;
+  wire  qspi2_irq;
 
   wire  uart0_irq;                
   wire  uart1_irq;                

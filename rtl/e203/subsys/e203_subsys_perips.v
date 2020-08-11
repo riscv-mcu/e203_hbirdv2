@@ -116,8 +116,8 @@ module e203_subsys_perips(
   output  io_pads_qspi0_cs_0_o_oe,
 
   output qspi0_irq, 
-  output [1:0] qspi1_irq,
-  output [1:0] qspi2_irq,
+  output qspi1_irq,
+  output qspi2_irq,
 
   output pwm_irq_0,
   output pwm_irq_1,
