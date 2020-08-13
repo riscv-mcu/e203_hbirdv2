@@ -85,13 +85,14 @@ module apb_uart_sv
         .cfg_en_i           ( 1'b1                          ),
         .cfg_div_i          ( {regs_q[DLM + 'd8], regs_q[DLL + 'd8]}    ),
         .cfg_parity_en_i    ( regs_q[LCR][3]                ),
+        .cfg_parity_sel_i   ( regs_q[LCR][5:4]              ),
         .cfg_bits_i         ( regs_q[LCR][1:0]              ),
         // .cfg_stop_bits_i    ( regs_q[LCR][2]                ),
         /* verilator lint_off PINCONNECTEMPTY */
         .busy_o             (                               ),
         /* lint_on */
         .err_o              ( parity_error                  ),
-        .err_clr_i          ( 1'b1                          ),
+        .err_clr_i          ( 1'b0                          ),
         .rx_data_o          ( rx_data                       ),
         .rx_valid_o         ( rx_valid                      ),
         .rx_ready_i         ( rx_ready                      )
@@ -108,6 +109,7 @@ module apb_uart_sv
         .cfg_en_i           ( 1'b1                          ),
         .cfg_div_i          ( {regs_q[DLM + 'd8], regs_q[DLL + 'd8]}    ),
         .cfg_parity_en_i    ( regs_q[LCR][3]                ),
+        .cfg_parity_sel_i   ( regs_q[LCR][5:4]              ),
         .cfg_bits_i         ( regs_q[LCR][1:0]              ),
         .cfg_stop_bits_i    ( regs_q[LCR][2]                ),
 
@@ -175,9 +177,6 @@ module apb_uart_sv
 
 
         .IER_i              ( regs_q[IER][2:0]              ), // interrupt enable register
-        .RDA_i              ( regs_n[LSR][5]                ), // receiver data available
-        .CTI_i              ( 1'b0                          ), // character timeout indication
-
 
         .error_i            ( regs_n[LSR][2]                ),
         .rx_elements_i      ( rx_elements                   ),
@@ -248,7 +247,6 @@ module apb_uart_sv
                     trigger_level_n = PWDATA[7:6];
                 end
 
-                default: ;
             endcase
 
         end
@@ -304,7 +302,8 @@ module apb_uart_sv
                     clr_int = 4'b0100; // clear Transmitter Holding Register Empty
                 end
 
-                default: ;
+                default: 
+                    PRDATA = '0;
             endcase
         end
     end

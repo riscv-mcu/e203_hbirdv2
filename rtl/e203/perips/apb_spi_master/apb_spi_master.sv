@@ -106,7 +106,6 @@ module apb_spi_master
 
     logic                      s_int_en;
 
-    logic                      s_int_rd_intsta;
     logic [31:0]               s_int_status;
 
 
@@ -191,7 +190,6 @@ module apb_spi_master
         .spi_int_th_rx     ( s_th_rx           ),
         .spi_int_th_tx     ( s_th_tx           ),
         .spi_int_en        ( s_int_en          ),
-        .spi_int_rd_sta    ( s_int_rd_intsta   ),
         .spi_int_status    ( s_int_status      ),
         .spi_data_tx       ( spi_data_tx       ),
         .spi_data_tx_valid ( spi_data_tx_valid ),

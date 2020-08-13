@@ -1,4 +1,6 @@
 // Copyright 2017 ETH Zurich and University of Bologna.
+// -- Adaptable modifications made for hbirdv2 SoC. -- 
+// Copyright 2020 Nuclei System Technology, Inc.
 // Copyright and related rights are licensed under the Solderpad Hardware
 // License, Version 0.51 (the “License”); you may not use this file except in
 // compliance with the License.  You may obtain a copy of the License at
@@ -15,6 +17,7 @@ module uart_rx (
         input  logic [15:0]     cfg_div_i,
         input  logic            cfg_en_i,
         input  logic            cfg_parity_en_i,
+        input  logic [1:0]      cfg_parity_sel_i,
         input  logic [1:0]      cfg_bits_i,
         // input  logic            cfg_stop_bits_i,
         output logic            busy_o,
@@ -144,8 +147,28 @@ module uart_rx (
                 baudgen_en = 1'b1;
                 if (bit_done)
                 begin
-                    if(parity_bit != reg_rx_sync[2])
-                        set_error = 1'b1;
+	            case(cfg_parity_sel_i)
+                       2'b00:
+		       begin
+                          if(reg_rx_sync[2] != ~parity_bit)
+		             set_error = 1'b1;
+		       end
+                       2'b01:
+		       begin
+                          if(reg_rx_sync[2] != parity_bit)
+		             set_error = 1'b1;
+		       end
+                       2'b10:
+		       begin
+                          if(reg_rx_sync[2] != 1'b0)
+		             set_error = 1'b1;
+		       end
+                       2'b11:
+		       begin
+                          if(reg_rx_sync[2] != 1'b1)
+		             set_error = 1'b1;
+		       end
+                    endcase		    
                     NS = STOP_BIT;
                 end
             end

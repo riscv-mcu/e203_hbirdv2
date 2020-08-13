@@ -1,4 +1,6 @@
 // Copyright 2017 ETH Zurich and University of Bologna.
+// -- Adaptable modifications made for hbirdv2 SoC. -- 
+// Copyright 2020 Nuclei System Technology, Inc.
 // Copyright and related rights are licensed under the Solderpad Hardware
 // License, Version 0.51 (the “License”); you may not use this file except in
 // compliance with the License.  You may obtain a copy of the License at
@@ -19,8 +21,6 @@ module uart_interrupt
 
     // registers
     input  logic [2:0]                IER_i, // interrupt enable register
-    input  logic                      RDA_i, // receiver data available
-    input  logic                      CTI_i, // character timeout indication
 
     // control logic
     input  logic                      error_i,
@@ -53,7 +53,6 @@ module uart_interrupt
             2'b11:
                 if ($unsigned(rx_elements_i) == 14)
                     trigger_level_reached = 1'b1;
-            default : /* default */;
         endcase
     end
 
@@ -61,22 +60,24 @@ module uart_interrupt
     begin
 
         if (clr_int_i == 4'b0)
-            iir_n = iir_q;
+	begin
+            // Receive data parity error
+            if (IER_i[2] & error_i)
+                iir_n = 4'b1100;
+            // Trigger level reached in FIFO mode
+            else if (IER_i[0] & trigger_level_reached)
+                iir_n = 4'b1000;
+            // Transmitter holding register empty
+            else if (IER_i[1] & tx_elements_i == 0)
+                iir_n = 4'b0100;
+	    else
+		iir_n = iir_q;
+        end
         else
+	begin
             iir_n = iir_q & ~(clr_int_i);
+	end
 
-        // Receiver line status interrupt on: Overrun error, parity error, framing error or break interrupt
-        if (IER_i[2] & error_i)
-            iir_n = 4'b1100;
-        // Received data available or trigger level reached in FIFO mode
-        else if (IER_i[0] & (trigger_level_reached | RDA_i))
-            iir_n = 4'b1000;
-        // Character timeout indication
-        else if (IER_i[0] & CTI_i)
-            iir_n = 4'b1000;
-        // Transmitter holding register empty
-        else if (IER_i[1] & tx_elements_i == 0)
-            iir_n = 4'b0100;
     end
 
 

@@ -55,7 +55,6 @@ module spi_master_apb_if
     output logic [LOG_BUFFER_DEPTH:0] spi_int_th_tx,
     output logic [LOG_BUFFER_DEPTH:0] spi_int_th_rx,
     output logic                      spi_int_en,
-    output logic                      spi_int_rd_sta,
     input  logic               [31:0] spi_int_status,
     output logic                      spi_swrst,
     output logic                      spi_rd,
@@ -78,8 +77,6 @@ module spi_master_apb_if
 
     assign PSLVERR = 1'b0;
     assign PREADY  = 1'b1;
-
-    assign spi_int_rd_sta = PSEL & PENABLE & ~PWRITE & (read_address  == `REG_INTSTA);
 
     always @( posedge HCLK or negedge HRESETn )
     begin
