@@ -83,10 +83,10 @@ set_property PACKAGE_PIN Y17  [get_ports {gpioA[14]}]
 set_property PACKAGE_PIN AB12 [get_ports {gpioA[13]}]     
 ## JP62
 set_property PACKAGE_PIN Y11  [get_ports {gpioA[12]}]     
-## TFT sdi
-set_property PACKAGE_PIN M15  [get_ports {gpioA[11]}]
-## TFT sdo
-set_property PACKAGE_PIN L15  [get_ports {gpioA[10]}]
+## TFT sdo MISO
+set_property PACKAGE_PIN L15  [get_ports {gpioA[11]}]
+## TFT sdi MOSI
+set_property PACKAGE_PIN M15  [get_ports {gpioA[10]}]
 ## TFT cs
 set_property PACKAGE_PIN L14  [get_ports {gpioA[9]}]      
 ## TFT scl
