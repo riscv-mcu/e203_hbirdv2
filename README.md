@@ -39,13 +39,11 @@ Dedicated FPGA-Board and JTAG-Debugger
 
 In order to easy user to study RISC-V in a quick and easy way, we have made a dedicated FPGA-Board and JTAG-Debugger.
 
-#### 蜂鸟E203专用的FPGA开发板
-
-#### DDR200T
+#### Nuclei ddr200t development board
 
 ![DDR200T](pics/DDR200T.JPG)
 
-#### 蜂鸟E203专用的JTAG调试器
+#### Hummingbird Debugger
 
 ![Debugger](pics/debugger.JPG)
 
