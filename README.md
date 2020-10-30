@@ -1,7 +1,7 @@
 Hummingbirdv2 E203 Core and SoC 
 ===============================
 
-[![Deploy Documentation](https://github.com/riscv-mcu/e203_hbirdv2/workflows/Deploy%20Documentation/badge.svg)](doc.nucleisys.com/hbirdv2)
+[![Deploy Documentation](https://github.com/riscv-mcu/e203_hbirdv2/workflows/Deploy%20Documentation/badge.svg)](https://doc.nucleisys.com/hbirdv2)
 
 About
 -----
