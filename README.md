@@ -19,7 +19,7 @@ In this new version, we have following updates.
 
 **Welcome to visit https://github.com/riscv-mcu/hbird-sdk/ to use software development kit for the Hummingbird E203.**
 
-Welcome to visit https://www.rvmcu.com/community-community.html to participate in the discussion of the Hummingbird E203.
+Welcome to visit https://www.rvmcu.com/community.html to participate in the discussion of the Hummingbird E203.
 
 Welcome to visit http://www.rvmcu.com/ for more comprehensive information of availiable RISC-V MCU chips and embedded development. 
 
@@ -30,7 +30,7 @@ Detailed Introduction and Quick Start-up
 We have provided very detailed introduction and quick start-up documents to help you ramping it up. 
 
 The detailed introduction and the quick start documentation can be seen 
-from https://www.rvmcu.com/campus-campus.html.
+from https://www.rvmcu.com/campus.html.
 
 By following the guidences from the doc, you can very easily start to use Hummingbirdv2 E203 processor Core and SoC.
 
