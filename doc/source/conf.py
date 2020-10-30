@@ -24,7 +24,7 @@ author = 'Nuclei'
 version = '0.1.1'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.1-alpha'
+release = '0.1.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -84,6 +84,10 @@ latex_logo = 'asserts/images/hbirdv2_soc_logo_small.png'
 latex_show_pagerefs = True
 latex_toplevel_sectioning = 'chapter'
 latex_show_urls = 'footnote'
+latex_documents = [
+    ("index", 'hbirdv2_soc.tex', u'HBirdV2 SoC Documentation',
+     u'Hu Can', 'manual'),
+]
 
 rst_prolog = """
 .. |nuclei_contact| replace:: email support@nucleisys.com

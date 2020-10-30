@@ -84,7 +84,7 @@ The CLINT unit can be used to generate the software interrupt. The register **ms
    +----------+-------+---------------+---------------+-----------------------------------------+
    | Field    | Bits  | Permission    | Default Value | Description                             |
    +----------+-------+---------------+---------------+-----------------------------------------+
-   | Reserved | 31：1 | Readable,     | N/A           | Reserverd                               |
+   | Reserved | 31:1  | Readable,     | N/A           | Reserverd                               |
    |          |       | Write ignored |               |                                         |
    +----------+-------+---------------+---------------+-----------------------------------------+
    | MSIP     | 0     | RW            | 0             | Used to generate the software interrupt |
@@ -520,11 +520,11 @@ SPI_CSMODE
    +-------+------+-----------+-------------+------------------------------------------------------------------+
    | mode  | 1:0  | RW        | 0x0         | CS behavior                                                      |
    +       +      +           +             +------------------------------------------------------------------+
-   |       |      |           |             | 0： AUTO, Assert/de-assert CS at the beginning/end of each frame |
+   |       |      |           |             | 0: AUTO, Assert/de-assert CS at the beginning/end of each frame  |
    +       +      +           +             +------------------------------------------------------------------+
-   |       |      |           |             | 2： HOLD, Keep CS continuously asserted after the initial frame  |
+   |       |      |           |             | 2: HOLD, Keep CS continuously asserted after the initial frame   |
    +       +      +           +             +------------------------------------------------------------------+
-   |       |      |           |             | 3： OFF, Disable hardware control of the CS pin                  |
+   |       |      |           |             | 3: OFF, Disable hardware control of the CS pin                   |
    +-------+------+-----------+-------------+------------------------------------------------------------------+
 
 .. note::
