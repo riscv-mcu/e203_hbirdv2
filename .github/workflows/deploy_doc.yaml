@@ -20,7 +20,7 @@ jobs:
     - name: Install Dependencies on Ubuntu
       if: startsWith(matrix.os, 'ubuntu')
       run: |
-          sudo apt-get install python3 make \
+          sudo apt-get install python3 make latexmk \
           texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended 
           sudo pip3 install -r doc/requirements.txt
     - name: Build Documentation
