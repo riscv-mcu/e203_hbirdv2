@@ -1,0 +1,42 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build_deploy:
+    name: Deploy documentation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - name: Install Dependencies on Ubuntu
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+          sudo apt-get install python3 make \
+          texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended 
+          sudo pip3 install -r doc/requirements.txt
+    - name: Build Documentation
+      run: |
+        cd doc
+        make all
+        make latexpdf
+        cp build/latex/*.pdf build/html/
+        cd ..
+    - name: Deploy Documentation
+      run: |
+        bash .github/ftp_deploy.sh $FTPUSER $FTPPWD $FTPSERVER doc/build/html hbirdv2
+    - name: Upload Documentation
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: hbirdv2_soc_doc 
+        # A file, directory or wildcard pattern that describes what to upload
+        path: doc/build/html 
