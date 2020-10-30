@@ -31,6 +31,10 @@ jobs:
         cp build/latex/*.pdf build/html/
         cd ..
     - name: Deploy Documentation
+      env:
+          FTPUSER: ${{ secrets.FTPUSER }}
+          FTPPWD: ${{ secrets.FTPPWD }}
+          FTPSERVER: ${{ secrets.FTPSERVER }}
       run: |
         bash .github/ftp_deploy.sh $FTPUSER $FTPPWD $FTPSERVER doc/build/html hbirdv2
     - name: Upload Documentation
