@@ -30,7 +30,7 @@ Detailed Introduction and Quick Start-up
 We have provided very detailed introduction and quick start-up documents to help you ramping it up. 
 
 The detailed introduction and the quick start documentation can be seen 
-from https://www.rvmcu.com/campus.html.
+from https://doc.nucleisys.com/hbirdv2/.
 
 By following the guidences from the doc, you can very easily start to use Hummingbirdv2 E203 processor Core and SoC.
 
