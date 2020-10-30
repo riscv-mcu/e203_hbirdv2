@@ -1,0 +1,5 @@
+breathe==4.13.1
+commonmark==0.9.1
+recommonmark==0.6.0
+Sphinx==2.2.0
+sphinx-rtd-theme==0.4.3
