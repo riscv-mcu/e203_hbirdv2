@@ -622,6 +622,7 @@ module e203_subsys_main(
 
   wire  uart0_irq;                
   wire  uart1_irq;                
+  wire  uart2_irq;                
 
   wire  pwm_irq_0;
   wire  pwm_irq_1;
@@ -653,12 +654,13 @@ module e203_subsys_main(
     .wdg_irq_a              (aon_wdg_irq_a),
     .rtc_irq_a              (aon_rtc_irq_a),
 
-    .qspi0_irq              (qspi0_irq  ), 
-    .qspi1_irq              (qspi1_irq  ),
-    .qspi2_irq              (qspi2_irq  ),
-                                        
-    .uart0_irq              (uart0_irq  ),                
-    .uart1_irq              (uart1_irq  ),                
+    .qspi0_irq              (qspi0_irq ), 
+    .qspi1_irq              (qspi1_irq ),
+    .qspi2_irq              (qspi2_irq ),
+                                       
+    .uart0_irq              (uart0_irq ),                
+    .uart1_irq              (uart1_irq ),                
+    .uart2_irq              (uart2_irq ),                
                                         
     .pwm_irq_0              (pwm_irq_0 ),
     .pwm_irq_1              (pwm_irq_1 ),
@@ -711,17 +713,6 @@ e203_subsys_clint u_e203_subsys_clint(
   wire [32-1:0]            qspi0_ro_icb_rsp_rdata;
 
   
-  wire                     otp_ro_icb_cmd_valid;
-  wire                     otp_ro_icb_cmd_ready;
-  wire [32-1:0]            otp_ro_icb_cmd_addr; 
-  wire                     otp_ro_icb_cmd_read; 
-  wire [32-1:0]            otp_ro_icb_cmd_wdata;
- 
-  wire                     otp_ro_icb_rsp_valid;
-  wire                     otp_ro_icb_rsp_ready;
-  wire [32-1:0]            otp_ro_icb_rsp_rdata;
-
-
   e203_subsys_perips u_e203_subsys_perips (
     .pllbypass   (pllbypass   ),
     .pll_RESET   (pll_RESET   ),
@@ -791,15 +782,6 @@ e203_subsys_clint u_e203_subsys_clint(
     .qspi0_ro_icb_rsp_rdata  (qspi0_ro_icb_rsp_rdata),
 `endif//}
                            
-    .otp_ro_icb_cmd_valid    (otp_ro_icb_cmd_valid  ),
-    .otp_ro_icb_cmd_ready    (otp_ro_icb_cmd_ready  ),
-    .otp_ro_icb_cmd_addr     (otp_ro_icb_cmd_addr   ),
-    .otp_ro_icb_cmd_read     (otp_ro_icb_cmd_read   ),
-    .otp_ro_icb_cmd_wdata    (otp_ro_icb_cmd_wdata  ),
-                          
-    .otp_ro_icb_rsp_valid    (otp_ro_icb_rsp_valid  ),
-    .otp_ro_icb_rsp_ready    (otp_ro_icb_rsp_ready  ),
-    .otp_ro_icb_rsp_rdata    (otp_ro_icb_rsp_rdata  ),
 
     .io_pads_gpioA_i_ival        (io_pads_gpioA_i_ival),
     .io_pads_gpioA_o_oval        (gpioA_o_oval),
@@ -834,6 +816,7 @@ e203_subsys_clint u_e203_subsys_clint(
                                         
     .uart0_irq              (uart0_irq  ),                
     .uart1_irq              (uart1_irq  ),                
+    .uart2_irq              (uart2_irq  ),                
                                         
     .pwm_irq_0              (pwm_irq_0 ),
     .pwm_irq_1              (pwm_irq_1 ),
@@ -889,17 +872,6 @@ e203_subsys_mems u_e203_subsys_mems(
     .qspi0_ro_icb_rsp_err    (1'b0  ),
     .qspi0_ro_icb_rsp_rdata  (qspi0_ro_icb_rsp_rdata),
                            
-    .otp_ro_icb_cmd_valid    (otp_ro_icb_cmd_valid  ),
-    .otp_ro_icb_cmd_ready    (otp_ro_icb_cmd_ready  ),
-    .otp_ro_icb_cmd_addr     (otp_ro_icb_cmd_addr   ),
-    .otp_ro_icb_cmd_read     (otp_ro_icb_cmd_read   ),
-    .otp_ro_icb_cmd_wdata    (otp_ro_icb_cmd_wdata  ),
-                          
-    .otp_ro_icb_rsp_valid    (otp_ro_icb_rsp_valid  ),
-    .otp_ro_icb_rsp_ready    (otp_ro_icb_rsp_ready  ),
-    .otp_ro_icb_rsp_err      (1'b0    ),
-    .otp_ro_icb_rsp_rdata    (otp_ro_icb_rsp_rdata  ),
-
     .dm_icb_cmd_valid    (dm_icb_cmd_valid  ),
     .dm_icb_cmd_ready    (dm_icb_cmd_ready  ),
     .dm_icb_cmd_addr     (dm_icb_cmd_addr   ),

@@ -69,18 +69,6 @@ module e203_subsys_mems(
 
 
     //////////////////////////////////////////////////////////
-  output                         otp_ro_icb_cmd_valid,
-  input                          otp_ro_icb_cmd_ready,
-  output [`E203_ADDR_SIZE-1:0]   otp_ro_icb_cmd_addr, 
-  output                         otp_ro_icb_cmd_read, 
-  output [`E203_XLEN-1:0]        otp_ro_icb_cmd_wdata,
-  //
-  input                          otp_ro_icb_rsp_valid,
-  output                         otp_ro_icb_rsp_ready,
-  input                          otp_ro_icb_rsp_err,
-  input  [`E203_XLEN-1:0]        otp_ro_icb_rsp_rdata,
-
-    //////////////////////////////////////////////////////////
   output                         dm_icb_cmd_valid,
   input                          dm_icb_cmd_ready,
   output [`E203_ADDR_SIZE-1:0]   dm_icb_cmd_addr, 
@@ -127,7 +115,6 @@ module e203_subsys_mems(
   // There are several slaves for Mem bus, including:
   //  * DM        : 0x0000 0000 -- 0x0000 0FFF
   //  * MROM      : 0x0000 1000 -- 0x0000 1FFF
-  //  * OTP-RO    : 0x0002 0000 -- 0x0003 FFFF
   //  * QSPI0-RO  : 0x2000 0000 -- 0x3FFF FFFF
   //  * SysMem    : 0x8000 0000 -- 0xFFFF FFFF
 
@@ -144,7 +131,7 @@ module e203_subsys_mems(
   //  * MROM      : 0x0000 1000 -- 0x0000 1FFF
   .O1_BASE_ADDR       (32'h0000_1000),       
   .O1_BASE_REGION_LSB (12),
-  //  * OTP-RO    : 0x0002 0000 -- 0x0003 FFFF
+  //  * Not used  : 0x0002 0000 -- 0x0003 FFFF
   .O2_BASE_ADDR       (32'h0002_0000),       
   .O2_BASE_REGION_LSB (17),
   //  * QSPI0-RO  : 0x2000 0000 -- 0x3FFF FFFF
@@ -230,14 +217,14 @@ module e203_subsys_mems(
     .o1_icb_rsp_excl_ok(1'b0  ),
     .o1_icb_rsp_rdata  (mrom_icb_rsp_rdata),
 
-  //  * OTP-RO    
-    .o2_icb_enable     (1'b1),
+  //  * Not used    
+    .o2_icb_enable     (1'b0),
 
-    .o2_icb_cmd_valid  (otp_ro_icb_cmd_valid),
-    .o2_icb_cmd_ready  (otp_ro_icb_cmd_ready),
-    .o2_icb_cmd_addr   (otp_ro_icb_cmd_addr ),
-    .o2_icb_cmd_read   (otp_ro_icb_cmd_read ),
-    .o2_icb_cmd_wdata  (otp_ro_icb_cmd_wdata),
+    .o2_icb_cmd_valid  (),
+    .o2_icb_cmd_ready  (1'b0),
+    .o2_icb_cmd_addr   (),
+    .o2_icb_cmd_read   (),
+    .o2_icb_cmd_wdata  (),
     .o2_icb_cmd_wmask  (),
     .o2_icb_cmd_lock   (),
     .o2_icb_cmd_excl   (),
@@ -245,11 +232,11 @@ module e203_subsys_mems(
     .o2_icb_cmd_burst  (),
     .o2_icb_cmd_beat   (),
     
-    .o2_icb_rsp_valid  (otp_ro_icb_rsp_valid),
-    .o2_icb_rsp_ready  (otp_ro_icb_rsp_ready),
-    .o2_icb_rsp_err    (otp_ro_icb_rsp_err),
+    .o2_icb_rsp_valid  (1'b0),
+    .o2_icb_rsp_ready  (),
+    .o2_icb_rsp_err    (1'b0  ),
     .o2_icb_rsp_excl_ok(1'b0  ),
-    .o2_icb_rsp_rdata  (otp_ro_icb_rsp_rdata),
+    .o2_icb_rsp_rdata  (`E203_XLEN'b0),
 
 
   //  * QSPI0-RO  

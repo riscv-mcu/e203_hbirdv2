@@ -53,6 +53,7 @@ module e203_subsys_plic(
 
   input  uart0_irq,                
   input  uart1_irq,                
+  input  uart2_irq,                
 
   input  pwm_irq_0,
   input  pwm_irq_1,
@@ -98,17 +99,18 @@ module e203_subsys_plic(
   wire plic_irq_i_1  = rtc_irq_r;
   wire plic_irq_i_2  = uart0_irq;
   wire plic_irq_i_3  = uart1_irq;
-  wire plic_irq_i_4  = qspi0_irq;
-  wire plic_irq_i_5  = qspi1_irq;   
-  wire plic_irq_i_6  = qspi2_irq;
-  wire plic_irq_i_7  = pwm_irq_0;
-  wire plic_irq_i_8  = pwm_irq_1;
-  wire plic_irq_i_9  = pwm_irq_2;
-  wire plic_irq_i_10 = pwm_irq_3;
-  wire plic_irq_i_11 = i2c0_mst_irq;
-  wire plic_irq_i_12 = i2c1_mst_irq;
-  wire plic_irq_i_13 = gpioA_irq;
-  wire plic_irq_i_14 = gpioB_irq; 
+  wire plic_irq_i_4  = uart2_irq;
+  wire plic_irq_i_5  = qspi0_irq;
+  wire plic_irq_i_6  = qspi1_irq;   
+  wire plic_irq_i_7  = qspi2_irq;
+  wire plic_irq_i_8  = pwm_irq_0;
+  wire plic_irq_i_9  = pwm_irq_1;
+  wire plic_irq_i_10 = pwm_irq_2;
+  wire plic_irq_i_11 = pwm_irq_3;
+  wire plic_irq_i_12 = i2c0_mst_irq;
+  wire plic_irq_i_13 = i2c1_mst_irq;
+  wire plic_irq_i_14 = gpioA_irq;
+  wire plic_irq_i_15 = gpioB_irq; 
 
   sirv_plic_top u_sirv_plic_top(
     .clk             (clk   ),
@@ -139,6 +141,7 @@ module e203_subsys_plic(
     .io_devices_0_12 (plic_irq_i_12),
     .io_devices_0_13 (plic_irq_i_13),
     .io_devices_0_14 (plic_irq_i_14),
+    .io_devices_0_15 (plic_irq_i_15),
 
     .io_harts_0_0    (plic_ext_irq ) 
   );
