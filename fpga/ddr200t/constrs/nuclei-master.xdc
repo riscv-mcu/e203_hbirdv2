@@ -43,34 +43,34 @@ set_property PACKAGE_PIN N15 [get_ports mcu_wakeup]
 
 
 #####                gpioA define              #####
+## sw_in 5
+set_property PACKAGE_PIN Y8   [get_ports {gpioA[31]}]
 ## sw_in 4
-set_property PACKAGE_PIN D20  [get_ports {gpioA[31]}]
+set_property PACKAGE_PIN AB8  [get_ports {gpioA[30]}]
 ## sw_in 3
-set_property PACKAGE_PIN E18  [get_ports {gpioA[30]}]
+set_property PACKAGE_PIN AA8  [get_ports {gpioA[29]}]
 ## sw_in 2
-set_property PACKAGE_PIN E21  [get_ports {gpioA[29]}]
+set_property PACKAGE_PIN V8   [get_ports {gpioA[28]}]
 ## sw_in 1
-set_property PACKAGE_PIN E17  [get_ports {gpioA[28]}]
+set_property PACKAGE_PIN V9   [get_ports {gpioA[27]}]
 ## sw_in 0
-set_property PACKAGE_PIN M17  [get_ports {gpioA[27]}]
-## LED 7
-set_property PACKAGE_PIN C17  [get_ports {gpioA[26]}]     
-## LED 6
-set_property PACKAGE_PIN D19  [get_ports {gpioA[25]}]     
+set_property PACKAGE_PIN AB6  [get_ports {gpioA[26]}]
 ## LED 5
-set_property PACKAGE_PIN D17  [get_ports {gpioA[24]}]     
+set_property PACKAGE_PIN D17  [get_ports {gpioA[25]}]     
 ## LED 4
-set_property PACKAGE_PIN D21  [get_ports {gpioA[23]}]     
+set_property PACKAGE_PIN D21  [get_ports {gpioA[24]}]     
 ## LED 3
-set_property PACKAGE_PIN E19  [get_ports {gpioA[22]}]     
+set_property PACKAGE_PIN E19  [get_ports {gpioA[23]}]     
 ## LED 2
-set_property PACKAGE_PIN F18  [get_ports {gpioA[21]}]     
+set_property PACKAGE_PIN F18  [get_ports {gpioA[22]}]     
 ## LED 1
-set_property PACKAGE_PIN E22  [get_ports {gpioA[20]}]     
+set_property PACKAGE_PIN E22  [get_ports {gpioA[21]}]     
 ## LED 0
-set_property PACKAGE_PIN J16  [get_ports {gpioA[19]}]     
-## TFT rs
-set_property PACKAGE_PIN K16  [get_ports {gpioA[18]}]     
+set_property PACKAGE_PIN J16  [get_ports {gpioA[20]}]     
+## Lora RX (uart2-tx)
+set_property PACKAGE_PIN R16  [get_ports {gpioA[19]}]     
+## Lora TX (uart2-rx)
+set_property PACKAGE_PIN F15  [get_ports {gpioA[18]}]     
 ## UART TX
 set_property PACKAGE_PIN R17  [get_ports {gpioA[17]}]
 ## UART RX
@@ -79,10 +79,10 @@ set_property PACKAGE_PIN P16  [get_ports {gpioA[16]}]
 set_property PACKAGE_PIN N14  [get_ports {gpioA[15]}]
 ## EEPROM SCL
 set_property PACKAGE_PIN Y17  [get_ports {gpioA[14]}]
-## JP63
-set_property PACKAGE_PIN AB12 [get_ports {gpioA[13]}]     
-## JP62
-set_property PACKAGE_PIN Y11  [get_ports {gpioA[12]}]     
+## LED (D21) 
+set_property PACKAGE_PIN W5   [get_ports {gpioA[13]}]     
+## TFT rs
+set_property PACKAGE_PIN K16  [get_ports {gpioA[12]}]     
 ## TFT sdo MISO
 set_property PACKAGE_PIN L15  [get_ports {gpioA[11]}]
 ## TFT sdi MOSI
@@ -92,15 +92,15 @@ set_property PACKAGE_PIN L14  [get_ports {gpioA[9]}]
 ## TFT scl
 set_property PACKAGE_PIN M16  [get_ports {gpioA[8]}]
 ## key_in C
-set_property PACKAGE_PIN A15  [get_ports {gpioA[7]}]
+set_property PACKAGE_PIN AA6  [get_ports {gpioA[7]}]
 ## key_in R
-set_property PACKAGE_PIN A13  [get_ports {gpioA[6]}]
+set_property PACKAGE_PIN W7   [get_ports {gpioA[6]}]
 ## key_in L
-set_property PACKAGE_PIN B17  [get_ports {gpioA[5]}]
+set_property PACKAGE_PIN V7   [get_ports {gpioA[5]}]
 ## key_in D
-set_property PACKAGE_PIN A16  [get_ports {gpioA[4]}]
+set_property PACKAGE_PIN AB7  [get_ports {gpioA[4]}]
 ## key_in U
-set_property PACKAGE_PIN A14  [get_ports {gpioA[3]}]
+set_property PACKAGE_PIN Y6   [get_ports {gpioA[3]}]
 ## RGB B
 set_property PACKAGE_PIN B13  [get_ports {gpioA[2]}]
 ## RGB G
@@ -170,12 +170,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports pmu_padrst]
 set_property IOSTANDARD LVCMOS33 [get_ports mcu_wakeup]
 
 #####                gpioA define              #####
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[31]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[30]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[29]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[28]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[27]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[26]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[31]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[30]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[29]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[28]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[27]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[26]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[25]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[24]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[23]}]
@@ -188,17 +188,17 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[17]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[16]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[15]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[14]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[13]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[13]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[12]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[11]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[10]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[9]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[8]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[7]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[6]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[5]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[4]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[3]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[7]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[6]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[5]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[4]}]
+set_property IOSTANDARD LVCMOS15 [get_ports {gpioA[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpioA[0]}]
