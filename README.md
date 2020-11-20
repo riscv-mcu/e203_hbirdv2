@@ -15,13 +15,13 @@ This's an upgraded version of the project Hummingbird E203 maintained in [SI-RIS
 In this new version, we have following updates.
 * Add NICE(Nuclei Instruction Co-unit Extension) for E203 core, so user could create customized HW co-units with E203 core easily.
 * Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in System Verilog language, so it's easy for user to understand. 
-* Add new development board(DDR200T) support for Hummingbirdv2 SoC. 
+* Add new development boards(Nuclei ddr200t and mcu200t) support for Hummingbirdv2 SoC. 
 
 **Welcome to visit https://github.com/riscv-mcu/hbird-sdk/ to use software development kit for the Hummingbird E203.**
 
-Welcome to visit https://www.rvmcu.com/community.html to participate in the discussion of the Hummingbird E203.
+**Welcome to visit https://www.rvmcu.com/community.html to participate in the discussion of the Hummingbird E203.**
 
-Welcome to visit http://www.rvmcu.com/ for more comprehensive information of availiable RISC-V MCU chips and embedded development. 
+**Welcome to visit http://www.rvmcu.com/ for more comprehensive information of availiable RISC-V MCU chips and embedded development.**
 
 
 Detailed Introduction and Quick Start-up
@@ -36,14 +36,18 @@ By following the guidences from the doc, you can very easily start to use Hummin
 
 What are you waiting for? Try it out now!
 
-Dedicated FPGA-Board and JTAG-Debugger 
---------------------------------------
+Dedicated FPGA-Boards and JTAG-Debugger 
+---------------------------------------
 
-In order to easy user to study RISC-V in a quick and easy way, we have made a dedicated FPGA-Board and JTAG-Debugger.
+In order to easy user to study RISC-V in a quick and easy way, we have made dedicated FPGA-Boards and JTAG-Debugger.
 
 #### Nuclei ddr200t development board
 
-![DDR200T](pics/DDR200T.JPG)
+<img src="pics/DDR200T.JPG" width= 80% alt="DDR200T"/>
+
+#### Nuclei mcu200t development board
+
+<img src="pics/MCU200T.JPG" width= 80% alt="MCU200T"/>
 
 #### Hummingbird Debugger
 
@@ -68,14 +72,25 @@ Release History
     and entry-level-beginners, hence, the commercial quality (bug-free) and service of this core
     is not not not warranted!!! 
 
+#### Release 0.1.2, Nov 20, 2020
+
+This is `release 0.1.2` of Hummingbirdv2.
+
++ Hbirdv2 SoC
+  - Remove unused module
+  - Add one more UART
+
++ FPGA
+  - Add new development board(Nuclei mcu200t) support for Hummingbirdv2 SoC
+ 
 #### Release 0.1.1, Jul 28, 2020
 
-* This is `release 0.1.1` of Hummingbirdv2.
+This is `release 0.1.1` of Hummingbirdv2.
 
-* NOTE:
+NOTE:
   + This's an upgraded version of the project Hummingbird E203 maintained in
     [SI-RISCV/e200_opensource](https://github.com/SI-RISCV/e200_opensource).
   + Here are the new features of this release.
     - Add NICE(Nuclei Instruction Co-unit Extension) for E203 core
     - Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from PULP Platform
-    - Add new development board(DDR200T) support for Hummingbirdv2 SoC. 
+    - Add new development board(Nuclei ddr200t) support for Hummingbirdv2 SoC. 
