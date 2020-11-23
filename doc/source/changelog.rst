@@ -3,6 +3,24 @@
 Changelog
 =========
 
+V0.1.2
+------
+
+This release 0.1.2 of HBirdv2 E203 Core and SoC.
+
+- HBirdv2 SoC
+  
+  - Remove unused module
+  - Add one more UART
+
+- FPGA
+  
+  - Add new development board (Nuclei mcu200t) support for HBirdv2 SoC
+
+- HBird SDK
+  
+  - Add support for new development board (Nuclei mcu200t)
+
 V0.1.1
 ------
 

@@ -31,7 +31,7 @@ The peripherals in Hummingbirdv2 SoC are all listed in the table below.
    + Interface      +----------------+--------+
    |                | I2C            | 2      |
    +                +----------------+--------+
-   |                | UART           | 2      |
+   |                | UART           | 3      |
    +----------------+----------------+--------+
    | PWM            | PWM            | 16     |
    +----------------+----------------+--------+
@@ -105,7 +105,7 @@ PLIC
 
 PLIC, Platform Level Interrupt Controller, is part of RISC-V standard privileged architecture specification. It's used for multiple external interrupt sources management and arbitration in HBirdv2 SoC.
 
-It could support a maximum of 1024 external interrupt sources. In HBirdv2 SoC, 15 external interrupt sources are connected to PLIC unit, as listed in the table below. For multiple external interrupt inputs, PLIC unit arbitrates them into one-bit signal, and sents to the processor core as Machine External Interrupt.
+It could support a maximum of 1024 external interrupt sources. In HBirdv2 SoC, 16 external interrupt sources are connected to PLIC unit, as listed in the table below. For multiple external interrupt inputs, PLIC unit arbitrates them into one-bit signal, and sents to the processor core as Machine External Interrupt.
 
 .. _table_ips_4:
 
@@ -124,27 +124,29 @@ It could support a maximum of 1024 external interrupt sources. In HBirdv2 SoC, 1
    +------------------+------------------------+
    | 4                | uart1                  |
    +------------------+------------------------+
-   | 5                | qspi0                  |
+   | 5                | uart2                  |
    +------------------+------------------------+
-   | 6                | qspi1                  |
+   | 6                | qspi0                  |
    +------------------+------------------------+
-   | 7                | qspi2                  |
+   | 7                | qspi1                  |
    +------------------+------------------------+
-   | 8                | pwm0                   |
+   | 8                | qspi2                  |
    +------------------+------------------------+
-   | 9                | pwm1                   |
+   | 9                | pwm0                   |
    +------------------+------------------------+
-   | 10               | pwm2                   |
+   | 10               | pwm1                   |
    +------------------+------------------------+
-   | 11               | pwm3                   |
+   | 11               | pwm2                   |
    +------------------+------------------------+
-   | 12               | i2c0                   |
+   | 12               | pwm3                   |
    +------------------+------------------------+
-   | 13               | i2c1                   |
+   | 13               | i2c0                   |
    +------------------+------------------------+
-   | 14               | gpioA                  |
+   | 14               | i2c1                   |
    +------------------+------------------------+
-   | 15               | gpioB                  |
+   | 15               | gpioA                  |
+   +------------------+------------------------+
+   | 16               | gpioB                  |
    +------------------+------------------------+
 
 The registers of PLIC module are listed in the table below.
@@ -303,9 +305,9 @@ When the corresponding bit of GPIO_IOFCFG register is set to 1, the GPIO pin wor
    +------------------+------------+------------------+------------+
    | 17               | UART0: TX  | 17               | UART1: TX  |
    +------------------+------------+------------------+------------+
-   | 18               | \-         | 18               | \-         |
+   | 18               | UART2: RX  | 18               | \-         |
    +------------------+------------+------------------+------------+
-   | 19               | \-         | 19               | \-         |
+   | 19               | UART2: TX  | 19               | \-         |
    +------------------+------------+------------------+------------+
    | 20               | \-         | 20               | \-         |
    +------------------+------------+------------------+------------+
@@ -1119,7 +1121,7 @@ UART
 
 UART, Universal Asynchronous Receiver-Transmitter, features are listed as below.
 
-- HBirdv2 SoC contains two UART modules
+- HBirdv2 SoC contains three UART modules
 - Fully programmable serial interface characteristics
 
   - Even, odd or no-parity bit generation/detection
@@ -1157,7 +1159,7 @@ The registers of UART module are listed in the table below.
    +---------------+----------------+-----------------------------------+
 
 .. note::
-   - UART0 base address is 0x1001_3000, UART1 base address is 0x1002_3000.
+   - UART0 base address is 0x1001_3000, UART1 base address is 0x1002_3000, UART2 base address is 0x1003_3000.
    - All UART registers are 32-bit.
    - UART_RBR is read-only register, UART_THR is write-only register, UART_DLL is readable and writable register, 
      these three registers share the same access address. If access UART_DLL register, DLAB field of UART_LCR register should be set.
@@ -1381,7 +1383,7 @@ PWM, Pulse-Width Modulation. HBirdv2 SoC has one PWM module, which contains 4 Ti
 - Configurable counting mode for each Timer.
 - Interrupt generation (configurable interrupt source)
 
-The registers of UART module are listed in the table below.
+The registers of PWM module are listed in the table below.
 
 .. _table_ips_54:
 

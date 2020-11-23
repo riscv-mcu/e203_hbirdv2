@@ -9,6 +9,8 @@ Appendix
 
 * **Nuclei RISCV Tools Download**: https://nucleisys.com/download.php
 
+* **Nuclei Development Board**: https://nucleisys.com/developboard.php
+
 * **Nuclei riscv-openocd**: https://github.com/riscv-mcu/riscv-openocd
 
 * **Nuclei riscv-binutils-gdb**: https://github.com/riscv-mcu/riscv-binutils-gdb
@@ -22,3 +24,5 @@ Appendix
 * **Nuclei RISC-V IP Products**: https://www.nucleisys.com/product.php
 
 * **RISC-V MCU Community Website**: http://www.rvmcu.com/
+
+* **Nuclei RV University Program**: https://www.nucleisys.com/campus.php

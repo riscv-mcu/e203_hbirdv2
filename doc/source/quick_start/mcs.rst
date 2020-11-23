@@ -7,10 +7,11 @@ This chapter will introduce how to generate mcs file for Nuclei ddr200t developm
 
 After HBirdv2 E203 SoC is implemented on the FPGA subsystem of Nuclei ddr200t development board, we can develop embedded applications with it, just like with a real MCU chip.
 
-Before starting the process of MCS generation, you should make sure that your environment is ready, which means e203_hbirdv2 project in your working machine. About environmnet setting, please refer to :ref:`Get ready <get_ready>`.
+Before starting the process of MCS generation, you should make sure that your environment is ready, which means e203_hbirdv2 project is ready in your working machine. About environmnet setting, please refer to :ref:`Get ready <get_ready>`.
 
 .. note::
-   About the details of Nuclei ddr200t development board, please refer to .
+   - Nuclei ddr200t and mcu200t development boards could be used to support HBirdv2 E203 SoC development, here we just take Nuclei ddr200t development board as an example to introduce the development process. For Nuclei mcu200t development board, the development process is similar. 
+   - About the details of Nuclei ddr200t and mcu200t development boards, please refer to `Nuclei Development Board <https://www.nucleisys.com/developboard.php>`__.
 
 
 FPGA MCS generation
@@ -22,7 +23,7 @@ FPGA MCS generation
 
    cd <your_e203_dir>/fpga
    
-   make install
+   make install FPGA_NAME=ddr200t
         
 .. note::
    After running above commands, a folder named *install* will be created under *<your_e203_dir>/fpga* directory, and all RTL files needed to generate FPGA bitstream file are loacted in *install/rtl* folder.
@@ -31,7 +32,7 @@ FPGA MCS generation
 
 .. code-block:: shell
 
-   make bit
+   make bit FPGA_NAME=ddr200t
 
 .. note::
    Since the FPGA chip used in Nuclei ddr200t development board is Xilinx FPGA, so make sure that Vivado is installed in your machine before running above command.
@@ -40,7 +41,7 @@ FPGA MCS generation
 
 .. code-block:: shell
 
-   make mcs
+   make mcs FPGA_NAME=ddr200t
 
 .. note::
    If above steps run successfully, the FPGA MCS file will be generated under *<your_e203_dir>/fpga/ddr200t/obj* directory, named *system.mcs*.

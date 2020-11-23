@@ -232,6 +232,8 @@ Compile Hello World demo
      +-----------+------------+---------------+----------------------------------------------------------------------------------------+
      | BOARD     | ddr200t    | ddr200t       | Declare which Board is used in application during compiling                            |
      +           +------------+               +                                                                                        +
+     |           | mcu200t    |               |                                                                                        |
+     +           +------------+               +                                                                                        +
      |           | hbird_eval |               |                                                                                        |
      +-----------+------------+---------------+----------------------------------------------------------------------------------------+
      | CORE      | e203       | e203          | Declare which Core is used in application during comiling                              |
@@ -261,7 +263,7 @@ Run Hello World demo
 - Connect power supply and turn on the power switch on Nuclei dde200t development board.
 
 .. figure:: /asserts/medias/sdk_fig8.png
-   :width: 700
+   :width: 500
    :alt: sdk_fig8
 
    Connect with PC and power supply 
