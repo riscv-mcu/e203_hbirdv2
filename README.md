@@ -14,7 +14,7 @@ This's an upgraded version of the project Hummingbird E203 maintained in [SI-RIS
 
 In this new version, we have following updates.
 * Add NICE(Nuclei Instruction Co-unit Extension) for E203 core, so user could create customized HW co-units with E203 core easily.
-* Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in System Verilog language, so it's easy for user to understand. 
+* Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in Verilog language, so it's easy for user to understand. 
 * Add new development boards(Nuclei ddr200t and mcu200t) support for Hummingbirdv2 SoC. 
 
 **Welcome to visit https://github.com/riscv-mcu/hbird-sdk/ to use software development kit for the Hummingbird E203.**
@@ -71,6 +71,16 @@ Release History
   - The main purpose of this open-sourced core is to be used by students/university/research/
     and entry-level-beginners, hence, the commercial quality (bug-free) and service of this core
     is not not not warranted!!! 
+
+#### Release 0.2.1, Feb 26, 2021
+
+This is `release 0.2.1` of Hummingbirdv2.
+
++ Hbirdv2 SoC
+  - Covert the peripheral IPs implemented in system verilog to verilog implementation.
+
++ SIM
+  - Add new simulation tool(iVerilog) and wave viewer(GTKWave) support for Hummingbirdv2 SoC
 
 #### Release 0.1.2, Nov 20, 2020
 
