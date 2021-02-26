@@ -1,8 +1,12 @@
 SIM_DIR     := ${PWD}
 RUN_DIR      := ${PWD}/run
+
 TESTNAME     := rv32ui-p-add 
 TESTCASE     := ${RUN_DIR}/../../riscv-tools/riscv-tests/isa/generated/${TESTNAME}
+
+SIM          := iverilog 
 DUMPWAVE     := 1
+
 CORE        := e203
 CFG         := ${CORE}_config
 
@@ -23,13 +27,13 @@ ${RUN_DIR}:
 	ln -s ${SIM_DIR}/bin/run.makefile ${RUN_DIR}/Makefile
 
 compile: ${RUN_DIR}
-	make compile RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
+	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
 
 wave: ${RUN_DIR}
-	make wave TESTCASE=${TESTCASE} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
+	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
 
 run_test: compile
-	make run DUMPWAVE=${DUMPWAVE} TESTCASE=${TESTCASE} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
+	make run DUMPWAVE=${DUMPWAVE} TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
 
 SELF_TESTS := $(patsubst %.dump,%,$(wildcard ${RUN_DIR}/../../riscv-tools/riscv-tests/isa/generated/rv32uc-p*.dump))
 ifeq ($(core_name),${E203})

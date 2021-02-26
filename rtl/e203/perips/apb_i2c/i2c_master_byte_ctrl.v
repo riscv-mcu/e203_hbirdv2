@@ -66,7 +66,7 @@
 //               Added headers.
 //
 
-`include "i2c_master_defines.sv"
+`include "i2c_master_defines.v"
 
 module i2c_master_byte_ctrl (
 	clk, nReset, ena, clk_cnt, start, stop, read, write, ack_in, din,

@@ -14,15 +14,24 @@ VTB_DIR      := ${RUN_DIR}/../install/tb
 TESTNAME     := $(notdir $(patsubst %.dump,%,${TESTCASE}.dump))
 TEST_RUNDIR  := ${TESTNAME}
 
-RTL_V_FILES		:= $(wildcard ${VSRC_DIR}/*/*.v ${VSRC_DIR}/*/*.sv ${VSRC_DIR}/*/*/*.v ${VSRC_DIR}/*/*/*.sv)
-TB_V_FILES		:= $(wildcard ${VTB_DIR}/*.v ${VTB_DIR}/*.sv)
+RTL_V_FILES		:= $(wildcard ${VSRC_DIR}/*/*.v ${VSRC_DIR}/*/*/*.v)
+TB_V_FILES		:= $(wildcard ${VTB_DIR}/*.v)
 
 # The following portion is depending on the EDA tools you are using, Please add them by yourself according to your EDA vendors
-SIM_TOOL      := #To-ADD: to add the simulatoin tool
+#To-ADD: to add the simulatoin tool
 SIM_TOOL      := vcs
-SIM_OPTIONS   := #To-ADD: to add the simulatoin tool options 
+
+#To-ADD: to add the simulatoin tool options 
+ifeq ($(SIM_TOOL),vcs)
 SIM_OPTIONS   := +v2k -sverilog -q +lint=all,noSVA-NSVU,noVCDE,noUI,noSVA-CE,noSVA-DIU  -debug_access+all -full64 -timescale=1ns/10ps
-SIM_OPTIONS   += +incdir+"${VSRC_DIR}/core/"+"${VSRC_DIR}/perips/"+"${VSRC_DIR}/perips/apb_i2c/" 
+SIM_OPTIONS   += +incdir+"${VSRC_DIR}/core/"+"${VSRC_DIR}/perips/"+"${VSRC_DIR}/perips/apb_i2c/"
+endif
+ifeq ($(SIM_TOOL),iverilog)
+SIM_OPTIONS   := -o vvp.exec -I "${VSRC_DIR}/core/" -I "${VSRC_DIR}/perips/" -I "${VSRC_DIR}/perips/apb_i2c/" -D DISABLE_SV_ASSERTION=1 -g2005-sv
+endif
+
+
+
 ifeq ($(SMIC130LL),1) 
 SIM_OPTIONS   += +define+SMIC130_LL
 endif
@@ -42,14 +51,31 @@ ifeq ($(GATE_SDF_MIN),1)
 SIM_OPTIONS   += +define+SIM_MIN
 endif
 
-SIM_EXEC      := #To-ADD: to add the simulatoin executable
+#To-ADD: to add the simulatoin executable
+ifeq ($(SIM_TOOL),vcs)
 SIM_EXEC      := ${RUN_DIR}/simv +ntb_random_seed_automatic
-# SIM_EXEC      := echo "Test Result Summary: PASS" # This is a fake run to just direct print PASS info to the log, the user need to actually replace it to the real EDA command
+endif
+ifeq ($(SIM_TOOL),iverilog)
+SIM_EXEC      := vvp ${RUN_DIR}/vvp.exec -lxt2	
+endif
 
-WAV_TOOL      := #To-ADD: to add the waveform tool
-WAV_TOOL      := verdi
-WAV_OPTIONS   := #To-ADD: to add the waveform tool options 
-WAV_OPTIONS   := +v2k -sverilog 
+
+#To-ADD: to add the waveform tool
+ifeq ($(SIM_TOOL),vcs)
+WAV_TOOL := verdi
+endif
+ifeq ($(SIM_TOOL),iverilog) 
+WAV_TOOL := gtkwave
+endif
+
+#To-ADD: to add the waveform tool options 
+ifeq ($(WAV_TOOL),verdi)
+WAV_OPTIONS   := +v2k -sverilog
+endif
+ifeq ($(WAV_TOOL),gtkwave)
+WAV_OPTIONS   := 
+endif
+
 ifeq ($(SMIC130LL),1) 
 WAV_OPTIONS   += +define+SMIC130_LL
 endif
@@ -59,13 +85,37 @@ endif
 ifeq ($(GATE_SDF),1) 
 WAV_OPTIONS   += +define+GATE_SDF
 endif
-WAV_PFIX      := #To-ADD: to add the waveform file postfix
-WAV_PFIX      := fsdb
+
+
+#To-ADD: to add the include dir
+ifeq ($(WAV_TOOL),verdi)
+WAV_INC      := +incdir+"${VSRC_DIR}/core/"+"${VSRC_DIR}/perips/"+"${VSRC_DIR}/perips/apb_i2c/"
+endif
+ifeq ($(WAV_TOOL),gtkwave)
+WAV_INC      := 
+endif
+
+#To-ADD: to add RTL and TB files
+ifeq ($(WAV_TOOL),verdi)
+WAV_RTL      := ${RTL_V_FILES} ${TB_V_FILES}
+endif
+ifeq ($(WAV_TOOL),gtkwave)
+WAV_RTL      := 
+endif
+
+#To-ADD: to add the waveform file 
+ifeq ($(WAV_TOOL),verdi)
+WAV_FILE      := -ssf ${TEST_RUNDIR}/tb_top.fsdb
+endif
+ifeq ($(WAV_TOOL),gtkwave)
+WAV_FILE      := ${TEST_RUNDIR}/tb_top.vcd
+endif
 
 all: run
 
 compile.flg: ${RTL_V_FILES} ${TB_V_FILES}
 	@-rm -rf compile.flg
+	sed -i '1i\`define ${SIM_TOOL}\'  ${VTB_DIR}/tb_top.v
 	${SIM_TOOL} ${SIM_OPTIONS}  ${RTL_V_FILES} ${TB_V_FILES} ;
 	touch compile.flg
 
@@ -73,12 +123,12 @@ compile: compile.flg
 
 wave: 
 	gvim -p ${TESTCASE}.spike.log ${TESTCASE}.dump &
-	${WAV_TOOL} ${WAV_OPTIONS} +incdir+"${VSRC_DIR}/core/"+"${VSRC_DIR}/perips/"  ${RTL_V_FILES} ${TB_V_FILES} -ssf ${TEST_RUNDIR}/tb_top.${WAV_PFIX} & 
+	${WAV_TOOL} ${WAV_OPTIONS} ${WAV_INC} ${WAV_RTL} ${WAV_FILE}  & 
 
 run: compile
 	rm -rf ${TEST_RUNDIR}
 	mkdir ${TEST_RUNDIR}
-	cd ${TEST_RUNDIR}; ${SIM_EXEC} +DUMPWAVE=${DUMPWAVE} +TESTCASE=${TESTCASE} |& tee ${TESTNAME}.log; cd ${RUN_DIR}; 
+	cd ${TEST_RUNDIR}; ${SIM_EXEC} +DUMPWAVE=${DUMPWAVE} +TESTCASE=${TESTCASE} +SIM_TOOL=${SIM_TOOL} |& tee ${TESTNAME}.log; cd ${RUN_DIR}; 
 
 
 .PHONY: run clean all 

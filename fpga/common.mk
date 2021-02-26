@@ -22,7 +22,7 @@ install:
 
 EXTRA_FPGA_VSRCS := 
 verilog := $(wildcard ${INSTALL_RTL}/*/*.v)
-verilog += $(wildcard ${INSTALL_RTL}/*/*/*.sv)
+verilog += $(wildcard ${INSTALL_RTL}/*/*/*.v)
 verilog += $(wildcard ${INSTALL_RTL}/*.v)
 
 

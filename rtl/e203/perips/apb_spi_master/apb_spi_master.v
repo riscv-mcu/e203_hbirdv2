@@ -23,133 +23,123 @@ module apb_spi_master
     parameter APB_ADDR_WIDTH = 12  //APB slaves are 4KB by default
 )
 (
-    input  logic                      HCLK,
-    input  logic                      HRESETn,
-    input  logic [APB_ADDR_WIDTH-1:0] PADDR,
-    input  logic               [31:0] PWDATA,
-    input  logic                      PWRITE,
-    input  logic                      PSEL,
-    input  logic                      PENABLE,
-    output logic               [31:0] PRDATA,
-    output logic                      PREADY,
-    output logic                      PSLVERR,
+    input  wire                        HCLK,
+    input  wire                        HRESETn,
+    input  wire [APB_ADDR_WIDTH - 1:0] PADDR,
+    input  wire [31:0]                 PWDATA,
+    input  wire                        PWRITE,
+    input  wire                        PSEL,
+    input  wire                        PENABLE,
+    output wire [31:0]                 PRDATA,
+    output wire                        PREADY,
+    output wire                        PSLVERR,
 
-    output logic                      events_o,
-
-    output logic                      spi_clk,
-    output logic                      spi_csn0,
-    output logic                      spi_csn1,
-    output logic                      spi_csn2,
-    output logic                      spi_csn3,
-    output logic                      spi_sdo0,
-    output logic                      spi_sdo1,
-    output logic                      spi_sdo2,
-    output logic                      spi_sdo3,
-    output logic                      spi_oe0,
-    output logic                      spi_oe1,
-    output logic                      spi_oe2,
-    output logic                      spi_oe3,
-    input  logic                      spi_sdi0,
-    input  logic                      spi_sdi1,
-    input  logic                      spi_sdi2,
-    input  logic                      spi_sdi3
+    output wire                        events_o,
+    
+    output wire                        spi_clk,
+    output wire                        spi_csn0,
+    output wire                        spi_csn1,
+    output wire                        spi_csn2,
+    output wire                        spi_csn3,
+    output wire                        spi_sdo0,
+    output wire                        spi_sdo1,
+    output wire                        spi_sdo2,
+    output wire                        spi_sdo3,
+    output reg                         spi_oe0,
+    output reg                         spi_oe1,
+    output reg                         spi_oe2,
+    output reg                         spi_oe3,
+    input  wire                        spi_sdi0,
+    input  wire                        spi_sdi1,
+    input  wire                        spi_sdi2,
+    input  wire                        spi_sdi3
 );
-
 
     localparam LOG_BUFFER_DEPTH = `log2(BUFFER_DEPTH);
 
-    logic   [7:0] spi_clk_div;
-    logic         spi_clk_div_valid;
-    logic  [31:0] spi_status;
-    logic  [31:0] spi_addr;
-    logic   [5:0] spi_addr_len;
-    logic  [31:0] spi_cmd;
-    logic   [5:0] spi_cmd_len;
-    logic  [15:0] spi_data_len;
-    logic  [15:0] spi_dummy_rd;
-    logic  [15:0] spi_dummy_wr;
-    logic         spi_swrst;
-    logic         spi_rd;
-    logic         spi_wr;
-    logic         spi_qrd;
-    logic         spi_qwr;
-    logic   [3:0] spi_csreg;
-    logic  [31:0] spi_data_tx;
-    logic         spi_data_tx_valid;
-    logic         spi_data_tx_ready;
-    logic  [31:0] spi_data_rx;
-    logic         spi_data_rx_valid;
-    logic         spi_data_rx_ready;
-    logic   [6:0] spi_ctrl_status;
-    logic  [31:0] spi_ctrl_data_tx;
-    logic         spi_ctrl_data_tx_valid;
-    logic         spi_ctrl_data_tx_ready;
-    logic  [31:0] spi_ctrl_data_rx;
-    logic         spi_ctrl_data_rx_valid;
-    logic         spi_ctrl_data_rx_ready;
+    wire [7:0]  spi_clk_div;
+    wire        spi_clk_div_valid;
+    wire [31:0] spi_status;
+    wire [31:0] spi_addr;
+    wire [5:0]  spi_addr_len;
+    wire [31:0] spi_cmd;
+    wire [5:0]  spi_cmd_len;
+    wire [15:0] spi_data_len;
+    wire [15:0] spi_dummy_rd;
+    wire [15:0] spi_dummy_wr;
+    wire        spi_swrst;
+    wire        spi_rd;
+    wire        spi_wr;
+    wire        spi_qrd;
+    wire        spi_qwr;
+    wire [3:0]  spi_csreg;
+    wire [31:0] spi_data_tx;
+    wire        spi_data_tx_valid;
+    wire        spi_data_tx_ready;
+    wire [31:0] spi_data_rx;
+    wire        spi_data_rx_valid;
+    wire        spi_data_rx_ready;
+    wire [6:0]  spi_ctrl_status;
+    wire [31:0] spi_ctrl_data_tx;
+    wire        spi_ctrl_data_tx_valid;
+    wire        spi_ctrl_data_tx_ready;
+    wire [31:0] spi_ctrl_data_rx;
+    wire        spi_ctrl_data_rx_valid;
+    wire        spi_ctrl_data_rx_ready;
 
-    logic   [1:0] spi_mode;
+    wire [1:0]  spi_mode;
 
-    logic         s_eot;
+    wire        s_eot;
 
-    logic [LOG_BUFFER_DEPTH:0] elements_tx;
-    logic [LOG_BUFFER_DEPTH:0] elements_rx;
+    wire [LOG_BUFFER_DEPTH:0] elements_tx;
+    wire [LOG_BUFFER_DEPTH:0] elements_rx;
 
-    logic [LOG_BUFFER_DEPTH:0] s_th_tx;
-    logic [LOG_BUFFER_DEPTH:0] s_th_rx;
+    wire [LOG_BUFFER_DEPTH:0] s_th_tx;
+    wire [LOG_BUFFER_DEPTH:0] s_th_rx;
 
-    logic                      s_rise_int_tx;
-    logic                      s_rise_int_rx;
-
-    logic                      s_int_tx;
-    logic                      s_int_rx;
-
-    logic                      s_int_en;
-
-    logic [31:0]               s_int_status;
+    wire                      s_rise_int_tx;
+    wire                      s_rise_int_rx;
+    wire                      s_int_tx;
+    wire                      s_int_rx;
+    wire                      s_int_en;
+    wire [31:0]               s_int_status;
 
 
-    localparam FILL_BITS = 7-LOG_BUFFER_DEPTH;
-    
-    assign spi_status = {{FILL_BITS{1'b0}},elements_tx,{FILL_BITS{1'b0}},elements_rx,9'h0,spi_ctrl_status};
+    localparam FILL_BITS = 7 - LOG_BUFFER_DEPTH;
+
+    assign spi_status = {{FILL_BITS {1'b0}}, elements_tx, {FILL_BITS {1'b0}}, elements_rx, 9'h000, spi_ctrl_status};
 
     assign s_rise_int_tx = s_int_en & (elements_tx < s_th_tx);
     assign s_rise_int_rx = s_int_en & (elements_rx > s_th_rx);
-
+    
     assign events_o = s_rise_int_tx | s_rise_int_rx;
     assign s_int_status = {s_rise_int_rx, s_rise_int_tx};
-
-    always_comb
-    begin
+    
+    always @(*) begin
         spi_oe0 = 1'b0;
         spi_oe1 = 1'b0;
         spi_oe2 = 1'b0;
         spi_oe3 = 1'b0;
 
-        case(spi_mode)
-        `SPI_STD:
-        begin
-            spi_oe0 = 1'b1;
-            spi_oe1 = 1'b0;
-            spi_oe2 = 1'b0;
-            spi_oe3 = 1'b0;
-        end
-
-        `SPI_QUAD_TX:
-        begin
-	    spi_oe0 = 1'b1;
-            spi_oe1 = 1'b1;
-            spi_oe2 = 1'b1;
-            spi_oe3 = 1'b1;
-        end
-
-        `SPI_QUAD_RX :
-        begin
-	    spi_oe0 = 1'b0;
-            spi_oe1 = 1'b0;
-            spi_oe2 = 1'b0;
-            spi_oe3 = 1'b0;
-        end
+        case (spi_mode)
+            `SPI_STD: begin
+                spi_oe0 = 1'b1;
+                spi_oe1 = 1'b0;
+                spi_oe2 = 1'b0;
+                spi_oe3 = 1'b0;
+            end
+            `SPI_QUAD_TX: begin
+                spi_oe0 = 1'b1;
+                spi_oe1 = 1'b1;
+                spi_oe2 = 1'b1;
+                spi_oe3 = 1'b1;
+            end
+            `SPI_QUAD_RX: begin
+                spi_oe0 = 1'b0;
+                spi_oe1 = 1'b0;
+                spi_oe2 = 1'b0;
+                spi_oe3 = 1'b0;
+            end
         endcase
     end
 

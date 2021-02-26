@@ -134,7 +134,7 @@
 // Tbuf        4.7us            1.3us   Bus free time between a stop and start condition
 //
 
-`include "i2c_master_defines.sv"
+`include "i2c_master_defines.v"
 
 module i2c_master_bit_ctrl
 (

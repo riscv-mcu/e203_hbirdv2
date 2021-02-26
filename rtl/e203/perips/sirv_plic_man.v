@@ -71,8 +71,8 @@ localparam PLIC_PEND_ARRAY = (((PLIC_IRQ_NUM-1)/32) + 1);
  wire [PLIC_IRQ_NUM-1:0]  irq_i_gated_ready;
  wire [PLIC_IRQ_NUM-1:0]  irq_i_gated_hsked;
 
- reg [PLIC_IRQ_NUM-1:0]  icb_claim_irq;
- reg [PLIC_IRQ_NUM-1:0]  icb_complete_irq;
+ wire [PLIC_IRQ_NUM-1:0]  icb_claim_irq;
+ wire [PLIC_IRQ_NUM-1:0]  icb_complete_irq;
 
  wire irq_o;
 
@@ -509,16 +509,11 @@ localparam PLIC_PEND_ARRAY = (((PLIC_IRQ_NUM-1)/32) + 1);
    //
    for(i=0; i<PLIC_IRQ_NUM;i=i+1) begin: claim_complete_gen//{
 
-     always @* begin:claim_complete//{ 
-         icb_claim_irq   [i] = 1'b0;
-         icb_complete_irq[i] = 1'b0;
-
                                        // The read data (claimed ID) is equal to the interrupt source ID
-         icb_claim_irq   [i] = icb_claim_irq[i] | ((rsp_rdata == i) & icb_cmd_sel_clam & icb_cmd_rd_hsked);
-                                       // The write data (complete ID) is equal to the interrupt source ID
-         icb_complete_irq[i] = icb_complete_irq[i] | ((icb_cmd_wdata[PLIC_IRQ_NUM_LOG2-1:0] == i) & icb_cmd_sel_clam & icb_cmd_wr_hsked);
+       assign icb_claim_irq   [i] =  (rsp_rdata == i) & icb_cmd_sel_clam & icb_cmd_rd_hsked;
+                                      // The write data (complete ID) is equal to the interrupt source ID
+       assign icb_complete_irq[i] =  (icb_cmd_wdata[PLIC_IRQ_NUM_LOG2-1:0] == i) & icb_cmd_sel_clam & icb_cmd_wr_hsked;
 
-     end//}
 
    end//}
    endgenerate

@@ -16,85 +16,74 @@ module uart_interrupt
     parameter RX_FIFO_DEPTH = 32
 )
 (
-    input  logic                      clk_i,
-    input  logic                      rstn_i,
+    input  wire                           clk_i,
+    input  wire                           rstn_i,
 
     // registers
-    input  logic [2:0]                IER_i, // interrupt enable register
+    input  wire [2:0]                     IER_i,             // interrupt enable register
 
     // control logic
-    input  logic                      error_i,
-    input  logic [$clog2(RX_FIFO_DEPTH):0]    rx_elements_i,
-    input  logic [$clog2(TX_FIFO_DEPTH):0]    tx_elements_i,
-    input  logic [1:0]                trigger_level_i,
+    input  wire                           error_i,
+    input  wire [$clog2(RX_FIFO_DEPTH):0] rx_elements_i,
+    input  wire [$clog2(TX_FIFO_DEPTH):0] tx_elements_i,
+    input  wire [1:0]                     trigger_level_i,
 
-    input  logic [3:0]                clr_int_i, // one hot
+    input  wire [3:0]                     clr_int_i,         // one hot
 
-    output logic                      interrupt_o,
-    output logic [3:0]                IIR_o
+    output wire                           interrupt_o,
+    output wire [3:0]                     IIR_o
 );
 
-    logic [3:0] iir_n, iir_q;
-    logic trigger_level_reached;
+    reg [3:0] iir_n;
+    reg [3:0] iir_q;
+    reg trigger_level_reached;
 
-    always_comb
-    begin
+    always @(*) begin
         trigger_level_reached = 1'b0;
         case (trigger_level_i)
             2'b00:
                 if ($unsigned(rx_elements_i) == 1)
-                    trigger_level_reached = 1'b1;
+            	    trigger_level_reached = 1'b1;
             2'b01:
                 if ($unsigned(rx_elements_i) == 4)
-                    trigger_level_reached = 1'b1;
+            	    trigger_level_reached = 1'b1;
             2'b10:
                 if ($unsigned(rx_elements_i) == 8)
-                    trigger_level_reached = 1'b1;
+            	    trigger_level_reached = 1'b1;
             2'b11:
                 if ($unsigned(rx_elements_i) == 14)
-                    trigger_level_reached = 1'b1;
+            	    trigger_level_reached = 1'b1;
         endcase
     end
 
-    always_comb
-    begin
 
-        if (clr_int_i == 4'b0)
-	begin
+    always @(*) begin
+        if (clr_int_i == 4'b0) begin
             // Receive data parity error
             if (IER_i[2] & error_i)
-                iir_n = 4'b1100;
+            	iir_n = 4'b1100;
             // Trigger level reached in FIFO mode
             else if (IER_i[0] & trigger_level_reached)
-                iir_n = 4'b1000;
+            	iir_n = 4'b1000;
             // Transmitter holding register empty
-            else if (IER_i[1] & tx_elements_i == 0)
-                iir_n = 4'b0100;
-	    else
-		iir_n = iir_q;
+            else if (IER_i[1] & (tx_elements_i == 0))
+            	iir_n = 4'b0100;
+            else
+            	iir_n = iir_q;
+        end else begin
+            iir_n = iir_q & ~clr_int_i;
         end
-        else
-	begin
-            iir_n = iir_q & ~(clr_int_i);
-	end
-
     end
 
 
-    always_ff @(posedge clk_i, negedge rstn_i)
-    begin
+    always @(posedge clk_i or negedge rstn_i) begin
         if (~rstn_i)
-        begin
-            iir_q <= 4'b0001;
-        end
+       	    iir_q <= 4'b0001;
         else
-        begin
-            iir_q <= iir_n;
-        end
+       	    iir_q <= iir_n;
     end
 
     assign IIR_o = iir_q;
     assign interrupt_o = ~iir_q[0];
 
 endmodule
-
