@@ -99,18 +99,31 @@ Run simulation tests
 
    cd <your_e203_dir>/vsim
    
+   make clean
+
    make install
         
-   make compile 
+   // For VCS:
+   make compile SIM=vcs
+
+   // For iVerilog:
+   make compile SIM=iverilog 
 
 .. note::
-   Since VCS tool is used in e230_hbirdv2 makefile as default, so make sure that VCS tool is installed in your machine before running simulation test. 
+   1. Here we use iVerilog+GTKWave for simulation by default, and VCS+Verdi are also supported in simulation environment, you can choose the simulation tool by Makefile variable **SIM**. If you want to run simulation tests directly, please make sure these EDA tools are installed in your working environment. 
+
+   2. If you use iVerilog as simulation tool, please make sure the tool verison is 12.0.
+
 
 **2. Run default testcase**
 
 .. code-block:: shell
+   
+   // For VCS:
+   make run_test SIM=vcs
 
-   make run_test
+   // For iVerilog:
+   make run_test SIM=iverilog 
 
 .. _figure_sim_2:
 
@@ -125,7 +138,11 @@ Run simulation tests
 
 .. code-block:: shell
 
-   make regress_run
+   // For VCS:
+   make regress_run SIM=vcs
+
+   // For iVerilog:
+   make regress_run SIM=iverilog 
 
 
 **4. Check regression result**
