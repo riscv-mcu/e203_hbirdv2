@@ -3,6 +3,20 @@
 Changelog
 =========
 
+
+V0.2.1
+------
+
+This is release 0.2.1 of HBirdv2 E203 Core and SoC.
+
+- HBirdv2 SoC
+
+  - Covert the peripheral IPs implemented in system verilog to verilog implementation
+
+- SIM
+
+  - Add new simulation tool(iVerilog) and wave viewer(GTKWave) support for Hummingbirdv2 SoC
+
 V0.1.2
 ------
 
