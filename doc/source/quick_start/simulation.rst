@@ -133,8 +133,40 @@ Run simulation tests
 
    Default test simulation result
 
+**3. Show waveform**
 
-**3. Run regression**
+.. code-block:: shell
+
+   // Using Verdi:
+   make wave SIM=vcs
+
+   // Using GTKWave:
+   make wave SIM=iverilog 
+
+.. note::
+   The combination of simulation tool and waveform viewer is fixed in Makefile.
+
+   - VCS + Verdi
+   - iVerilog + GTKWave
+
+.. _figure_sim_3:
+
+.. figure:: /asserts/medias/sim_fig3.JPG
+   :width: 800
+   :alt: sim_fig3
+
+   Waveform with Verdi 
+
+.. _figure_sim_4:
+
+.. figure:: /asserts/medias/sim_fig4.JPG
+   :width: 800
+   :alt: sim_fig4
+
+   Waveform with GTKWave
+
+
+**4. Run regression**
 
 .. code-block:: shell
 
@@ -145,7 +177,7 @@ Run simulation tests
    make regress_run SIM=iverilog 
 
 
-**4. Check regression result**
+**5. Check regression result**
 
 .. code-block:: shell
 
@@ -153,11 +185,11 @@ Run simulation tests
 
 Regression result is printed as shown in the figure below.
 
-.. _figure_sim_3:
+.. _figure_sim_5:
 
-.. figure:: /asserts/medias/sim_fig3.png
+.. figure:: /asserts/medias/sim_fig5.png
    :width: 800
-   :alt: sim_fig3
+   :alt: sim_fig5
 
    Regression result
 
