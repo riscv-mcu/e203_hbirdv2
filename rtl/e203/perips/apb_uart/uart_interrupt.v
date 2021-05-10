@@ -78,12 +78,12 @@ module uart_interrupt
 
     always @(posedge clk_i or negedge rstn_i) begin
         if (~rstn_i)
-       	    iir_q <= 4'b0001;
+       	    iir_q <= 4'b0;
         else
        	    iir_q <= iir_n;
     end
 
     assign IIR_o = iir_q;
-    assign interrupt_o = ~iir_q[0];
+    assign interrupt_o = iir_q[2] | iir_q[3];
 
 endmodule
