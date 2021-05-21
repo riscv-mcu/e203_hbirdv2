@@ -1458,6 +1458,115 @@ module sirv_gnrl_icb2apb # (
 
 endmodule
 
+
+// ===========================================================================
+//
+// Description:
+//  The module to handle the simple-ICB bus to AHB-lite bus conversion 
+//
+// ===========================================================================
+module sirv_gnrl_icb2ahbl #(
+    parameter AW = 32,
+    parameter DW = 32 
+) (
+
+  input              icb_cmd_valid,
+  output             icb_cmd_ready,
+  input              icb_cmd_read,
+  input  [AW-1:0]    icb_cmd_addr,
+  input  [DW-1:0]    icb_cmd_wdata,
+  input  [DW/8-1:0]  icb_cmd_wmask,
+  input  [1:0]       icb_cmd_size,
+  input              icb_cmd_lock,
+  input              icb_cmd_excl,
+  input  [1:0]       icb_cmd_burst, 
+  input  [1:0]       icb_cmd_beat, 
+
+  output             icb_rsp_valid, 
+  input              icb_rsp_ready, 
+  output             icb_rsp_err,
+  output             icb_rsp_excl_ok,
+  output [DW-1:0]    icb_rsp_rdata, 
+
+  output [1:0]       ahbl_htrans,   
+  output             ahbl_hwrite,   
+  output [AW-1:0]    ahbl_haddr,    
+  output [2:0]       ahbl_hsize,    
+  output             ahbl_hlock,   
+  output             ahbl_hexcl,   
+  output [2:0]       ahbl_hburst,   
+  output [DW-1:0]    ahbl_hwdata,   
+  output [3:0]       ahbl_hprot, 
+  output [1:0]       ahbl_hattri,
+  output [1:0]       ahbl_master,
+  input  [DW-1:0]    ahbl_hrdata,   
+  input  [1:0]       ahbl_hresp,    
+  input              ahbl_hresp_exok,    
+  input              ahbl_hready,   
+       
+  input              clk,          
+  input              rst_n         
+  );
+
+  wire ahbl_eff_trans = ahbl_hready & ahbl_htrans[1];
+
+  assign icb_cmd_ready  = ahbl_hready;
+  assign ahbl_htrans[1] = icb_cmd_valid;
+  assign ahbl_htrans[0] = 1'b0;
+
+  /////////////////////////////////////////////////////////////
+  // FSM to check the AHB state
+  localparam FSM_W  = 2;
+  localparam STA_AR = 2'b00; 
+  localparam STA_WD = 2'b01;
+  localparam STA_RD = 2'b10;
+
+  wire[FSM_W-1:0] ahbl_sta_r;
+  wire[FSM_W-1:0] ahbl_sta_nxt;
+
+  wire to_wd_sta = ahbl_eff_trans & ahbl_hwrite;
+  wire to_rd_sta = ahbl_eff_trans & (~ahbl_hwrite);
+  wire to_ar_sta = ahbl_hready    & (~ahbl_htrans[1]);
+
+  wire  ahbl_sta_is_ar = (ahbl_sta_r == STA_AR);
+
+  // FSM Next state comb logics
+  assign ahbl_sta_nxt = ahbl_hready ?  (
+                               {FSM_W{to_ar_sta}} & (STA_AR) 
+                             | {FSM_W{to_wd_sta}} & (STA_WD)
+                             | {FSM_W{to_rd_sta}} & (STA_RD)
+                         ) : ahbl_sta_r;
+
+  // FSM sequential logics
+  sirv_gnrl_dffr #(FSM_W) ahbl_sta_dffr (ahbl_sta_nxt, ahbl_sta_r, clk, rst_n);
+  
+  wire [DW-1:0]ahbl_hwdata_r;
+  wire ahbl_hwdata_ena = to_wd_sta;
+  sirv_gnrl_dfflr #(DW) ahbl_hwdata_dfflr (ahbl_hwdata_ena, icb_cmd_wdata, ahbl_hwdata_r, clk, rst_n);
+
+  // AHB control signal generation
+
+  assign ahbl_hwrite = ~icb_cmd_read;    
+  assign ahbl_haddr  = icb_cmd_addr;    
+  assign ahbl_hsize  = {1'b0,icb_cmd_size};    
+  assign ahbl_hexcl  = icb_cmd_excl;    
+  assign ahbl_hwdata = ahbl_hwdata_r;
+
+  assign ahbl_hprot  = 4'b0;
+  assign ahbl_hattri = 2'b0;
+  assign ahbl_hlock  = 1'b0;
+  assign ahbl_master = 2'b0;
+  assign ahbl_hburst = 3'b0;
+
+  assign icb_rsp_valid     = ahbl_hready & (~ahbl_sta_is_ar);  
+  assign icb_rsp_rdata     = ahbl_hrdata;   
+  assign icb_rsp_err       = ahbl_hresp[0];
+  assign icb_rsp_excl_ok   = ahbl_hresp_exok;
+
+
+endmodule
+
+
 // ===========================================================================
 //
 // Description:
