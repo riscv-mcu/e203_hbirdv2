@@ -1,3 +1,4 @@
+docutils<0.17
 breathe==4.13.1
 commonmark==0.9.1
 recommonmark==0.6.0
