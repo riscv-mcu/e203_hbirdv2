@@ -1,0 +1,82 @@
+CAPI=2:
+
+name : e203_core
+
+filesets:
+  core:
+    files:
+      - rtl/e203/core/config.v : {is_include_file : true}
+      - rtl/e203/core/e203_defines.v : {is_include_file : true}
+      - rtl/e203/general/sirv_1cyc_sram_ctrl.v
+      - rtl/e203/general/sirv_gnrl_bufs.v
+      - rtl/e203/general/sirv_gnrl_dffs.v
+      - rtl/e203/general/sirv_gnrl_icbs.v
+      - rtl/e203/general/sirv_gnrl_ram.v
+      - rtl/e203/general/sirv_gnrl_xchecker.v
+      - rtl/e203/general/sirv_sim_ram.v
+      - rtl/e203/general/sirv_sram_icb_ctrl.v
+      - rtl/e203/core/e203_biu.v
+      - rtl/e203/core/e203_clk_ctrl.v
+      - rtl/e203/core/e203_clkgate.v
+      - rtl/e203/core/e203_core.v
+      - rtl/e203/core/e203_cpu_top.v
+      - rtl/e203/core/e203_cpu.v
+      - rtl/e203/core/e203_dtcm_ctrl.v
+      - rtl/e203/core/e203_dtcm_ram.v
+      - rtl/e203/core/e203_extend_csr.v
+      - rtl/e203/core/e203_exu_alu_bjp.v
+      - rtl/e203/core/e203_exu_alu_csrctrl.v
+      - rtl/e203/core/e203_exu_alu_dpath.v
+      - rtl/e203/core/e203_exu_alu_lsuagu.v
+      - rtl/e203/core/e203_exu_alu_muldiv.v
+      - rtl/e203/core/e203_exu_alu_rglr.v
+      - rtl/e203/core/e203_exu_alu.v
+      - rtl/e203/core/e203_exu_branchslv.v
+      - rtl/e203/core/e203_exu_commit.v
+      - rtl/e203/core/e203_exu_csr.v
+      - rtl/e203/core/e203_exu_decode.v
+      - rtl/e203/core/e203_exu_disp.v
+      - rtl/e203/core/e203_exu_excp.v
+      - rtl/e203/core/e203_exu_longpwbck.v
+      - rtl/e203/core/e203_exu_nice.v
+      - rtl/e203/core/e203_exu_oitf.v
+      - rtl/e203/core/e203_exu_regfile.v
+      - rtl/e203/core/e203_exu.v
+      - rtl/e203/core/e203_exu_wbck.v
+      - rtl/e203/core/e203_ifu_ifetch.v
+      - rtl/e203/core/e203_ifu_ift2icb.v
+      - rtl/e203/core/e203_ifu_litebpu.v
+      - rtl/e203/core/e203_ifu_minidec.v
+      - rtl/e203/core/e203_ifu.v
+      - rtl/e203/core/e203_irq_sync.v
+      - rtl/e203/core/e203_itcm_ctrl.v
+      - rtl/e203/core/e203_itcm_ram.v
+      - rtl/e203/core/e203_lsu_ctrl.v
+      - rtl/e203/core/e203_lsu.v
+      - rtl/e203/core/e203_reset_ctrl.v
+      - rtl/e203/core/e203_srams.v
+    file_type : verilogSource
+
+  nice:
+    files:
+      - rtl/e203/subsys/e203_subsys_nice_core.v
+    file_type : verilogSource
+
+targets:
+  default:
+    filesets : [core, nice]
+    parameters : [FPGA_SOURCE]
+    toplevel : ["is_toplevel? (e203_cpu_top)"]
+
+  lint:
+    default_tool : verilator
+    filesets : [core, nice]
+    tools:
+      verilator:
+        mode : lint-only
+    toplevel : e203_cpu_top
+
+parameters:
+  FPGA_SOURCE:
+    datatype  : bool
+    paramtype : vlogdefine
