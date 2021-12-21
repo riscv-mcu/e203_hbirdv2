@@ -6,10 +6,10 @@ set_property CONFIG_VOLTAGE 3.3 [current_design]
 
 
 set_property -dict { PACKAGE_PIN W19    IOSTANDARD LVCMOS33 } [get_ports { CLK100MHZ }]; 
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports {CLK100MHZ}];
+create_clock -add -name sys_clk_100M -period 10.00 -waveform {0 5} [get_ports {CLK100MHZ}];
 
 set_property -dict { PACKAGE_PIN Y18    IOSTANDARD LVCMOS33 } [get_ports { CLK32768KHZ }]; 
-create_clock -add -name sys_clk_pin -period 30517.58 -waveform {0 15258.79} [get_ports {CLK32768KHZ}];
+create_clock -add -name sys_clk_32768KHZ -period 30517.58 -waveform {0 15258.79} [get_ports {CLK32768KHZ}];
 
 
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets dut_io_pads_jtag_TCK_i_ival]
