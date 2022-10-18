@@ -1,5 +1,5 @@
 #include <stdio.h>
-int main(){
+int mian(){
  printf("hello Github!\n");
   return 0;
 }
