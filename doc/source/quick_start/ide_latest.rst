@@ -1,6 +1,6 @@
-.. _ide:
+.. _ide_latest:
 
-How to develop with Nuclei Studio(Ver.2020-09)
+How to develop with Nuclei Studio(Ver.2022-04)
 ==============================================
 
 This chapter will introduce how to run Hello World demo on HBirdv2 E203 SoC with Nuclei Studio.
@@ -15,49 +15,38 @@ Install Nuclei Studio
 
 Nuclei Studio could be downloaded from `Nuclei Download Center <https://nucleisys.com/download.php>`__.
 
-.. _figure_ide_1:
-
 .. figure:: /asserts/medias/ide_fig1.png
    :width: 800
-   :alt: ide_fig1
+   :alt: ide_latest_fig1
 
    Nuclei Studio download 
 
 .. note::
    
-   - Nuclei Studio is available in Windows and Linux, here just take Nuclei Studio(Ver.2020-09) for Windows as example.
-   - Nuclei Studio Ver.2022-04 and subsequent verison support new features(NPK), and the development flow is different with old verison, so if using Nuclei Stuido with 2022-04 or subsequent verison, please refer to :ref:`How to develop with Nuclei Studio(Ver.2022-04) <ide_latest>`.
+   - Nuclei Studio is available in Windows and Linux, here just take Nuclei Studio(Ver.2022-04) for Windows as example.
+   - Nuclei Studio Ver.2022-04 and subsequent verison support new features(NPK), and the development flow is different with old verison, so if using Nuclei Stuido wite 2021-02 or eariler verison, please refer to :ref:`How to develop with Nuclei Studio(Ver.2020-09) <ide>`.
 
-Etract the downloaded package, there are three parts, shown in the figure below.
 
-- NucleiStudio: Nuclei Studio IDE. 
-- SerialDebugging_Tool: Serial Debugging tool for Windows.
-- HBird_Driver.exe: HBird Debugger driver for Windows.
 
-.. figure:: /asserts/medias/ide_fig2.png
-   :width: 500
-   :alt: ide_fig2
-
-   Nuclei Studio package 
-
-Creat Hello World Project
+Install Hbird SDK Package
 #########################
+
 
 **1. Lanuch Nuclei Studio**
 
-- Doubel-click *eclipse.exe* under **NucleiStudio** directory, shown in the figure below.
+- Extract the downloaded Nuclei Studio package, doubel-click *NucleiStudio.exe* under **NucleiStudio** directory, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig3.png
+  .. figure:: /asserts/medias/ide_latest_fig2.png
      :width: 800
-     :alt: ide_fig3
+     :alt: ide_latest_fig2
   
-     Lanuch Nuclei Studio 
+     Lanuch Nuclei Studio
 
 - Then setting workspace in the next window, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig4.png
-     :width: 500
-     :alt: ide_fig4
+  .. figure:: /asserts/medias/ide_latest_fig3.png
+     :width: 600
+     :alt: ide_latest_fig3
   
      Set Workspace
 
@@ -65,69 +54,83 @@ Creat Hello World Project
 
      Workspace is the directory used to store the projects you will create, so you can choose any directory in your working PC as you like.
 
-- After workspace set, click the **Launch** button, Nuclei Studio will be launched, shown in the figure below.
+- After workspace set, click the "Launch" button, Nuclei Studio will be launched, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig5.png
+  .. figure:: /asserts/medias/ide_latest_fig4.png
      :width: 800
-     :alt: ide_fig5
+     :alt: ide_latest_fig4
   
      Welcome page
 
-**2. Creat project**
 
-- In the menu bar, select "File -> New -> C/C++ Project", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig6.png
+**2. Download Hbird SDK Package**
+
+- In the manu bar, select "RV-Tools -> Nuclei Package Management", shown in the figure below.
+
+  .. figure:: /asserts/medias/ide_latest_fig5.png
      :width: 800
-     :alt: ide_fig6
+     :alt: ide_latest_fig5
+  
+     Open Nuclei Package Management
+
+- In the pop-up window, select "sdk-hbird_sdk", then click "Download", shown in the figure below.
+
+  .. figure:: /asserts/medias/ide_latest_fig6.png
+     :width: 600
+     :alt: ide_latest_fig6
+  
+     Download Hbird SDK Package
+
+- After the package downloaded (shown as the figure below), you can close Nuclei Package Management Window.
+
+  .. figure:: /asserts/medias/ide_latest_fig7.png
+     :width: 600
+     :alt: ide_latest_fig7
+  
+     Hbird SDK Installed
+
+.. note::
+   
+   If Hbird SDK has been installed successfully, don't need to install it again.    
+
+Creat Hello World Project
+#########################
+
+- In the menu bar, select "File -> New -> New Nuclei RISC-V C/C++ Project", shown in the figure below.
+
+  .. figure:: /asserts/medias/ide_latest_fig8.png
+     :width: 800
+     :alt: ide_latest_fig8
   
      New Project
 
-- In the pop-up window, select "C Managed Build", then click "Next", shown in the figure below.
+- In the pop-up window, select "Nuclei DDR200T FPGA Evaluation Board sdk-hbird_sdk", then click "Next", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig7.png
-     :width: 400
-     :alt: ide_fig7
+  .. figure:: /asserts/medias/ide_latest_fig9.png
+     :width: 600
+     :alt: ide_latest_fig9
   
-     New Project Type
+     Select SoC and Development Board
 
-- In next window, input "HelloWorld" as **Project name**, and select "HBird SDK Project For hbirdv2 e203 SoC", then click "Next", shown in the figure below.
+  .. note::
 
-  .. figure:: /asserts/medias/ide_fig8.png
-     :width: 400
-     :alt: ide_fig8
-  
-     New Project Name
+     DDR200T and MCU200T FPGA Evaluation Boards are both supported in Hbird SDK for Hbirdv2 SoC, here just take DDR200T FPGA Evaluation Board for example.
 
-- In next window, "Board", "Core" and "DOWNLOAD", these project options could be set, here just keep them as default, and click "Next", shown in the figure below.
+- In next window, input "HelloWorld" as **Project name**, select "Helloworld" as **Project Example**, and about other options just keep them as default, finally click "Finish", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig9.png
-     :width: 400
-     :alt: ide_fig9
-  
-     New Project Options
-
-- In next window, select "baremetal helloworld" as **Project Example**, and about other options just keep them as default, then click "Next", shown in the figure below.
-
-  .. figure:: /asserts/medias/ide_fig10.png
+  .. figure:: /asserts/medias/ide_latest_fig10.png
      :width: 800
-     :alt: ide_fig10
+     :alt: ide_latest_fig10
   
-     New Project Example 
+     Select Project Example 
 
-- In the next steps, just keep them as default, then click "Next", finally click "Finish", shown in the figure below.
-
-  .. figure:: /asserts/medias/ide_fig11.png
-     :width: 800
-     :alt: ide_fig11
-  
-     Finish New Project Creat  
 
 - The created project is shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig12.png
+  .. figure:: /asserts/medias/ide_latest_fig11.png
      :width: 800
-     :alt: ide_fig12
+     :alt: ide_latest_fig11
   
      Created HelloWorld Project
 
@@ -143,17 +146,17 @@ Compile Hello World Project
 
 - In the menu bar, select "RV-Tools -> SDK Configuration Tools", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig13.png
+  .. figure:: /asserts/medias/ide_latest_fig12.png
      :width: 800
-     :alt: ide_fig13
+     :alt: ide_latest_fig12
 
      SDK Configuration Tools
   
 - In the pop-up window, you can choose the download mode as you need, then click "Save" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig14.png
+  .. figure:: /asserts/medias/ide_latest_fig13.png
      :width: 400
-     :alt: ide_fig14     
+     :alt: ide_latest_fig13     
 
      Compile Options
 
@@ -161,17 +164,17 @@ Compile Hello World Project
 
 - Click the "Build" button, the icon of this button is a hammer, shown in the figure below.
   
-  .. figure:: /asserts/medias/ide_fig15.png
+  .. figure:: /asserts/medias/ide_latest_fig14.png
      :width: 800
-     :alt: ide_fig15
+     :alt: ide_latest_fig14
 
      Build Project
 
 - After the project compiled successfully, it will shown as the figure below.
   
-  .. figure:: /asserts/medias/ide_fig16.png
+  .. figure:: /asserts/medias/ide_latest_fig15.png
      :width: 800
-     :alt: ide_fig16
+     :alt: ide_latest_fig15
 
      Build finished
 
@@ -200,33 +203,33 @@ Run Hello World Project
 
 - Open the created **Hello World** project, select "RV-Tools -> SDK Configuration Tools", choose "FLASH" as download mode, then click "Save" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig17.png
+  .. figure:: /asserts/medias/ide_latest_fig16.png
      :width: 400
-     :alt: ide_fig17     
+     :alt: ide_latest_fig16     
 
      Download Mode Setting 
 
 - Click the "Build" button, compiling the project.
 
-  .. figure:: /asserts/medias/ide_fig18.png
+  .. figure:: /asserts/medias/ide_latest_fig17.png
      :width: 800
-     :alt: ide_fig18     
+     :alt: ide_latest_fig17
 
      Build Project
 
 - In the menu bar, select "Run -> Run Configuration", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig19.png
+  .. figure:: /asserts/medias/ide_latest_fig18.png
      :width: 800
-     :alt: ide_fig19     
+     :alt: ide__latest_fig18     
 
      Open Run Configuration 
 
 - Double-click "GDB OpenOCD Debugging", then a set configuration file used for debug/download named "HelloWorld Debug" will be generated automatically, finally click "Run" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig20.png
+  .. figure:: /asserts/medias/ide_latest_fig19.png
      :width: 800
-     :alt: ide_fig20
+     :alt: ide_latest_fig19
 
      Run Configuration file
 
@@ -236,9 +239,9 @@ Run Hello World Project
 
 - After the program uploaded successfully, it will shown as the figure below.
 
-  .. figure:: /asserts/medias/ide_fig21.png
+  .. figure:: /asserts/medias/ide_latest_fig20.png
      :width: 800
-     :alt: ide_fig21
+     :alt: ide_latest_fig20
 
      Download Complete
 
@@ -246,17 +249,17 @@ Run Hello World Project
 
 - In the menu bar, select "Window -> Show View -> Terminal", then click the "Open a Terminal" button in **Terminal** window, the icon of this button is a monitor, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig22.png
+  .. figure:: /asserts/medias/ide_latest_fig21.png
      :width: 800
-     :alt: ide_fig22
+     :alt: ide_latest_fig21
 
      Open Terminal
 
 - In the pop-up window, choose "Serial Terminal", and set other parameters as following figure shown.
  
-  .. figure:: /asserts/medias/ide_fig23.png
+  .. figure:: /asserts/medias/ide_latest_fig22.png
      :width: 300
-     :alt: ide_fig23
+     :alt: ide_latest_fig22
 
      Config Terminal
 
@@ -266,9 +269,9 @@ Run Hello World Project
 
 - After Serial Terminal opened, you can press the **MCU_RESET** button on Nuclei ddr200t development board to reset MCU and the Hello World program will be executed again, the result is shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig24.png
+  .. figure:: /asserts/medias/ide_latest_fig23.png
      :width: 800
-     :alt: ide_fig24
+     :alt: ide_latest_fig23
 
      Hello World Demo Result 
 
@@ -299,17 +302,17 @@ Debug Hello World Project
 
 - In the menu bar, select "Run -> Debug Configuration", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig25.png
+  .. figure:: /asserts/medias/ide_latest_fig24.png
      :width: 800
-     :alt: ide_fig25
+     :alt: ide_latest_fig24
 
      Open Debug Configuration 
 
 - Double-click "GDB OpenOCD Debugging", then a set configuration file used for debug/download named "HelloWorld Debug" will be generated automatically, finally click "Debug" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig26.png
+  .. figure:: /asserts/medias/ide_latest_fig25.png
      :width: 800
-     :alt: ide_fig26
+     :alt: ide_latest_fig25
 
      Debug Configuration file
 
@@ -319,8 +322,8 @@ Debug Hello World Project
 
 - After entering debugging mode successfully, it will shown as the figure below.
 
-  .. figure:: /asserts/medias/ide_fig27.png
+  .. figure:: /asserts/medias/ide_latest_fig26.png
      :width: 800
-     :alt: ide_fig27
+     :alt: ide_latest_fig26
 
      Debugging Mode

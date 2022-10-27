@@ -10,5 +10,6 @@ Quick Start
    mcs.rst
    sdk.rst
    ide.rst
+   ide_latest.rst
    
    

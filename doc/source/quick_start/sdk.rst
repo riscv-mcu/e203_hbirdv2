@@ -273,15 +273,9 @@ Run Hello World demo
 
 - Windows
 
-  - Download HBird Debugger Driver for Windows from `Nuclei Development Boards <https://nucleisys.com/developboard.php>`__, as depicted in the figure below.
-  - After getting the package, double-click the **HBird_Driver.exe**.
-  - Since HBird Debugger has the functionality that “convert the UART to USB”, so if you have completed hardware connection as described in **Step1** and installed the driver successfully, then you will be able to see a USB Serial Port (e.g., COM8) show up in your Windows Device Manager.
+  - HBird Debugger could be used without any driver installation in Windows.
 
-  .. figure:: /asserts/medias/sdk_fig9.jpg
-     :width: 800
-     :alt: sdk_fig9
-  
-     Download HBird Debugger Driver for Windows
+  - Since HBird Debugger has the functionality that “convert the UART to USB”, so if you have completed hardware connection as described in **Step1**, then you will be able to see a USB Serial Port (e.g., COM8) show up in your Windows Device Manager.
 
 - Linux
 
