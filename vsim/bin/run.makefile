@@ -128,7 +128,7 @@ wave:
 run: compile
 	rm -rf ${TEST_RUNDIR}
 	mkdir ${TEST_RUNDIR}
-	cd ${TEST_RUNDIR}; ${SIM_EXEC} +DUMPWAVE=${DUMPWAVE} +TESTCASE=${TESTCASE} +SIM_TOOL=${SIM_TOOL} |& tee ${TESTNAME}.log; cd ${RUN_DIR}; 
+	cd ${TEST_RUNDIR}; ${SIM_EXEC} +DUMPWAVE=${DUMPWAVE} +TESTCASE=${TESTCASE} +SIM_TOOL=${SIM_TOOL} 2>&1 | tee ${TESTNAME}.log; cd ${RUN_DIR}; 
 
 
 .PHONY: run clean all 
