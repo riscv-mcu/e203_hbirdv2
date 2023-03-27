@@ -11,7 +11,7 @@ make install
 
 Compile
 -------
-make compile SIM=iverlog **or** make compile SIM=VCS
+make compile SIM=iverilog **or** make compile SIM=VCS
 
 Run Test
 --------
