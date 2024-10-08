@@ -57,7 +57,7 @@ FPGA MCS download
 
 .. _figure_mcs_1:
 
-.. figure:: /asserts/medias/mcs_fig1.png
+.. figure:: ../asserts/medias/mcs_fig1.png
    :width: 600
    :alt: mcs_fig1
 
@@ -68,7 +68,7 @@ FPGA MCS download
 
 .. _figure_mcs_2:
 
-.. figure:: /asserts/medias/mcs_fig2.png
+.. figure:: ../asserts/medias/mcs_fig2.png
    :width: 600
    :alt: mcs_fig2
 
@@ -79,7 +79,7 @@ FPGA MCS download
 
 .. _figure_mcs_3:
 
-.. figure:: /asserts/medias/mcs_fig3.png
+.. figure:: ../asserts/medias/mcs_fig3.png
    :width: 600
    :alt: mcs_fig3
 
@@ -89,7 +89,7 @@ FPGA MCS download
 
 .. _figure_mcs_4:
 
-.. figure:: /asserts/medias/mcs_fig4.png
+.. figure:: ../asserts/medias/mcs_fig4.png
    :width: 600
    :alt: mcs_fig4
 
@@ -99,7 +99,7 @@ FPGA MCS download
 
 .. _figure_mcs_5:
 
-.. figure:: /asserts/medias/mcs_fig5.png
+.. figure:: ../asserts/medias/mcs_fig5.png
    :width: 600
    :alt: mcs_fig5
 
@@ -112,7 +112,7 @@ FPGA MCS download
 
 .. _figure_mcs_6:
 
-.. figure:: /asserts/medias/mcs_fig6.png
+.. figure:: ../asserts/medias/mcs_fig6.png
    :width: 600
    :alt: mcs_fig6
 
@@ -122,7 +122,7 @@ FPGA MCS download
 
 .. _figure_mcs_7:
 
-.. figure:: /asserts/medias/mcs_fig7.png
+.. figure:: ../asserts/medias/mcs_fig7.png
    :width: 600
    :alt: mcs_fig7
 
@@ -131,7 +131,7 @@ FPGA MCS download
 
 .. _figure_mcs_8:
 
-.. figure:: /asserts/medias/mcs_fig8.png
+.. figure:: ../asserts/medias/mcs_fig8.png
    :width: 400
    :alt: mcs_fig8
 
