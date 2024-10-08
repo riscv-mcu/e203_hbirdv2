@@ -2106,7 +2106,7 @@ The PMU is implemented as a programmable sequencer to support customization and 
 
 .. _figure_ips_1:
 
-.. figure:: /asserts/medias/ips_fig1.png
+.. figure:: ../asserts/medias/ips_fig1.png
    :width: 600
    :alt: ips_fig1
 
