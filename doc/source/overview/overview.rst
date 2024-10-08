@@ -13,7 +13,7 @@ It's an upgraded version of the project Hummingbird E203 maintained in `SI-RISCV
 
 .. _figure_overview_1:
 
-.. figure:: /asserts/medias/overview_fig1.jpg
+.. figure:: ../asserts/medias/overview_fig1.jpg
    :width: 800
    :alt: overview_fig1
 
