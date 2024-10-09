@@ -17,7 +17,7 @@ Nuclei Studio could be downloaded from `Nuclei Download Center <https://nucleisy
 
 .. _figure_ide_1:
 
-.. figure:: /asserts/medias/ide_fig1.png
+.. figure:: ../asserts/medias/ide_fig1.png
    :width: 800
    :alt: ide_fig1
 
@@ -34,7 +34,7 @@ Etract the downloaded package, there are three parts, shown in the figure below.
 - SerialDebugging_Tool: Serial Debugging tool for Windows.
 - HBird_Driver.exe: HBird Debugger driver for Windows.
 
-.. figure:: /asserts/medias/ide_fig2.png
+.. figure:: ../asserts/medias/ide_fig2.png
    :width: 500
    :alt: ide_fig2
 
@@ -47,7 +47,7 @@ Creat Hello World Project
 
 - Doubel-click *eclipse.exe* under **NucleiStudio** directory, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig3.png
+  .. figure:: ../asserts/medias/ide_fig3.png
      :width: 800
      :alt: ide_fig3
   
@@ -55,7 +55,7 @@ Creat Hello World Project
 
 - Then setting workspace in the next window, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig4.png
+  .. figure:: ../asserts/medias/ide_fig4.png
      :width: 500
      :alt: ide_fig4
   
@@ -67,7 +67,7 @@ Creat Hello World Project
 
 - After workspace set, click the **Launch** button, Nuclei Studio will be launched, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig5.png
+  .. figure:: ../asserts/medias/ide_fig5.png
      :width: 800
      :alt: ide_fig5
   
@@ -77,7 +77,7 @@ Creat Hello World Project
 
 - In the menu bar, select "File -> New -> C/C++ Project", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig6.png
+  .. figure:: ../asserts/medias/ide_fig6.png
      :width: 800
      :alt: ide_fig6
   
@@ -85,7 +85,7 @@ Creat Hello World Project
 
 - In the pop-up window, select "C Managed Build", then click "Next", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig7.png
+  .. figure:: ../asserts/medias/ide_fig7.png
      :width: 400
      :alt: ide_fig7
   
@@ -93,7 +93,7 @@ Creat Hello World Project
 
 - In next window, input "HelloWorld" as **Project name**, and select "HBird SDK Project For hbirdv2 e203 SoC", then click "Next", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig8.png
+  .. figure:: ../asserts/medias/ide_fig8.png
      :width: 400
      :alt: ide_fig8
   
@@ -101,7 +101,7 @@ Creat Hello World Project
 
 - In next window, "Board", "Core" and "DOWNLOAD", these project options could be set, here just keep them as default, and click "Next", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig9.png
+  .. figure:: ../asserts/medias/ide_fig9.png
      :width: 400
      :alt: ide_fig9
   
@@ -109,7 +109,7 @@ Creat Hello World Project
 
 - In next window, select "baremetal helloworld" as **Project Example**, and about other options just keep them as default, then click "Next", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig10.png
+  .. figure:: ../asserts/medias/ide_fig10.png
      :width: 800
      :alt: ide_fig10
   
@@ -117,7 +117,7 @@ Creat Hello World Project
 
 - In the next steps, just keep them as default, then click "Next", finally click "Finish", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig11.png
+  .. figure:: ../asserts/medias/ide_fig11.png
      :width: 800
      :alt: ide_fig11
   
@@ -125,7 +125,7 @@ Creat Hello World Project
 
 - The created project is shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig12.png
+  .. figure:: ../asserts/medias/ide_fig12.png
      :width: 800
      :alt: ide_fig12
   
@@ -143,7 +143,7 @@ Compile Hello World Project
 
 - In the menu bar, select "RV-Tools -> SDK Configuration Tools", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig13.png
+  .. figure:: ../asserts/medias/ide_fig13.png
      :width: 800
      :alt: ide_fig13
 
@@ -151,7 +151,7 @@ Compile Hello World Project
   
 - In the pop-up window, you can choose the download mode as you need, then click "Save" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig14.png
+  .. figure:: ../asserts/medias/ide_fig14.png
      :width: 400
      :alt: ide_fig14     
 
@@ -161,7 +161,7 @@ Compile Hello World Project
 
 - Click the "Build" button, the icon of this button is a hammer, shown in the figure below.
   
-  .. figure:: /asserts/medias/ide_fig15.png
+  .. figure:: ../asserts/medias/ide_fig15.png
      :width: 800
      :alt: ide_fig15
 
@@ -169,7 +169,7 @@ Compile Hello World Project
 
 - After the project compiled successfully, it will shown as the figure below.
   
-  .. figure:: /asserts/medias/ide_fig16.png
+  .. figure:: ../asserts/medias/ide_fig16.png
      :width: 800
      :alt: ide_fig16
 
@@ -200,7 +200,7 @@ Run Hello World Project
 
 - Open the created **Hello World** project, select "RV-Tools -> SDK Configuration Tools", choose "FLASH" as download mode, then click "Save" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig17.png
+  .. figure:: ../asserts/medias/ide_fig17.png
      :width: 400
      :alt: ide_fig17     
 
@@ -208,7 +208,7 @@ Run Hello World Project
 
 - Click the "Build" button, compiling the project.
 
-  .. figure:: /asserts/medias/ide_fig18.png
+  .. figure:: ../asserts/medias/ide_fig18.png
      :width: 800
      :alt: ide_fig18     
 
@@ -216,7 +216,7 @@ Run Hello World Project
 
 - In the menu bar, select "Run -> Run Configuration", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig19.png
+  .. figure:: ../asserts/medias/ide_fig19.png
      :width: 800
      :alt: ide_fig19     
 
@@ -224,7 +224,7 @@ Run Hello World Project
 
 - Double-click "GDB OpenOCD Debugging", then a set configuration file used for debug/download named "HelloWorld Debug" will be generated automatically, finally click "Run" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig20.png
+  .. figure:: ../asserts/medias/ide_fig20.png
      :width: 800
      :alt: ide_fig20
 
@@ -236,7 +236,7 @@ Run Hello World Project
 
 - After the program uploaded successfully, it will shown as the figure below.
 
-  .. figure:: /asserts/medias/ide_fig21.png
+  .. figure:: ../asserts/medias/ide_fig21.png
      :width: 800
      :alt: ide_fig21
 
@@ -246,7 +246,7 @@ Run Hello World Project
 
 - In the menu bar, select "Window -> Show View -> Terminal", then click the "Open a Terminal" button in **Terminal** window, the icon of this button is a monitor, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig22.png
+  .. figure:: ../asserts/medias/ide_fig22.png
      :width: 800
      :alt: ide_fig22
 
@@ -254,7 +254,7 @@ Run Hello World Project
 
 - In the pop-up window, choose "Serial Terminal", and set other parameters as following figure shown.
  
-  .. figure:: /asserts/medias/ide_fig23.png
+  .. figure:: ../asserts/medias/ide_fig23.png
      :width: 300
      :alt: ide_fig23
 
@@ -266,7 +266,7 @@ Run Hello World Project
 
 - After Serial Terminal opened, you can press the **MCU_RESET** button on Nuclei ddr200t development board to reset MCU and the Hello World program will be executed again, the result is shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig24.png
+  .. figure:: ../asserts/medias/ide_fig24.png
      :width: 800
      :alt: ide_fig24
 
@@ -299,7 +299,7 @@ Debug Hello World Project
 
 - In the menu bar, select "Run -> Debug Configuration", shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig25.png
+  .. figure:: ../asserts/medias/ide_fig25.png
      :width: 800
      :alt: ide_fig25
 
@@ -307,7 +307,7 @@ Debug Hello World Project
 
 - Double-click "GDB OpenOCD Debugging", then a set configuration file used for debug/download named "HelloWorld Debug" will be generated automatically, finally click "Debug" button, shown in the figure below.
 
-  .. figure:: /asserts/medias/ide_fig26.png
+  .. figure:: ../asserts/medias/ide_fig26.png
      :width: 800
      :alt: ide_fig26
 
@@ -319,7 +319,7 @@ Debug Hello World Project
 
 - After entering debugging mode successfully, it will shown as the figure below.
 
-  .. figure:: /asserts/medias/ide_fig27.png
+  .. figure:: ../asserts/medias/ide_fig27.png
      :width: 800
      :alt: ide_fig27
 

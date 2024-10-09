@@ -14,7 +14,7 @@ The architecture of HBird SDK is shown in the figure below.
 
 .. _figure_sdk_0:
 
-.. figure:: /asserts/medias/sdk_fig0.png
+.. figure:: ../asserts/medias/sdk_fig0.png
    :width: 800
    :alt: sdk_fig0
 
@@ -43,7 +43,7 @@ Install and setup tools in Windows
 
   .. _figure_sdk_1:
   
-  .. figure:: /asserts/medias/sdk_fig1.png
+  .. figure:: ../asserts/medias/sdk_fig1.png
      :width: 750
      :alt: sdk_fig1
   
@@ -58,7 +58,7 @@ Create *gcc*, *openocd*, *build-tools* folders under *<nuclei-tools>* directory.
 
   .. _figure_sdk_2:
 
-  .. figure:: /asserts/medias/sdk_fig2.png
+  .. figure:: ../asserts/medias/sdk_fig2.png
      :width: 550
      :alt: sdk_fig2
 
@@ -68,7 +68,7 @@ Create *gcc*, *openocd*, *build-tools* folders under *<nuclei-tools>* directory.
 
   .. _figure_sdk_3:
 
-  .. figure:: /asserts/medias/sdk_fig3.png
+  .. figure:: ../asserts/medias/sdk_fig3.png
      :width: 550
      :alt: sdk_fig3
 
@@ -78,7 +78,7 @@ Create *gcc*, *openocd*, *build-tools* folders under *<nuclei-tools>* directory.
 
   .. _figure_sdk_4:
 
-  .. figure:: /asserts/medias/sdk_fig4.png
+  .. figure:: ../asserts/medias/sdk_fig4.png
      :width: 550
      :alt: sdk_fig4
 
@@ -102,7 +102,7 @@ Install and setup tools in Linux
 
   .. _figure_sdk_5:
   
-  .. figure:: /asserts/medias/sdk_fig5.png
+  .. figure:: ../asserts/medias/sdk_fig5.png
      :width: 800
      :alt: sdk_fig5
   
@@ -164,7 +164,7 @@ or
 
     .. _figure_sdk_6:
 
-    .. figure:: /asserts/medias/sdk_fig6.png
+    .. figure:: ../asserts/medias/sdk_fig6.png
        :width: 800
        :alt: sdk_fig6
 
@@ -193,7 +193,7 @@ or
 
     .. _figure_sdk_7:
 
-    .. figure:: /asserts/medias/sdk_fig7.png
+    .. figure:: ../asserts/medias/sdk_fig7.png
        :width: 800
        :alt: sdk_fig7
 
@@ -262,7 +262,7 @@ Run Hello World demo
 - Connect Nuclei ddr200t development board and your computer with HBird Debugger.
 - Connect power supply and turn on the power switch on Nuclei dde200t development board.
 
-.. figure:: /asserts/medias/sdk_fig8.png
+.. figure:: ../asserts/medias/sdk_fig8.png
    :width: 500
    :alt: sdk_fig8
 
@@ -348,7 +348,7 @@ The function of Hello World demo is to print some info in the screen of PC throu
 
 - After UART terminal opened, you can press the **MCU_RESET** button on Nuclei ddr200t development board to reset MCU and the Hello World program  will be executed again, the result is shown in the figure below.
 
-  .. figure:: /asserts/medias/sdk_fig10.png
+  .. figure:: ../asserts/medias/sdk_fig10.png
      :width: 700
      :alt: sdk_fig10
     
@@ -394,7 +394,7 @@ Debug Hello World demo
   
      load
   
-  .. figure:: /asserts/medias/sdk_fig11.jpg
+  .. figure:: ../asserts/medias/sdk_fig11.jpg
      :width: 800
      :alt: sdk_fig11
   
@@ -414,7 +414,7 @@ Debug Hello World demo
        
        info b
   
-    .. figure:: /asserts/medias/sdk_fig12.jpg
+    .. figure:: ../asserts/medias/sdk_fig12.jpg
        :width: 800
        :alt: sdk_fig12
     
@@ -428,7 +428,7 @@ Debug Hello World demo
        x 0x80000004
        x 0x80000008
   
-    .. figure:: /asserts/medias/sdk_fig13.jpg
+    .. figure:: ../asserts/medias/sdk_fig13.jpg
        :width: 800
        :alt: sdk_fig13
     
@@ -442,7 +442,7 @@ Debug Hello World demo
        info reg mstatus
        info reg csr768
   
-    .. figure:: /asserts/medias/sdk_fig14.jpg
+    .. figure:: ../asserts/medias/sdk_fig14.jpg
        :width: 800
        :alt: sdk_fig14
     
@@ -454,7 +454,7 @@ Debug Hello World demo
        
        continue
   
-    .. figure:: /asserts/medias/sdk_fig15.jpg
+    .. figure:: ../asserts/medias/sdk_fig15.jpg
        :width: 800
        :alt: sdk_fig15
     
@@ -466,7 +466,7 @@ Debug Hello World demo
        
        ni 
   
-    .. figure:: /asserts/medias/sdk_fig16.jpg
+    .. figure:: ../asserts/medias/sdk_fig16.jpg
        :width: 800
        :alt: sdk_fig16
     

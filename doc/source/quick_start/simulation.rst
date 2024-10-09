@@ -50,7 +50,7 @@ Compile self-test cases
 
   .. _figure_sim_1:
 
-  .. figure:: /asserts/medias/sim_fig1.png
+  .. figure:: ../asserts/medias/sim_fig1.png
      :width: 800
      :alt: sim_fig1
 
@@ -127,7 +127,7 @@ Run simulation tests
 
 .. _figure_sim_2:
 
-.. figure:: /asserts/medias/sim_fig2.png
+.. figure:: ../asserts/medias/sim_fig2.png
    :width: 800
    :alt: sim_fig2
 
@@ -151,7 +151,7 @@ Run simulation tests
 
 .. _figure_sim_3:
 
-.. figure:: /asserts/medias/sim_fig3.JPG
+.. figure:: ../asserts/medias/sim_fig3.JPG
    :width: 800
    :alt: sim_fig3
 
@@ -159,7 +159,7 @@ Run simulation tests
 
 .. _figure_sim_4:
 
-.. figure:: /asserts/medias/sim_fig4.JPG
+.. figure:: ../asserts/medias/sim_fig4.JPG
    :width: 800
    :alt: sim_fig4
 
@@ -187,7 +187,7 @@ Regression result is printed as shown in the figure below.
 
 .. _figure_sim_5:
 
-.. figure:: /asserts/medias/sim_fig5.png
+.. figure:: ../asserts/medias/sim_fig5.png
    :width: 800
    :alt: sim_fig5
 

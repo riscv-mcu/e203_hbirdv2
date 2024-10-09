@@ -24,7 +24,7 @@ The hierarchy of Hummingbirdv2 E203 core implementation is shown in the diagram 
 
 .. _figure_core_1:
 
-.. figure:: /asserts/medias/core_fig1.jpg
+.. figure:: ../asserts/medias/core_fig1.jpg
    :width: 600
    :alt: core_fig1
 
@@ -154,7 +154,7 @@ The pipeline structure of E203 core is shown in the diagram below.
 
 .. _figure_core_2:
 
-.. figure:: /asserts/medias/core_fig2.jpg
+.. figure:: ../asserts/medias/core_fig2.jpg
    :width: 600
    :alt: core_fig2
 
@@ -206,7 +206,7 @@ In E203 Core, user can use these 4 custom instruction groups (Custom-0, Custom-1
 
 .. _figure_core_3:
 
-.. figure:: /asserts/medias/core_fig3.jpg
+.. figure:: ../asserts/medias/core_fig3.jpg
    :width: 800
    :alt: core_fig3
 
@@ -337,7 +337,7 @@ Typical NICE Operation Examples
 
 .. _figure_core_4:
 
-.. figure:: /asserts/medias/core_fig4.png
+.. figure:: ../asserts/medias/core_fig4.png
    :width: 600
    :alt: core_fig4
 
@@ -345,7 +345,7 @@ Typical NICE Operation Examples
 
 .. _figure_core_5:
 
-.. figure:: /asserts/medias/core_fig5.png
+.. figure:: ../asserts/medias/core_fig5.png
    :width: 600
    :alt: core_fig5
 
@@ -353,7 +353,7 @@ Typical NICE Operation Examples
 
 .. _figure_core_6:
 
-.. figure:: /asserts/medias/core_fig6.png
+.. figure:: ../asserts/medias/core_fig6.png
    :width: 600
    :alt: core_fig6
 
