@@ -3,6 +3,11 @@ Hummingbirdv2 E203 Core and SoC
 
 [![Deploy Documentation](https://github.com/riscv-mcu/e203_hbirdv2/workflows/Deploy%20Documentation/badge.svg)](https://doc.nucleisys.com/hbirdv2)
 
+> [!NOTE]
+> **Hummingbird E603** is now available —— a 64-bit RISC-V core you can
+freely use for academic and non-commercial projects.  
+> Explore it here: [Nuclei-Software/e603_hbird](https://github.com/Nuclei-Software/e603_hbird)
+
 About
 -----
 
