@@ -69,7 +69,9 @@ WeChat Group
 ------------
 
 If you would like to join our WeChat group for discussion and support,
-please send a join request to: [qiujiandong@nucleisys.com](mailto:qiujiandong@nucleisys.com)
+please scan the following QR code:
+
+![wechat QR code](./pics/QR_code.png)
 
 Release History
 ---------------
