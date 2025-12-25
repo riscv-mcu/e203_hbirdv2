@@ -1,0 +1,359 @@
+# DMA Module Architecture Diagram
+# E203 HBird RISC-V SoC DMA Controller
+
+## System Overview
+
+```
++------------------+
+|    E203 CPU      |
+|   (RISC-V Core)  |
++------------------+
+         |
+         | CPU Bus (ICB)
+         |
++--------v-----------+
+|  Peripheral Bus    |
+|    (ICB 1-to-N)   |
++---+---+---+---+---+
+    |   |   |   |   |
+    |   |   |   |   +---> GPIO
+    |   |   |   +-------> UART
+    |   |   +-----------> QSPI
+    |   +---------------> ... (other peripherals)
+    |
+    +---> DMA Controller (Configuration Interface)
+              |
+              | Memory Access
+              |
+              v
++----------------------------+
+|      Memory Bus            |
+|    (with Arbiter)          |
++-------------+--------------+
+              |
+              v
++----------------------------+
+|      SRAM / Memory         |
++----------------------------+
+```
+
+## DMA Controller Internal Architecture
+
+```
++-----------------------------------------------------------------------+
+|                         DMA Controller                                |
+|  (e203_dma_ctrl.v)                                                   |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  +-----------------------+        +-----------------------------+    |
+|  |  ICB Slave Interface  |        |    Configuration Registers  |    |
+|  |   (CPU Config)        |<------>|                             |    |
+|  |                       |        |  - CSR  (0x00)              |    |
+|  |  - cmd_valid/ready    |        |  - SRC  (0x04)              |    |
+|  |  - cmd_addr           |        |  - DST  (0x08)              |    |
+|  |  - cmd_read/wdata     |        |  - CNT  (0x0C)              |    |
+|  |  - rsp_valid/ready    |        |                             |    |
+|  |  - rsp_rdata          |        +-------------+---------------+    |
+|  +-----------------------+                      |                     |
+|                                                 v                     |
+|                                    +---------------------------+      |
+|                                    |    DMA State Machine      |      |
+|                                    |                           |      |
+|                                    |  IDLE -> READ -> READ_RSP |      |
+|                                    |            |               |      |
+|                                    |            v               |      |
+|                                    |         WRITE -> WRITE_RSP|      |
+|                                    |            |               |      |
+|                                    |            v               |      |
+|                                    |          DONE -> IDLE     |      |
+|                                    |                           |      |
+|                                    +-------------+-------------+      |
+|                                                  |                     |
+|                                                  v                     |
+|  +-----------------------+        +-----------------------------+     |
+|  |  ICB Master Interface |<-------|     Control Logic           |     |
+|  |   (Memory Access)     |        |                             |     |
+|  |                       |        |  - Address generation       |     |
+|  |  - cmd_valid/ready    |        |  - Data buffering           |     |
+|  |  - cmd_addr           |        |  - Counter management       |     |
+|  |  - cmd_read/wdata     |        |                             |     |
+|  |  - rsp_valid/ready    |        +-----------------------------+     |
+|  |  - rsp_rdata          |                      |                     |
+|  +-----------+-----------+                      |                     |
+|              |                                  |                     |
+|              v                                  v                     |
+|  To Memory Bus                    +-----------------------------+     |
+|                                   |     Interrupt Logic         |     |
+|                                   |                             |     |
+|                                   |  - Generate IRQ on DONE     |     |
+|                                   |                             |     |
+|                                   +-------------+---------------+     |
+|                                                 |                     |
+|                                                 v                     |
+|                                              dma_irq (output)         |
+|                                                                       |
++-----------------------------------------------------------------------+
+```
+
+## Register Map Detail
+
+```
++--------+------------------------+------------------------------------------+
+| Offset | Register Name          | Description                              |
++--------+------------------------+------------------------------------------+
+| 0x00   | Control/Status (CSR)   | [0] START - Write 1 to start transfer   |
+|        |                        | [1] DONE  - Read 1 when complete        |
+|        |                        | [2] BUSY  - Read-only busy flag          |
+|        |                        | [3] ERROR - Read 1 if error occurred     |
++--------+------------------------+------------------------------------------+
+| 0x04   | Source Address (SRC)   | Source memory address (word-aligned)     |
++--------+------------------------+------------------------------------------+
+| 0x08   | Dest Address (DST)     | Destination address (word-aligned)       |
++--------+------------------------+------------------------------------------+
+| 0x0C   | Transfer Count (CNT)   | Number of 32-bit words to transfer       |
++--------+------------------------+------------------------------------------+
+```
+
+## DMA Transfer Flow
+
+```
+Step 1: Configuration Phase
++--------+
+|  CPU   |  Write SRC, DST, CNT registers
++---+----+
+    |
+    v
++---+----+
+|  DMA   |  Registers loaded
++--------+
+
+Step 2: Start Transfer
++--------+
+|  CPU   |  Write START bit to CSR
++---+----+
+    |
+    v
++---+----+
+|  DMA   |  State: IDLE -> READ
++--------+
+
+Step 3: Read-Write Cycle (repeated for each word)
++--------+     READ      +--------+
+|  DMA   | ----------->  | Memory |
++--------+               +---+----+
+    |                        |
+    | wait for response      |
+    |<-----------------------+
+    | (data in buffer)
+    |
+    |      WRITE       +--------+
+    +----------------> | Memory |
+    |                  +---+----+
+    |                      |
+    | wait for response    |
+    |<---------------------+
+    |
+    v
+  Increment counter
+  Check if done
+    |
+    +---> If more data: repeat
+    |
+    +---> If done: State -> DONE
+
+Step 4: Completion
++--------+
+|  DMA   |  Assert dma_irq, set DONE flag
++---+----+
+    |
+    v
++---+----+
+|  CPU   |  Read CSR, see DONE=1
++---+----+
+    |
+    v
++---+----+
+|  CPU   |  Write DONE=1 to clear flag
++--------+
+```
+
+## State Machine Transitions
+
+```
+             +------+
+             | IDLE |<---------------------------------+
+             +--+---+                                  |
+                |                                      |
+   START=1      |                                      |
+                v                                      |
+             +------+                                  |
+             | READ |                                  |
+             +--+---+                                  |
+                |                                      |
+   cmd_ready    |                                      |
+                v                                      |
+          +----------+                                 |
+          | READ_RSP |                                 |
+          +----+-----+                                 |
+               |                                       |
+   rsp_valid   |                                       |
+               v                                       |
+             +-------+                                 |
+             | WRITE |                                 |
+             +---+---+                                 |
+                 |                                     |
+   cmd_ready     |                                     |
+                 v                                     |
+          +----------+                                 |
+          | WRITE_RSP|                                 |
+          +----+-----+                                 |
+               |                                       |
+   rsp_valid   |                                       |
+               v                                       |
+          [Check Count]                                |
+               |                                       |
+               +---> count < CNT? ----> back to READ   |
+               |                                       |
+               +---> count >= CNT                      |
+                            |                          |
+                            v                          |
+                        +------+                       |
+                        | DONE |                       |
+                        +------+                       |
+                            |                          |
+                            +---> (next cycle) --------+
+```
+
+## Bus Transaction Timeline Example (4-word transfer)
+
+```
+Clock:    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+State:   IDLE READ R_RSP WRITE W_RSP READ R_RSP WRITE W_RSP READ R_RSP WRITE W_RSP READ...
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+Mem Cmd:  -   RD0   -    WR0  -    RD1  -    WR1  -    RD2  -    WR2  -    RD3  -    WR3
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+Mem Rsp:  -    -   RD0   -   WR0   -   RD1   -   WR1   -   RD2   -   WR2   -   RD3   -
+          |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+Counter:  0    0    0    0    1    1    1    1    2    2    2    2    3    3    3    3
+
+Note: Each word transfer takes 4 clock cycles (1 RD + 1 RD_RSP + 1 WR + 1 WR_RSP)
+```
+
+## Integration Example
+
+```
++-----------------------------------------------------------------------+
+|                         E203 Subsystem Main                           |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  +------------------+                    +------------------------+   |
+|  |   CPU Top        |                    |   DMA Controller       |   |
+|  |                  |                    |                        |   |
+|  |  - Instruction   |                    |  Config Interface (S)  |   |
+|  |  - Data Memory   |                    |  Memory Interface (M)  |   |
+|  +--------+---------+                    +------------+-----------+   |
+|           |                                           |               |
+|           | CPU ICB                                   | DMA ICB       |
+|           |                                           |               |
+|           v                                           v               |
+|  +------------------------+          +----------------------------------+
+|  |  Bus Arbiter           |<---------|  (Arbiter for shared access)    |
+|  |  (Priority: CPU > DMA) |          +----------------------------------+
+|  +----------+-------------+                                           |
+|             |                                                          |
+|             v                                                          |
+|  +--------------------+                                                |
+|  |   Bus Fabric       |                                                |
+|  |   (1-to-N)         |                                                |
+|  +--+-+-+-+-+-+-------+                                                |
+|     | | | | | |                                                        |
+|     | | | | | +---> DMA Config (0x10002000-0x10002FFF)               |
+|     | | | | +-----> GPIO                                               |
+|     | | | +-------> UART                                               |
+|     | | +---------> QSPI                                               |
+|     | +-----------> Memory                                             |
+|     +-------------> ...                                                |
+|                                                                        |
++-----------------------------------------------------------------------+
+```
+
+## Software Usage Flow
+
+```
+Application Code:
++-------------------+
+| Prepare buffers   |
+| (src, dst)        |
++--------+----------+
+         |
+         v
++-------------------+
+| dma_init()        |
+| - Clear flags     |
++--------+----------+
+         |
+         v
++-------------------+
+| dma_config()      |
+| - Set SRC, DST,   |
+|   CNT registers   |
++--------+----------+
+         |
+         v
++-------------------+
+| dma_start()       |
+| - Write START=1   |
++--------+----------+
+         |
+         v
++-------------------+
+| dma_wait_done()   |
+| - Poll DONE flag  |
+| OR                |
+| - Wait for IRQ    |
++--------+----------+
+         |
+         v
++-------------------+
+| Check status      |
+| - Check ERROR     |
++--------+----------+
+         |
+         v
++-------------------+
+| dma_clear_done()  |
+| - Write DONE=1    |
++--------+----------+
+         |
+         v
++-------------------+
+| Use transferred   |
+| data              |
++-------------------+
+```
+
+## Address Mapping in E203 SoC
+
+```
+Memory Map:
++----------------------------------+
+| 0x0000_0000 - 0x0000_FFFF       |  Debug Module
++----------------------------------+
+| 0x1000_0000 - 0x1000_0FFF       |  CLINT
++----------------------------------+
+| 0x1000_1000 - 0x1000_1FFF       |  PLIC
++----------------------------------+
+| 0x1000_2000 - 0x1000_2FFF       |  DMA Controller (NEW)
++----------------------------------+
+| 0x1001_2000 - 0x1001_2FFF       |  GPIO
++----------------------------------+
+| 0x1001_3000 - 0x1001_3FFF       |  UART
++----------------------------------+
+| 0x1001_4000 - 0x1001_4FFF       |  QSPI
++----------------------------------+
+| 0x8000_0000 - 0x8000_FFFF       |  ITCM (64KB)
++----------------------------------+
+| 0x9000_0000 - 0x9000_FFFF       |  DTCM (64KB)
++----------------------------------+
+```
