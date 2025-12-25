@@ -263,7 +263,7 @@ module tb_conv2d_dma();
           fc = out_col + kc;
           f_idx = feature_base + fr * FEATURE_W + fc;
           k_idx = kernel_base + kr * KERNEL_W + kc;
-          sum = sum + ($signed(sram[f_idx]) * $signed(sram[k_idx]));
+          sum = sum + (sram[f_idx] * sram[k_idx]);
         end
       end
       conv_compute = sum;
@@ -276,6 +276,7 @@ module tb_conv2d_dma();
   integer feature_offset, kernel_offset, temp_idx, output_offset;
   integer conv_result;
   integer error_count;
+  integer rand_val;
   
   initial begin
     // Initialize signals
@@ -311,7 +312,9 @@ module tb_conv2d_dma();
     // Initialize feature maps with random data (small values for easier debugging)
     $display("Initializing feature maps...");
     for (i = 0; i < FEATURE_H * FEATURE_W * FEATURE_C; i = i + 1) begin
-      sram[(FEATURE_BASE >> 2) + i] = $random % 10;  // Values 0-9
+      rand_val = $random;
+      if (rand_val < 0) rand_val = -rand_val;
+      sram[(FEATURE_BASE >> 2) + i] = (rand_val % 10);  // Values 0-9
     end
     
     // Display sample input feature maps
@@ -319,15 +322,24 @@ module tb_conv2d_dma();
     for (i = 0; i < 4; i = i + 1) begin
       $write("  ");
       for (j = 0; j < 4; j = j + 1) begin
-        $write("%2d ", $signed(sram[(FEATURE_BASE >> 2) + i * FEATURE_W + j]));
+        $write("%2d ", sram[(FEATURE_BASE >> 2) + i * FEATURE_W + j]);
       end
       $write("\n");
+    end
+    
+    // Debug: show a few raw values
+    $display("\nDebug - First 10 feature values:");
+    for (i = 0; i < 10; i = i + 1) begin
+      $display("  sram[%0d] = 0x%08h = %0d", (FEATURE_BASE >> 2) + i, 
+               sram[(FEATURE_BASE >> 2) + i], sram[(FEATURE_BASE >> 2) + i]);
     end
 
     // Initialize kernels with small values
     $display("\nInitializing kernels...");
     for (i = 0; i < KERNEL_H * KERNEL_W * FEATURE_C; i = i + 1) begin
-      sram[(KERNEL_BASE >> 2) + i] = $random % 5;  // Values 0-4
+      rand_val = $random;
+      if (rand_val < 0) rand_val = -rand_val;
+      sram[(KERNEL_BASE >> 2) + i] = (rand_val % 5);  // Values 0-4
     end
     
     // Display sample kernels
@@ -335,7 +347,7 @@ module tb_conv2d_dma();
     for (i = 0; i < 3; i = i + 1) begin
       $write("  ");
       for (j = 0; j < 3; j = j + 1) begin
-        $write("%2d ", $signed(sram[(KERNEL_BASE >> 2) + i * KERNEL_W + j]));
+        $write("%2d ", sram[(KERNEL_BASE >> 2) + i * KERNEL_W + j]);
       end
       $write("\n");
     end
@@ -376,7 +388,7 @@ module tb_conv2d_dma();
           
           // Show first few computation results
           if (out_row == 0 && out_col < 3) begin
-            $display("  Conv[%0d][%0d] = %0d", out_row, out_col, $signed(conv_result));
+            $display("  Conv[%0d][%0d] = %0d", out_row, out_col, conv_result);
           end
         end
       end
@@ -387,7 +399,7 @@ module tb_conv2d_dma();
       for (i = 0; i < 3; i = i + 1) begin
         $write("    ");
         for (j = 0; j < 3; j = j + 1) begin
-          $write("%6d ", $signed(sram[(TEMP_BASE >> 2) + i * OUTPUT_W + j]));
+          $write("%6d ", sram[(TEMP_BASE >> 2) + i * OUTPUT_W + j]);
         end
         $write("\n");
       end
@@ -431,7 +443,7 @@ module tb_conv2d_dma();
       for (i = 0; i < 5; i = i + 1) begin
         $write("  ");
         for (j = 0; j < 5; j = j + 1) begin
-          $write("%6d ", $signed(sram[output_offset + i * OUTPUT_W + j]));
+          $write("%6d ", sram[output_offset + i * OUTPUT_W + j]);
         end
         $write("\n");
       end
