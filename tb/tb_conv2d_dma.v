@@ -210,13 +210,20 @@ module tb_conv2d_dma();
     input [31:0] dst;
     input [31:0] count;
     reg [31:0] status;
+    reg [31:0] start_time;
+    reg [31:0] end_time;
     begin
-      $display("[%0t] DMA Transfer: src=0x%08h, dst=0x%08h, count=%0d words", 
-               $time, src, dst, count);
+      start_time = $time;
+      $display("[%0t] === DMA Transfer Starting ===", $time);
+      $display("           Source:      0x%08h", src);
+      $display("           Destination: 0x%08h", dst);
+      $display("           Count:       %0d words (%0d bytes)", count, count*4);
       
+      $display("           Configuring DMA registers...");
       write_dma_reg(DMA_BASE + 32'h04, src);
       write_dma_reg(DMA_BASE + 32'h08, dst);
       write_dma_reg(DMA_BASE + 32'h0C, count);
+      $display("           Starting DMA transfer...");
       write_dma_reg(DMA_BASE + 32'h00, 32'h00000001);  // Start
       
       // Wait for completion
@@ -226,7 +233,14 @@ module tb_conv2d_dma();
         read_dma_reg(DMA_BASE + 32'h00, status);
       end
       
-      $display("[%0t] DMA Transfer completed. Status: 0x%08h", $time, status);
+      end_time = $time;
+      $display("[%0t] === DMA Transfer Complete ===", $time);
+      $display("           Status: 0x%08h (DONE=%0d, BUSY=%0d, ERROR=%0d)", 
+               status, (status>>1)&1, (status>>2)&1, (status>>3)&1);
+      $display("           Duration: %0d ns (%0d cycles @ 100MHz)", 
+               (end_time - start_time)/1000, (end_time - start_time)/10000);
+      $display("           Throughput: ~%.2f cycles/word\n", 
+               real'(end_time - start_time) / real'(count) / 10000.0);
       
       // Clear done flag
       write_dma_reg(DMA_BASE + 32'h00, 32'h00000002);
@@ -285,6 +299,13 @@ module tb_conv2d_dma();
     $display("Feature map: %0dx%0dx%0d", FEATURE_H, FEATURE_W, FEATURE_C);
     $display("Kernel: %0dx%0dx%0d", KERNEL_H, KERNEL_W, FEATURE_C);
     $display("Output: %0dx%0dx%0d", OUTPUT_H, OUTPUT_W, OUTPUT_C);
+    $display("=======================================================");
+    $display("\nMemory Layout:");
+    $display("  Feature maps: 0x%08h - 0x%08h (%0d words)", FEATURE_BASE, FEATURE_BASE + FEATURE_H*FEATURE_W*FEATURE_C*4 - 4, FEATURE_H*FEATURE_W*FEATURE_C);
+    $display("  Kernels:      0x%08h - 0x%08h (%0d words)", KERNEL_BASE, KERNEL_BASE + KERNEL_H*KERNEL_W*FEATURE_C*4 - 4, KERNEL_H*KERNEL_W*FEATURE_C);
+    $display("  Temp buffer:  0x%08h - 0x%08h (%0d words)", TEMP_BASE, TEMP_BASE + OUTPUT_H*OUTPUT_W*4 - 4, OUTPUT_H*OUTPUT_W);
+    $display("  Output:       0x%08h - 0x%08h (%0d words)", OUTPUT_BASE, OUTPUT_BASE + OUTPUT_H*OUTPUT_W*OUTPUT_C*4 - 4, OUTPUT_H*OUTPUT_W*OUTPUT_C);
+    $display("  DMA regs:     0x%08h - 0x%08h", DMA_BASE, DMA_BASE + 32'h0F);
     $display("=======================================================\n");
 
     // Initialize feature maps with random data (small values for easier debugging)
@@ -292,11 +313,31 @@ module tb_conv2d_dma();
     for (i = 0; i < FEATURE_H * FEATURE_W * FEATURE_C; i = i + 1) begin
       sram[(FEATURE_BASE >> 2) + i] = $random % 10;  // Values 0-9
     end
+    
+    // Display sample input feature maps
+    $display("\nSample Input Feature Map (Channel 0, top-left 4x4):");
+    for (i = 0; i < 4; i = i + 1) begin
+      $write("  ");
+      for (j = 0; j < 4; j = j + 1) begin
+        $write("%2d ", $signed(sram[(FEATURE_BASE >> 2) + i * FEATURE_W + j]));
+      end
+      $write("\n");
+    end
 
     // Initialize kernels with small values
-    $display("Initializing kernels...");
+    $display("\nInitializing kernels...");
     for (i = 0; i < KERNEL_H * KERNEL_W * FEATURE_C; i = i + 1) begin
       sram[(KERNEL_BASE >> 2) + i] = $random % 5;  // Values 0-4
+    end
+    
+    // Display sample kernels
+    $display("\nSample Kernel (Channel 0, 3x3):");
+    for (i = 0; i < 3; i = i + 1) begin
+      $write("  ");
+      for (j = 0; j < 3; j = j + 1) begin
+        $write("%2d ", $signed(sram[(KERNEL_BASE >> 2) + i * KERNEL_W + j]));
+      end
+      $write("\n");
     end
 
     // Reset
@@ -313,34 +354,59 @@ module tb_conv2d_dma();
 
     // Process each channel
     for (channel = 0; channel < FEATURE_C; channel = channel + 1) begin
-      $display("Processing Channel %0d...", channel);
+      $display("\n=======================================================");
+      $display("Processing Channel %0d", channel);
+      $display("=======================================================");
       
       feature_offset = (FEATURE_BASE >> 2) + channel * (FEATURE_H * FEATURE_W);
       kernel_offset = (KERNEL_BASE >> 2) + channel * (KERNEL_H * KERNEL_W);
       output_offset = (OUTPUT_BASE >> 2) + channel * (OUTPUT_H * OUTPUT_W);
 
       // CPU: Compute convolution for this channel
-      $display("  CPU computing convolution...");
+      $display("\n[CPU Phase] Computing convolution...");
+      $display("  Feature map offset: 0x%08h", feature_offset << 2);
+      $display("  Kernel offset:      0x%08h", kernel_offset << 2);
+      $display("  Temp buffer:        0x%08h", TEMP_BASE);
+      
       for (out_row = 0; out_row < OUTPUT_H; out_row = out_row + 1) begin
         for (out_col = 0; out_col < OUTPUT_W; out_col = out_col + 1) begin
           conv_result = conv_compute(feature_offset, kernel_offset, out_row, out_col);
           temp_idx = (TEMP_BASE >> 2) + out_row * OUTPUT_W + out_col;
           sram[temp_idx] = conv_result;
+          
+          // Show first few computation results
+          if (out_row == 0 && out_col < 3) begin
+            $display("  Conv[%0d][%0d] = %0d", out_row, out_col, $signed(conv_result));
+          end
         end
       end
-      $display("  CPU computation done.");
+      $display("  Computed %0d output values", OUTPUT_H * OUTPUT_W);
+      
+      // Show sample computed values in temp buffer
+      $display("\n  Sample Temp Buffer (first 3x3):");
+      for (i = 0; i < 3; i = i + 1) begin
+        $write("    ");
+        for (j = 0; j < 3; j = j + 1) begin
+          $write("%6d ", $signed(sram[(TEMP_BASE >> 2) + i * OUTPUT_W + j]));
+        end
+        $write("\n");
+      end
 
       // DMA: Transfer results to output
-      $display("  DMA transferring results...");
+      $display("\n[DMA Phase] Transferring results to output memory...");
       dma_transfer(TEMP_BASE, OUTPUT_BASE + (channel * OUTPUT_H * OUTPUT_W * 4), 
                    OUTPUT_H * OUTPUT_W);
       
       // Verify transfer
+      $display("  Verifying data integrity...");
       for (i = 0; i < OUTPUT_H * OUTPUT_W; i = i + 1) begin
         if (sram[(TEMP_BASE >> 2) + i] !== sram[output_offset + i]) begin
           $display("  ERROR: Mismatch at channel %0d, index %0d", channel, i);
           error_count = error_count + 1;
         end
+      end
+      if (error_count == 0) begin
+        $display("  ✓ All %0d words transferred correctly!", OUTPUT_H * OUTPUT_W);
       end
     end
 
@@ -355,16 +421,32 @@ module tb_conv2d_dma();
     end
 
     // Display sample results
-    $display("\nSample Output (Channel 0, first 5x5):");
-    for (i = 0; i < 5; i = i + 1) begin
-      $write("  ");
-      for (j = 0; j < 5; j = j + 1) begin
-        $write("%08h ", sram[(OUTPUT_BASE >> 2) + i * OUTPUT_W + j]);
+    $display("\n=======================================================");
+    $display("Final Output Results");
+    $display("=======================================================\n");
+    
+    for (channel = 0; channel < FEATURE_C; channel = channel + 1) begin
+      $display("Channel %0d Output (first 5x5, showing decimal values):", channel);
+      output_offset = (OUTPUT_BASE >> 2) + channel * (OUTPUT_H * OUTPUT_W);
+      for (i = 0; i < 5; i = i + 1) begin
+        $write("  ");
+        for (j = 0; j < 5; j = j + 1) begin
+          $write("%6d ", $signed(sram[output_offset + i * OUTPUT_W + j]));
+        end
+        $write("\n");
       end
-      $write("\n");
+      $display("");
     end
-
-    $display("\n=======================================================\n");
+    
+    // Display statistics
+    $display("=======================================================");
+    $display("Statistics:");
+    $display("  Total operations: %0d convolutions", OUTPUT_H * OUTPUT_W * FEATURE_C);
+    $display("  Each convolution: %0d multiply-accumulate operations", KERNEL_H * KERNEL_W);
+    $display("  Total MAC ops:    %0d", OUTPUT_H * OUTPUT_W * FEATURE_C * KERNEL_H * KERNEL_W);
+    $display("  DMA transfers:    %0d (one per channel)", FEATURE_C);
+    $display("  Data transferred: %0d words (%0d KB)", OUTPUT_H * OUTPUT_W * FEATURE_C, (OUTPUT_H * OUTPUT_W * FEATURE_C * 4) / 1024);
+    $display("=======================================================\n");
     
     #1000;
     $finish;
