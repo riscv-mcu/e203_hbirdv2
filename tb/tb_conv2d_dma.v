@@ -91,6 +91,14 @@ module tb_conv2d_dma();
 
   // DMA base address
   parameter DMA_BASE = 32'h10002000;
+  
+  // Helper function to convert address to SRAM index
+  function [15:0] addr_to_idx;
+    input [31:0] addr;
+    begin
+      addr_to_idx = addr[17:2];  // Extract bits 17:2 to get word index
+    end
+  endfunction
 
   // DMA Controller instance
   e203_dma_ctrl #(
@@ -314,7 +322,7 @@ module tb_conv2d_dma();
     for (i = 0; i < FEATURE_H * FEATURE_W * FEATURE_C; i = i + 1) begin
       rand_val = $random;
       if (rand_val < 0) rand_val = -rand_val;
-      sram[(FEATURE_BASE >> 2) + i] = (rand_val % 10);  // Values 0-9
+      sram[addr_to_idx(FEATURE_BASE) + i] = (rand_val % 10);  // Values 0-9
     end
     
     // Display sample input feature maps
@@ -322,7 +330,7 @@ module tb_conv2d_dma();
     for (i = 0; i < 4; i = i + 1) begin
       $write("  ");
       for (j = 0; j < 4; j = j + 1) begin
-        $write("%2d ", sram[(FEATURE_BASE >> 2) + i * FEATURE_W + j]);
+        $write("%2d ", sram[addr_to_idx(FEATURE_BASE) + i * FEATURE_W + j]);
       end
       $write("\n");
     end
@@ -330,8 +338,8 @@ module tb_conv2d_dma();
     // Debug: show a few raw values
     $display("\nDebug - First 10 feature values:");
     for (i = 0; i < 10; i = i + 1) begin
-      $display("  sram[%0d] = 0x%08h = %0d", (FEATURE_BASE >> 2) + i, 
-               sram[(FEATURE_BASE >> 2) + i], sram[(FEATURE_BASE >> 2) + i]);
+      $display("  sram[%0d] = 0x%08h = %0d", addr_to_idx(FEATURE_BASE) + i, 
+               sram[addr_to_idx(FEATURE_BASE) + i], sram[addr_to_idx(FEATURE_BASE) + i]);
     end
 
     // Initialize kernels with small values
@@ -339,7 +347,7 @@ module tb_conv2d_dma();
     for (i = 0; i < KERNEL_H * KERNEL_W * FEATURE_C; i = i + 1) begin
       rand_val = $random;
       if (rand_val < 0) rand_val = -rand_val;
-      sram[(KERNEL_BASE >> 2) + i] = (rand_val % 5);  // Values 0-4
+      sram[addr_to_idx(KERNEL_BASE) + i] = (rand_val % 5);  // Values 0-4
     end
     
     // Display sample kernels
@@ -347,7 +355,7 @@ module tb_conv2d_dma();
     for (i = 0; i < 3; i = i + 1) begin
       $write("  ");
       for (j = 0; j < 3; j = j + 1) begin
-        $write("%2d ", sram[(KERNEL_BASE >> 2) + i * KERNEL_W + j]);
+        $write("%2d ", sram[addr_to_idx(KERNEL_BASE) + i * KERNEL_W + j]);
       end
       $write("\n");
     end
@@ -370,20 +378,20 @@ module tb_conv2d_dma();
       $display("Processing Channel %0d", channel);
       $display("=======================================================");
       
-      feature_offset = (FEATURE_BASE >> 2) + channel * (FEATURE_H * FEATURE_W);
-      kernel_offset = (KERNEL_BASE >> 2) + channel * (KERNEL_H * KERNEL_W);
-      output_offset = (OUTPUT_BASE >> 2) + channel * (OUTPUT_H * OUTPUT_W);
+      feature_offset = addr_to_idx(FEATURE_BASE) + channel * (FEATURE_H * FEATURE_W);
+      kernel_offset = addr_to_idx(KERNEL_BASE) + channel * (KERNEL_H * KERNEL_W);
+      output_offset = addr_to_idx(OUTPUT_BASE) + channel * (OUTPUT_H * OUTPUT_W);
 
       // CPU: Compute convolution for this channel
       $display("\n[CPU Phase] Computing convolution...");
-      $display("  Feature map offset: 0x%08h", feature_offset << 2);
-      $display("  Kernel offset:      0x%08h", kernel_offset << 2);
+      $display("  Feature map offset: 0x%08h", FEATURE_BASE + (channel * FEATURE_H * FEATURE_W * 4));
+      $display("  Kernel offset:      0x%08h", KERNEL_BASE + (channel * KERNEL_H * KERNEL_W * 4));
       $display("  Temp buffer:        0x%08h", TEMP_BASE);
       
       for (out_row = 0; out_row < OUTPUT_H; out_row = out_row + 1) begin
         for (out_col = 0; out_col < OUTPUT_W; out_col = out_col + 1) begin
           conv_result = conv_compute(feature_offset, kernel_offset, out_row, out_col);
-          temp_idx = (TEMP_BASE >> 2) + out_row * OUTPUT_W + out_col;
+          temp_idx = addr_to_idx(TEMP_BASE) + out_row * OUTPUT_W + out_col;
           sram[temp_idx] = conv_result;
           
           // Show first few computation results
@@ -399,7 +407,7 @@ module tb_conv2d_dma();
       for (i = 0; i < 3; i = i + 1) begin
         $write("    ");
         for (j = 0; j < 3; j = j + 1) begin
-          $write("%6d ", sram[(TEMP_BASE >> 2) + i * OUTPUT_W + j]);
+          $write("%6d ", sram[addr_to_idx(TEMP_BASE) + i * OUTPUT_W + j]);
         end
         $write("\n");
       end
@@ -412,7 +420,7 @@ module tb_conv2d_dma();
       // Verify transfer
       $display("  Verifying data integrity...");
       for (i = 0; i < OUTPUT_H * OUTPUT_W; i = i + 1) begin
-        if (sram[(TEMP_BASE >> 2) + i] !== sram[output_offset + i]) begin
+        if (sram[addr_to_idx(TEMP_BASE) + i] !== sram[output_offset + i]) begin
           $display("  ERROR: Mismatch at channel %0d, index %0d", channel, i);
           error_count = error_count + 1;
         end
@@ -439,7 +447,7 @@ module tb_conv2d_dma();
     
     for (channel = 0; channel < FEATURE_C; channel = channel + 1) begin
       $display("Channel %0d Output (first 5x5, showing decimal values):", channel);
-      output_offset = (OUTPUT_BASE >> 2) + channel * (OUTPUT_H * OUTPUT_W);
+      output_offset = addr_to_idx(OUTPUT_BASE) + channel * (OUTPUT_H * OUTPUT_W);
       for (i = 0; i < 5; i = i + 1) begin
         $write("  ");
         for (j = 0; j < 5; j = j + 1) begin
