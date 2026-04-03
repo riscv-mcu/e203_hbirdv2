@@ -90,8 +90,11 @@ module sirv_queue(
   wire [1:0] T_90;
   wire  ptr_diff;
   wire [1:0] T_92;
-  assign io_enq_ready = GEN_9;
-  assign io_deq_valid = T_79;
+  
+  // Fix for Issue #18: correct FIFO handshake
+assign io_enq_ready = ~maybe_full;
+assign io_deq_valid = maybe_full;
+
   assign io_deq_bits_read = ram_read_T_83_data;
   assign io_deq_bits_index = ram_index_T_83_data;
   assign io_deq_bits_data = ram_data_T_83_data;
@@ -135,8 +138,6 @@ module sirv_queue(
   assign do_deq = T_67;
   assign T_77 = do_enq != do_deq;
   assign GEN_8 = T_77 ? do_enq : maybe_full;
-  assign T_79 = T_65 == 1'h0;
-  assign GEN_9 = io_deq_ready ? 1'h1 : T_65;
   assign T_90 = 1'h0 - 1'h0;
   assign ptr_diff = T_90[0:0];
   assign T_92 = {maybe_full,ptr_diff};
