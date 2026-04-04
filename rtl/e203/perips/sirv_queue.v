@@ -137,9 +137,8 @@ module sirv_queue(
   assign GEN_8 = T_77 ? do_enq : maybe_full;
   assign T_79 = T_65 == 1'h0;
   assign GEN_9 = io_deq_ready ? 1'h1 : T_65;
-  assign T_90 = 1'h0 - 1'h0;
-  assign ptr_diff = T_90[0:0];
-  assign T_92 = {maybe_full,ptr_diff};
+
+ assign T_92 = {maybe_full,1'b0};
 
   always @(posedge clock) begin// The ram block does not need reset
     if(ram_read_T_69_en & ram_read_T_69_mask) begin
