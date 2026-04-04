@@ -373,13 +373,30 @@ module e203_ifu_ift2icb(
             ;
 
   wire ifu_req_hsked = ifu_req_valid & ifu_req_ready;
-  wire i_ifu_rsp_hsked = i_ifu_rsp_valid & i_ifu_rsp_ready;
+  
+  wire ifu_icb_cmd_hsked = ifu_icb_cmd_valid & ifu_icb_cmd_ready
+                         `ifdef E203_HAS_MEM_ITF
+                           & (~req_need_0uop_r)   // < ignore if zero-uop case for BIU
+                         `endif
+                         ;
+
   wire ifu_icb_cmd_valid;
   wire ifu_icb_cmd_ready;
-  wire ifu_icb_cmd_hsked = ifu_icb_cmd_valid & ifu_icb_cmd_ready;
+ 
+ wire ifu_icb_cmd_hsked = ifu_icb_cmd_valid & ifu_icb_cmd_ready
+                         `ifdef E203_HAS_MEM_ITF
+                           & (~req_need_0uop_r)   // < ignore zero-uop case for BIU
+                         `endif
+                         ;
+
   wire ifu_icb_rsp_valid;
   wire ifu_icb_rsp_ready;
-  wire ifu_icb_rsp_hsked = ifu_icb_rsp_valid & ifu_icb_rsp_ready;
+  
+  wire ifu_icb_rsp_hsked = ifu_icb_rsp_valid & ifu_icb_rsp_ready
+                         `ifdef E203_HAS_MEM_ITF
+                           & (~req_need_0uop_r)   // < ignore zero-uop case for BIU
+                         `endif
+                         ;
 
 
   /////////////////////////////////////////////////////////////////////////////////
