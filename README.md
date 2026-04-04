@@ -11,7 +11,7 @@ freely use for academic and non-commercial projects.
 About
 -----
 
-This repository hosts the project for open-source Hummingbirdv2 E203 RISC-V processor Core and SoC, it's developped and opensourced by [Nuclei System Technology](www.nucleisys.com), the leading RISC-V IP and Solution company based on China Mainland.
+This repository hosts the project for open-source Hummingbirdv2 E203 RISC-V processor Core and SoC, it's developed and opensourced by [Nuclei System Technology](www.nucleisys.com), the leading RISC-V IP and Solution company based on China Mainland.
 
 This's an upgraded version of the project Hummingbird E203 maintained in [SI-RISCV/e200_opensource](https://github.com/SI-RISCV/e200_opensource), so we call it Hummingbirdv2 E203, and its architecture is shown in the figure below.
 ![hbirdv2](pics/hbirdv2_soc.JPG)
@@ -26,7 +26,7 @@ In this new version, we have following updates.
 
 **Welcome to visit https://www.rvmcu.com/community.html to participate in the discussion of the Hummingbird E203.**
 
-**Welcome to visit http://www.rvmcu.com/ for more comprehensive information of availiable RISC-V MCU chips and embedded development.**
+**Welcome to visit http://www.rvmcu.com/ for more comprehensive information of available RISC-V MCU chips and embedded development.**
 
 
 Detailed Introduction and Quick Start-up
@@ -37,7 +37,7 @@ We have provided very detailed introduction and quick start-up documents to help
 The detailed introduction and the quick start documentation can be seen 
 from https://doc.nucleisys.com/hbirdv2/.
 
-By following the guidences from the doc, you can very easily start to use Hummingbirdv2 E203 processor Core and SoC.
+By following the guidances from the doc, you can very easily start to use Hummingbirdv2 E203 processor Core and SoC.
 
 What are you waiting for? Try it out now!
 
