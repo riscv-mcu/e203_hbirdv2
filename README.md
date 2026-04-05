@@ -19,7 +19,7 @@ This's an upgraded version of the project Hummingbird E203 maintained in [SI-RIS
 
 In this new version, we have following updates.
 * Add NICE(Nuclei Instruction Co-unit Extension) for E203 core, so user could create customized HW co-units with E203 core easily.
-* Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in Verilog language, so it's easy for user to understand. 
+* Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM,Added APB-controlled LED peripheral for testing/demo.) from [PULP Platform](https://github.com/pulp-platform) into Hummingbirdv2 SoC, these peripherals are implemented in Verilog language, so it's easy for user to understand. 
 * Add new development boards(Nuclei ddr200t and mcu200t) support for Hummingbirdv2 SoC. 
 
 **Welcome to visit https://github.com/riscv-mcu/hbird-sdk/ to use software development kit for the Hummingbird E203.**
@@ -115,5 +115,5 @@ NOTE:
     [SI-RISCV/e200_opensource](https://github.com/SI-RISCV/e200_opensource).
   + Here are the new features of this release.
     - Add NICE(Nuclei Instruction Co-unit Extension) for E203 core
-    - Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM) from PULP Platform
+    - Integrate the APB interface peripherals(GPIO, I2C, UART, SPI, PWM,Added APB-controlled LED peripheral for testing/demo.) from PULP Platform
     - Add new development board(Nuclei ddr200t) support for Hummingbirdv2 SoC. 
