@@ -123,7 +123,7 @@ module apb_gpio
             r_gpio_inttype0 <= 'b0;
             r_gpio_inttype1 <= 'b0;
             r_gpio_out      <= 'b0;
-            r_gpio_dir      <= 'b0;
+            r_gpio_dir      <=  32'h0000FFFF;
             r_iofcfg        <= 'b0;
 
             for (i = 0; i < 32; i = i + 1)
