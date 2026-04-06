@@ -63,6 +63,8 @@ module apb_uart_sv
     wire        tx_valid;
     wire        fifo_rx_valid;
     reg         fifo_rx_ready;
+reg rx_overflow;  // NEW: RX overflow flag
+
     wire        rx_ready;
 
     reg  [7:0]  fifo_tx_data;
@@ -170,7 +172,8 @@ module apb_uart_sv
         regs_n[LSR * 8] = fifo_rx_valid; // fifo is empty
 
         // parity error on receiving part has occured
-        regs_n[(LSR * 8) + 2] = fifo_rx_data[8];            // parity error is detected when element is retrieved
+        regs_n[(LSR * 8) + 2] = fifo_rx_data[8];           
+        regs_n[(LSR * 8) + 1] = rx_overflow;
 
         // tx status register
         regs_n[(LSR * 8) + 5] = ~(|tx_elements);            // fifo is empty
@@ -236,7 +239,7 @@ module apb_uart_sv
                 LSR: // Line Status Register
                 begin
                     PRDATA  = {24'b0, regs_q[LSR * 8+:8]};
-                    clr_int = 4'b1100; // clear parrity interrupt error
+                    clr_int = 4'b1100; 
                 end
 
                 LCR: // Line Control Register
@@ -266,6 +269,7 @@ module apb_uart_sv
     // synchronouse part
     always @(posedge CLK or negedge RSTN) begin
 	if(~RSTN) begin
+        rx_overflow <= 1'b0;
 
             regs_q[IER * 8+:8] <= 8'h00;
             regs_q[IIR * 8+:8] <= 8'h01;
@@ -286,6 +290,8 @@ module apb_uart_sv
             trigger_level_q <= trigger_level_n;
             tx_fifo_clr_q   <= tx_fifo_clr_n;
             rx_fifo_clr_q   <= rx_fifo_clr_n;
+             if (fifo_rx_valid && !fifo_rx_ready)
+    rx_overflow <= 1'b1;
         end
     end	  
 
