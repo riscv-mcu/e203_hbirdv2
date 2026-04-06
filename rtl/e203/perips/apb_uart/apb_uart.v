@@ -206,6 +206,7 @@ module apb_uart_sv
                     tx_fifo_clr_n   = PWDATA[2];
                     trigger_level_n = PWDATA[7:6];
                 end
+                default: ; // No operation for undefined addresses
             endcase
         end
 
