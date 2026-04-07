@@ -63,6 +63,7 @@ module apb_uart_sv
     wire        tx_valid;
     wire        fifo_rx_valid;
     reg         fifo_rx_ready;
+    reg         tx_overflow; 
     wire        rx_ready;
     reg         pslverr_reg;
 
@@ -171,9 +172,9 @@ module apb_uart_sv
         regs_n[LSR * 8] = fifo_rx_valid; // fifo is empty
 
         // parity error on receiving part has occured
-        regs_n[(LSR * 8) + 2] = fifo_rx_data[8];            // parity error is detected when element is retrieved
-
-        // tx status register
+        regs_n[(LSR * 8) + 2] = fifo_rx_data[8];            
+        regs_n[(LSR * 8) + 3] = tx_overflow;
+         // tx status register
         regs_n[(LSR * 8) + 5] = ~(|tx_elements);            // fifo is empty
         regs_n[(LSR * 8) + 6] = tx_ready & ~(|tx_elements); // shift register and fifo are empty
 
@@ -185,8 +186,11 @@ module apb_uart_sv
 		    if (regs_q[(LCR * 8) + 7]) begin // Divisor Latch Access Bit (DLAB)
                         regs_n[(DLL + 'd8) * 8+:8] = PWDATA[7:0];
 		    end else begin
+                       if (!tx_ready)                        
+           else begin
                         fifo_tx_data  = PWDATA[7:0];
-                        fifo_tx_valid = 1'b1;
+                         fifo_tx_valid = 1'b1;
+                     end
                     end
                 end
 
@@ -269,6 +273,7 @@ module apb_uart_sv
     // synchronouse part
     always @(posedge CLK or negedge RSTN) begin
 	if(~RSTN) begin
+            tx_overflow <= 1'b0;
 
             regs_q[IER * 8+:8] <= 8'h00;
             regs_q[IIR * 8+:8] <= 8'h01;
@@ -289,6 +294,8 @@ module apb_uart_sv
             trigger_level_q <= trigger_level_n;
             tx_fifo_clr_q   <= tx_fifo_clr_n;
             rx_fifo_clr_q   <= rx_fifo_clr_n;
+            if (fifo_tx_valid && !tx_ready)
+                  tx_overflow <= 1'b1;
         end
     end	  
 
