@@ -64,6 +64,7 @@ module apb_uart_sv
     wire        fifo_rx_valid;
     reg         fifo_rx_ready;
     wire        rx_ready;
+    reg         pslverr_reg;
 
     reg  [7:0]  fifo_tx_data;
     wire [8:0]  fifo_rx_data;
@@ -206,6 +207,7 @@ module apb_uart_sv
                     tx_fifo_clr_n   = PWDATA[2];
                     trigger_level_n = PWDATA[7:6];
                 end
+                default: ;
             endcase
         end
 
@@ -256,8 +258,9 @@ module apb_uart_sv
                     clr_int = 4'b0100; // clear Transmitter Holding Register Empty
                 end
 
-                default: 
+                default: begin 
                     PRDATA = 'b0;
+                end
             endcase
         end
     end
