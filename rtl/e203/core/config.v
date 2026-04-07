@@ -98,3 +98,25 @@
 `define E203_CFG_SUPPORT_SHARE_MULDIV
 `define E203_CFG_SUPPORT_AMO
 `define E203_CFG_DTCM_ADDR_WIDTH 16
+
+/////////////////////////////////////////////////////////////////
+// ICB-X Enhanced ICB Protocol Configuration
+//   ICB-X extends the original 2-channel ICB with burst, ID,
+//   and length capabilities while preserving the lightweight
+//   valid/ready handshake architecture.
+/////////////////////////////////////////////////////////////////
+`define E203_CFG_HAS_ICBX
+
+    // Transaction ID width: supports up to 2^N outstanding 
+    // transactions with out-of-order return capability
+    //   2-bit: up to 4 outstanding (suitable for L1 Cache)
+    //   3-bit: up to 8 outstanding (for AI accelerator)
+`define E203_CFG_ICBX_ID_WIDTH   2
+
+    // Burst length field width: maximum burst length = 2^N
+    //   8-bit: max 256 beats (AXI4-compatible)
+`define E203_CFG_ICBX_LEN_WIDTH  8
+
+    // Maximum outstanding transactions allowed
+    //   Must be <= 2^ID_WIDTH
+`define E203_CFG_ICBX_OUTS_NUM   4

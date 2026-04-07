@@ -783,3 +783,111 @@
     `define E203_BIU_RSP_DP        0
   `endif
 
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////// ICB-X Enhanced ICB Protocol relevant macro
+//
+//  ICB-X extends the original ICB 2-channel (CMD+RSP) architecture with:
+//    - Transaction ID for out-of-order response matching
+//    - Burst length (AXI4-compatible encoding: actual_len = len + 1)
+//    - Burst type (FIXED / INCR / WRAP)
+//    - Last beat indicator on both CMD and RSP channels
+//
+//  When E203_CFG_HAS_ICBX is NOT defined, all ICB-X widths default to 0,
+//  and the bus degrades to legacy ICB behavior with zero area overhead.
+//
+`ifdef E203_CFG_HAS_ICBX //{
+  `define E203_HAS_ICBX
+
+  //---------------------------------------------------------------
+  // ICB-X Signal Widths (derived from config.v)
+  //---------------------------------------------------------------
+  `define E203_ICBX_ID_W       `E203_CFG_ICBX_ID_WIDTH    // Transaction ID width
+  `define E203_ICBX_LEN_W      `E203_CFG_ICBX_LEN_WIDTH   // Burst length field width
+  `define E203_ICBX_BURST_W    2                           // Burst type width (always 2-bit)
+
+  //---------------------------------------------------------------
+  // ICB-X Burst Type Encoding (same as AXI for bridge compatibility)
+  //---------------------------------------------------------------
+  `define E203_ICBX_BURST_FIXED  2'b00   // Fixed-address burst (FIFO, status polling)
+  `define E203_ICBX_BURST_INCR   2'b01   // Incrementing burst  (Cache line fill/writeback)
+  `define E203_ICBX_BURST_WRAP   2'b10   // Wrapping burst       (Critical-word-first fetch)
+
+  //---------------------------------------------------------------
+  // ICB-X Outstanding Configuration
+  //---------------------------------------------------------------
+  `define E203_ICBX_OUTS_NUM   `E203_CFG_ICBX_OUTS_NUM 
+  // Outstanding counter width: clog2(OUTS_NUM+1)
+  //   OUTS_NUM=4 -> CNT_W=3 (count 0~4)
+  `define E203_ICBX_OUTS_CNT_W  3
+
+  //---------------------------------------------------------------
+  // ICB-X CMD Channel additional signal positions
+  //   These define the bit-packing of ICB-X extension fields
+  //   in the "usr" sideband or as standalone ports
+  //---------------------------------------------------------------
+  // Total extra CMD bits = ID + LEN + BURST + LAST = 2+8+2+1 = 13
+  `define E203_ICBX_CMD_EXT_W  (`E203_ICBX_ID_W + `E203_ICBX_LEN_W + `E203_ICBX_BURST_W + 1)
+  // Bit field positions within CMD extension bus
+  `define E203_ICBX_CMD_ID_LSB     0
+  `define E203_ICBX_CMD_ID_MSB     (`E203_ICBX_ID_W - 1)
+  `define E203_ICBX_CMD_LEN_LSB    (`E203_ICBX_CMD_ID_MSB + 1)
+  `define E203_ICBX_CMD_LEN_MSB    (`E203_ICBX_CMD_LEN_LSB + `E203_ICBX_LEN_W - 1)
+  `define E203_ICBX_CMD_BURST_LSB  (`E203_ICBX_CMD_LEN_MSB + 1)
+  `define E203_ICBX_CMD_BURST_MSB  (`E203_ICBX_CMD_BURST_LSB + `E203_ICBX_BURST_W - 1)
+  `define E203_ICBX_CMD_LAST_LSB   (`E203_ICBX_CMD_BURST_MSB + 1)
+  `define E203_ICBX_CMD_LAST_MSB   (`E203_ICBX_CMD_BURST_MSB + 1)
+
+  //---------------------------------------------------------------
+  // ICB-X RSP Channel additional signal positions
+  //---------------------------------------------------------------
+  // Total extra RSP bits = ID + LAST = 2+1 = 3
+  `define E203_ICBX_RSP_EXT_W  (`E203_ICBX_ID_W + 1)
+  // Bit field positions within RSP extension bus
+  `define E203_ICBX_RSP_ID_LSB     0
+  `define E203_ICBX_RSP_ID_MSB     (`E203_ICBX_ID_W - 1)
+  `define E203_ICBX_RSP_LAST_LSB   (`E203_ICBX_RSP_ID_MSB + 1)
+  `define E203_ICBX_RSP_LAST_MSB   (`E203_ICBX_RSP_ID_MSB + 1)
+
+  //---------------------------------------------------------------
+  // Override BIU outstanding when ICB-X is enabled
+  //   ICB-X increases BIU pipeline depth to match the new
+  //   outstanding capability
+  //---------------------------------------------------------------
+  `undef  E203_BIU_OUTS_NUM
+  `define E203_BIU_OUTS_NUM     `E203_ICBX_OUTS_NUM
+
+  `undef  E203_BIU_OUTS_NUM_IS_1
+  // Not IS_1 anymore, so BIU_CMD_DP/RSP_DP will use the ping-pong (2) path
+  `undef  E203_BIU_OUTS_CNT_W
+  `define E203_BIU_OUTS_CNT_W   `E203_ICBX_OUTS_CNT_W
+
+  `undef  E203_BIU_CMD_DP
+  `define E203_BIU_CMD_DP  2
+
+  `undef  E203_BIU_RSP_DP_RAW
+  `define E203_BIU_RSP_DP_RAW  2
+
+  `undef  E203_BIU_RSP_DP
+  `ifdef E203_TIMING_BOOST
+    `define E203_BIU_RSP_DP  `E203_BIU_RSP_DP_RAW
+  `else
+    `define E203_BIU_RSP_DP  0
+  `endif
+
+`else //}{ ICB-X not enabled — legacy ICB defaults
+  //---------------------------------------------------------------
+  // When ICB-X is disabled, provide zero-width placeholders
+  // so that downstream RTL can use these macros unconditionally
+  // with generate-if or ternary expressions
+  //---------------------------------------------------------------
+  `define E203_ICBX_ID_W       0
+  `define E203_ICBX_LEN_W      0
+  `define E203_ICBX_BURST_W    0
+  `define E203_ICBX_CMD_EXT_W  0
+  `define E203_ICBX_RSP_EXT_W  0
+  `define E203_ICBX_OUTS_NUM   1
+  `define E203_ICBX_OUTS_CNT_W 1
+`endif //}
