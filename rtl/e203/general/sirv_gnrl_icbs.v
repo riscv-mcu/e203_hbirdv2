@@ -25,7 +25,7 @@
 //
 // ====================================================================
 
-
+`include "e203_defines.v"
 
 // ===========================================================================
 //
@@ -59,6 +59,11 @@ module sirv_gnrl_icb_arbt # (
   output             o_icb_cmd_excl,
   output [1:0]       o_icb_cmd_size,
   output [USR_W-1:0] o_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  o_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0] o_icb_cmd_len,
+  output                         o_icb_cmd_last,
+`endif //}
 
   input              o_icb_rsp_valid, 
   output             o_icb_rsp_ready, 
@@ -66,6 +71,10 @@ module sirv_gnrl_icb_arbt # (
   input              o_icb_rsp_excl_ok,
   input  [DW-1:0]    o_icb_rsp_rdata, 
   input  [USR_W-1:0] o_icb_rsp_usr, 
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  o_icb_rsp_id,
+  input                          o_icb_rsp_last,
+`endif //}
   
   output [ARBT_NUM*1-1:0]     i_bus_icb_cmd_ready, 
   input  [ARBT_NUM*1-1:0]     i_bus_icb_cmd_valid, 
@@ -79,6 +88,11 @@ module sirv_gnrl_icb_arbt # (
   input  [ARBT_NUM*1-1:0]     i_bus_icb_cmd_excl ,
   input  [ARBT_NUM*2-1:0]     i_bus_icb_cmd_size ,
   input  [ARBT_NUM*USR_W-1:0] i_bus_icb_cmd_usr  ,
+`ifdef E203_HAS_ICBX //{
+  input  [ARBT_NUM*`E203_ICBX_ID_W-1:0]  i_bus_icb_cmd_id,
+  input  [ARBT_NUM*`E203_ICBX_LEN_W-1:0] i_bus_icb_cmd_len,
+  input  [ARBT_NUM*1-1:0]                 i_bus_icb_cmd_last,
+`endif //}
 
   output [ARBT_NUM*1-1:0]     i_bus_icb_rsp_valid, 
   input  [ARBT_NUM*1-1:0]     i_bus_icb_rsp_ready, 
@@ -86,6 +100,10 @@ module sirv_gnrl_icb_arbt # (
   output [ARBT_NUM*1-1:0]     i_bus_icb_rsp_excl_ok,
   output [ARBT_NUM*DW-1:0]    i_bus_icb_rsp_rdata, 
   output [ARBT_NUM*USR_W-1:0] i_bus_icb_rsp_usr, 
+`ifdef E203_HAS_ICBX //{
+  output [ARBT_NUM*`E203_ICBX_ID_W-1:0]  i_bus_icb_rsp_id,
+  output [ARBT_NUM*1-1:0]                 i_bus_icb_rsp_last,
+`endif //}
 
   input  clk,  
   input  rst_n
@@ -108,6 +126,11 @@ wire [1-1:0]    i_icb_cmd_lock [ARBT_NUM-1:0];
 wire [1-1:0]    i_icb_cmd_excl [ARBT_NUM-1:0];
 wire [2-1:0]    i_icb_cmd_size [ARBT_NUM-1:0];
 wire [USR_W-1:0]i_icb_cmd_usr  [ARBT_NUM-1:0];
+`ifdef E203_HAS_ICBX //{
+wire [`E203_ICBX_ID_W-1:0]  i_icb_cmd_id  [ARBT_NUM-1:0];
+wire [`E203_ICBX_LEN_W-1:0] i_icb_cmd_len [ARBT_NUM-1:0];
+wire                         i_icb_cmd_last[ARBT_NUM-1:0];
+`endif //}
 
 reg [1-1:0]    sel_o_icb_cmd_read; 
 reg [AW-1:0]   sel_o_icb_cmd_addr; 
@@ -119,6 +142,11 @@ reg [1-1:0]    sel_o_icb_cmd_lock ;
 reg [1-1:0]    sel_o_icb_cmd_excl ;
 reg [2-1:0]    sel_o_icb_cmd_size ;
 reg [USR_W-1:0]sel_o_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+reg [`E203_ICBX_ID_W-1:0]  sel_o_icb_cmd_id;
+reg [`E203_ICBX_LEN_W-1:0] sel_o_icb_cmd_len;
+reg                         sel_o_icb_cmd_last;
+`endif //}
 
 wire o_icb_rsp_ready_pre; 
 wire o_icb_rsp_valid_pre;
@@ -162,6 +190,11 @@ generate //{
     assign o_icb_cmd_excl      = i_bus_icb_cmd_excl ;
     assign o_icb_cmd_size      = i_bus_icb_cmd_size ;
     assign o_icb_cmd_usr       = i_bus_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+    assign o_icb_cmd_id        = i_bus_icb_cmd_id;
+    assign o_icb_cmd_len       = i_bus_icb_cmd_len;
+    assign o_icb_cmd_last      = i_bus_icb_cmd_last;
+`endif //}
                                
     assign o_icb_rsp_ready     = i_bus_icb_rsp_ready;
     assign i_bus_icb_rsp_valid = o_icb_rsp_valid    ;
@@ -169,6 +202,10 @@ generate //{
     assign i_bus_icb_rsp_excl_ok   = o_icb_rsp_excl_ok      ;
     assign i_bus_icb_rsp_rdata = o_icb_rsp_rdata    ;
     assign i_bus_icb_rsp_usr   = o_icb_rsp_usr      ;
+`ifdef E203_HAS_ICBX //{
+    assign i_bus_icb_rsp_id    = o_icb_rsp_id;
+    assign i_bus_icb_rsp_last  = o_icb_rsp_last;
+`endif //}
 
   end//}
   else begin:arbt_num_gt_1_gen//{
@@ -189,6 +226,11 @@ generate //{
       assign i_icb_cmd_excl [i] = i_bus_icb_cmd_excl [(i+1)*1     -1 : i*1     ];
       assign i_icb_cmd_size [i] = i_bus_icb_cmd_size [(i+1)*2     -1 : i*2     ];
       assign i_icb_cmd_usr  [i] = i_bus_icb_cmd_usr  [(i+1)*USR_W -1 : i*USR_W ];
+`ifdef E203_HAS_ICBX //{
+      assign i_icb_cmd_id  [i] = i_bus_icb_cmd_id  [(i+1)*`E203_ICBX_ID_W  -1 : i*`E203_ICBX_ID_W  ];
+      assign i_icb_cmd_len [i] = i_bus_icb_cmd_len [(i+1)*`E203_ICBX_LEN_W -1 : i*`E203_ICBX_LEN_W ];
+      assign i_icb_cmd_last[i] = i_bus_icb_cmd_last[(i+1)*1                -1 : i*1                ];
+`endif //}
 
       assign i_bus_icb_cmd_ready[i] = i_bus_icb_cmd_grt_vec[i] & o_icb_cmd_ready_real;
       assign i_bus_icb_rsp_valid[i] = o_icb_rsp_valid_pre & (o_icb_rsp_port_id == i); 
@@ -234,6 +276,11 @@ generate //{
       sel_o_icb_cmd_excl  = {1   {1'b0}};
       sel_o_icb_cmd_size  = {2   {1'b0}};
       sel_o_icb_cmd_usr   = {USR_W{1'b0}};
+`ifdef E203_HAS_ICBX //{
+      sel_o_icb_cmd_id    = {`E203_ICBX_ID_W{1'b0}};
+      sel_o_icb_cmd_len   = {`E203_ICBX_LEN_W{1'b0}};
+      sel_o_icb_cmd_last  = 1'b0;
+`endif //}
       for(j = 0; j < ARBT_NUM; j = j+1) begin//{
         sel_o_icb_cmd_read  = sel_o_icb_cmd_read  | ({1    {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_read [j]);
         sel_o_icb_cmd_addr  = sel_o_icb_cmd_addr  | ({AW   {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_addr [j]);
@@ -245,6 +292,11 @@ generate //{
         sel_o_icb_cmd_excl  = sel_o_icb_cmd_excl  | ({1    {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_excl [j]);
         sel_o_icb_cmd_size  = sel_o_icb_cmd_size  | ({2    {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_size [j]);
         sel_o_icb_cmd_usr   = sel_o_icb_cmd_usr   | ({USR_W{i_bus_icb_cmd_sel[j]}} & i_icb_cmd_usr  [j]);
+`ifdef E203_HAS_ICBX //{
+        sel_o_icb_cmd_id    = sel_o_icb_cmd_id    | ({`E203_ICBX_ID_W {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_id  [j]);
+        sel_o_icb_cmd_len   = sel_o_icb_cmd_len   | ({`E203_ICBX_LEN_W{i_bus_icb_cmd_sel[j]}} & i_icb_cmd_len [j]);
+        sel_o_icb_cmd_last  = sel_o_icb_cmd_last  | ({1               {i_bus_icb_cmd_sel[j]}} & i_icb_cmd_last[j]);
+`endif //}
       end//}
     end
     assign o_icb_cmd_valid_real = |i_bus_icb_cmd_valid; 
@@ -327,6 +379,11 @@ generate //{
     assign o_icb_cmd_excl  = sel_o_icb_cmd_excl ;
     assign o_icb_cmd_size  = sel_o_icb_cmd_size ;
     assign o_icb_cmd_usr   = sel_o_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+    assign o_icb_cmd_id    = sel_o_icb_cmd_id  ;
+    assign o_icb_cmd_len   = sel_o_icb_cmd_len ;
+    assign o_icb_cmd_last  = sel_o_icb_cmd_last;
+`endif //}
 
     assign o_icb_rsp_ready_pre = i_bus_icb_rsp_ready[o_icb_rsp_port_id]; 
 
@@ -336,6 +393,10 @@ generate //{
     assign i_bus_icb_rsp_excl_ok = {ARBT_NUM{o_icb_rsp_excl_ok}};  
     assign i_bus_icb_rsp_rdata   = {ARBT_NUM{o_icb_rsp_rdata}}; 
     assign i_bus_icb_rsp_usr     = {ARBT_NUM{o_icb_rsp_usr}}; 
+`ifdef E203_HAS_ICBX //{
+    assign i_bus_icb_rsp_id      = {ARBT_NUM{o_icb_rsp_id}};
+    assign i_bus_icb_rsp_last    = {ARBT_NUM{o_icb_rsp_last}};
+`endif //}
   end//}
   endgenerate //}
 
@@ -372,6 +433,11 @@ module sirv_gnrl_icb_buffer # (
   input  [1:0]       i_icb_cmd_burst,
   input  [1:0]       i_icb_cmd_beat,
   input  [USR_W-1:0] i_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  i_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0] i_icb_cmd_len,
+  input                          i_icb_cmd_last,
+`endif //}
 
   output             i_icb_rsp_valid, 
   input              i_icb_rsp_ready, 
@@ -379,6 +445,10 @@ module sirv_gnrl_icb_buffer # (
   output             i_icb_rsp_excl_ok,
   output [DW-1:0]    i_icb_rsp_rdata, 
   output [USR_W-1:0] i_icb_rsp_usr,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  i_icb_rsp_id,
+  output                         i_icb_rsp_last,
+`endif //}
   
   output             o_icb_cmd_valid, 
   input              o_icb_cmd_ready, 
@@ -392,6 +462,11 @@ module sirv_gnrl_icb_buffer # (
   output [1:0]       o_icb_cmd_burst,
   output [1:0]       o_icb_cmd_beat,
   output [USR_W-1:0] o_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  o_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0] o_icb_cmd_len,
+  output                         o_icb_cmd_last,
+`endif //}
 
   input              o_icb_rsp_valid, 
   output             o_icb_rsp_ready, 
@@ -399,12 +474,20 @@ module sirv_gnrl_icb_buffer # (
   input              o_icb_rsp_excl_ok,
   input  [DW-1:0]    o_icb_rsp_rdata, 
   input  [USR_W-1:0] o_icb_rsp_usr,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  o_icb_rsp_id,
+  input                          o_icb_rsp_last,
+`endif //}
 
   input  clk,  
   input  rst_n
   );
 
+`ifdef E203_HAS_ICBX //{
+  localparam CMD_PACK_W = (1+AW+DW+(DW/8)+1+1+2+2+2+USR_W+`E203_ICBX_ID_W+`E203_ICBX_LEN_W+1);
+`else
   localparam CMD_PACK_W = (1+AW+DW+(DW/8)+1+1+2+2+2+USR_W);
+`endif //}
 
   wire [CMD_PACK_W-1:0] cmd_fifo_i_dat = {
                                  i_icb_cmd_read, 
@@ -416,7 +499,13 @@ module sirv_gnrl_icb_buffer # (
                                  i_icb_cmd_size,
                                  i_icb_cmd_burst,
                                  i_icb_cmd_beat,
-                                 i_icb_cmd_usr};
+                                 i_icb_cmd_usr
+`ifdef E203_HAS_ICBX //{
+                                ,i_icb_cmd_id,
+                                 i_icb_cmd_len,
+                                 i_icb_cmd_last
+`endif //}
+                                 };
 
   wire [CMD_PACK_W-1:0] cmd_fifo_o_dat;
 
@@ -430,7 +519,13 @@ module sirv_gnrl_icb_buffer # (
                                  o_icb_cmd_size,
                                  o_icb_cmd_burst,
                                  o_icb_cmd_beat,
-                                 o_icb_cmd_usr} = cmd_fifo_o_dat;
+                                 o_icb_cmd_usr
+`ifdef E203_HAS_ICBX //{
+                                ,o_icb_cmd_id,
+                                 o_icb_cmd_len,
+                                 o_icb_cmd_last
+`endif //}
+                                 } = cmd_fifo_o_dat;
   sirv_gnrl_fifo # (
     .CUT_READY (CMD_CUT_READY),
     .MSKO      (0),
@@ -449,12 +544,21 @@ module sirv_gnrl_icb_buffer # (
   );
 
 
+`ifdef E203_HAS_ICBX //{
+  localparam RSP_PACK_W = (2+DW+USR_W+`E203_ICBX_ID_W+1);
+`else
   localparam RSP_PACK_W = (2+DW+USR_W);
+`endif //}
   wire [RSP_PACK_W-1:0] rsp_fifo_i_dat = {
                                  o_icb_rsp_err,
                                  o_icb_rsp_excl_ok,
                                  o_icb_rsp_rdata, 
-                                 o_icb_rsp_usr};
+                                 o_icb_rsp_usr
+`ifdef E203_HAS_ICBX //{
+                                ,o_icb_rsp_id,
+                                 o_icb_rsp_last
+`endif //}
+                                 };
 
   wire [RSP_PACK_W-1:0] rsp_fifo_o_dat;
 
@@ -462,7 +566,12 @@ module sirv_gnrl_icb_buffer # (
                                  i_icb_rsp_err,
                                  i_icb_rsp_excl_ok,
                                  i_icb_rsp_rdata, 
-                                 i_icb_rsp_usr} = rsp_fifo_o_dat;
+                                 i_icb_rsp_usr
+`ifdef E203_HAS_ICBX //{
+                                ,i_icb_rsp_id,
+                                 i_icb_rsp_last
+`endif //}
+                                 } = rsp_fifo_o_dat;
   sirv_gnrl_fifo # (
     .CUT_READY (RSP_CUT_READY),
     .MSKO      (0),
@@ -520,6 +629,11 @@ module sirv_gnrl_icb_n2w # (
   input  [1:0]       i_icb_cmd_burst,
   input  [1:0]       i_icb_cmd_beat,
   input  [USR_W-1:0] i_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  i_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0] i_icb_cmd_len,
+  input                          i_icb_cmd_last,
+`endif //}
 
   output             i_icb_rsp_valid, 
   input              i_icb_rsp_ready, 
@@ -527,6 +641,10 @@ module sirv_gnrl_icb_n2w # (
   output             i_icb_rsp_excl_ok,
   output [X_W-1:0]   i_icb_rsp_rdata, 
   output [USR_W-1:0] i_icb_rsp_usr,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  i_icb_rsp_id,
+  output                         i_icb_rsp_last,
+`endif //}
   
   output             o_icb_cmd_valid, 
   input              o_icb_cmd_ready, 
@@ -540,6 +658,11 @@ module sirv_gnrl_icb_n2w # (
   output [1:0]       o_icb_cmd_burst,
   output [1:0]       o_icb_cmd_beat,
   output [USR_W-1:0] o_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  o_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0] o_icb_cmd_len,
+  output                         o_icb_cmd_last,
+`endif //}
 
   input              o_icb_rsp_valid, 
   output             o_icb_rsp_ready, 
@@ -547,6 +670,10 @@ module sirv_gnrl_icb_n2w # (
   input              o_icb_rsp_excl_ok,
   input  [Y_W-1:0]   o_icb_rsp_rdata, 
   input  [USR_W-1:0] o_icb_rsp_usr,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  o_icb_rsp_id,
+  input                          o_icb_rsp_last,
+`endif //}
 
   input  clk,  
   input  rst_n
@@ -625,6 +752,11 @@ module sirv_gnrl_icb_n2w # (
   assign o_icb_cmd_burst = i_icb_cmd_burst;
   assign o_icb_cmd_beat  = i_icb_cmd_beat ;
   assign o_icb_cmd_usr   = i_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+  assign o_icb_cmd_id    = i_icb_cmd_id   ;
+  assign o_icb_cmd_len   = i_icb_cmd_len  ;
+  assign o_icb_cmd_last  = i_icb_cmd_last ;
+`endif //}
 
   assign o_icb_cmd_wdata = {i_icb_cmd_wdata,i_icb_cmd_wdata};
   assign o_icb_cmd_wmask = cmd_y_lo_hi ?  {i_icb_cmd_wmask,  {X_W/8{1'b0}}} : {  {X_W/8{1'b0}},i_icb_cmd_wmask};
@@ -634,6 +766,10 @@ module sirv_gnrl_icb_n2w # (
   assign i_icb_rsp_excl_ok   = o_icb_rsp_excl_ok   ;
   assign i_icb_rsp_rdata = rsp_y_lo_hi ?  o_icb_rsp_rdata[Y_W-1:X_W] : o_icb_rsp_rdata[X_W-1:0] ;
   assign i_icb_rsp_usr   = o_icb_rsp_usr   ;
+`ifdef E203_HAS_ICBX //{
+  assign i_icb_rsp_id    = o_icb_rsp_id    ;
+  assign i_icb_rsp_last  = o_icb_rsp_last  ;
+`endif //}
   assign o_icb_rsp_ready = i_icb_rsp_ready;  
 
 endmodule
@@ -675,6 +811,11 @@ module sirv_gnrl_icb_splt # (
   input             i_icb_cmd_excl,
   input  [1:0]      i_icb_cmd_size,
   input  [USR_W-1:0]i_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]  i_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0] i_icb_cmd_len,
+  input                          i_icb_cmd_last,
+`endif //}
 
   output i_icb_rsp_valid, 
   input  i_icb_rsp_ready, 
@@ -682,6 +823,10 @@ module sirv_gnrl_icb_splt # (
   output i_icb_rsp_excl_ok,
   output [DW-1:0] i_icb_rsp_rdata, 
   output [USR_W-1:0] i_icb_rsp_usr, 
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]  i_icb_rsp_id,
+  output                         i_icb_rsp_last,
+`endif //}
   
   input  [SPLT_NUM*1-1:0]    o_bus_icb_cmd_ready, 
   output [SPLT_NUM*1-1:0]    o_bus_icb_cmd_valid, 
@@ -695,6 +840,11 @@ module sirv_gnrl_icb_splt # (
   output [SPLT_NUM*1-1:0]    o_bus_icb_cmd_excl,
   output [SPLT_NUM*2-1:0]    o_bus_icb_cmd_size,
   output [SPLT_NUM*USR_W-1:0]o_bus_icb_cmd_usr,
+`ifdef E203_HAS_ICBX //{
+  output [SPLT_NUM*`E203_ICBX_ID_W-1:0]  o_bus_icb_cmd_id,
+  output [SPLT_NUM*`E203_ICBX_LEN_W-1:0] o_bus_icb_cmd_len,
+  output [SPLT_NUM*1-1:0]                 o_bus_icb_cmd_last,
+`endif //}
 
   input  [SPLT_NUM*1-1:0]  o_bus_icb_rsp_valid, 
   output [SPLT_NUM*1-1:0]  o_bus_icb_rsp_ready, 
@@ -702,6 +852,10 @@ module sirv_gnrl_icb_splt # (
   input  [SPLT_NUM*1-1:0]  o_bus_icb_rsp_excl_ok,
   input  [SPLT_NUM*DW-1:0] o_bus_icb_rsp_rdata, 
   input  [SPLT_NUM*USR_W-1:0] o_bus_icb_rsp_usr, 
+`ifdef E203_HAS_ICBX //{
+  input  [SPLT_NUM*`E203_ICBX_ID_W-1:0]  o_bus_icb_rsp_id,
+  input  [SPLT_NUM*1-1:0]                 o_bus_icb_rsp_last,
+`endif //}
 
   input  clk,  
   input  rst_n
@@ -723,6 +877,11 @@ wire            o_icb_cmd_lock [SPLT_NUM-1:0];
 wire            o_icb_cmd_excl [SPLT_NUM-1:0];
 wire [1:0]      o_icb_cmd_size [SPLT_NUM-1:0];
 wire [USR_W-1:0]o_icb_cmd_usr  [SPLT_NUM-1:0];
+`ifdef E203_HAS_ICBX //{
+wire [`E203_ICBX_ID_W-1:0]  o_icb_cmd_id  [SPLT_NUM-1:0];
+wire [`E203_ICBX_LEN_W-1:0] o_icb_cmd_len [SPLT_NUM-1:0];
+wire                         o_icb_cmd_last_w[SPLT_NUM-1:0];
+`endif //}
 
 wire [SPLT_NUM-1:0] o_icb_rsp_valid; 
 wire [SPLT_NUM-1:0] o_icb_rsp_ready; 
@@ -730,6 +889,10 @@ wire [SPLT_NUM-1:0] o_icb_rsp_err  ;
 wire [SPLT_NUM-1:0] o_icb_rsp_excl_ok  ;
 wire [DW-1:0] o_icb_rsp_rdata  [SPLT_NUM-1:0];
 wire [USR_W-1:0] o_icb_rsp_usr [SPLT_NUM-1:0];
+`ifdef E203_HAS_ICBX //{
+wire [`E203_ICBX_ID_W-1:0]  o_icb_rsp_id_w  [SPLT_NUM-1:0];
+wire                         o_icb_rsp_last_w[SPLT_NUM-1:0];
+`endif //}
 
 reg sel_o_apb_cmd_ready;
 
@@ -772,6 +935,11 @@ generate //{
     assign o_bus_icb_cmd_excl  = i_icb_cmd_excl ;
     assign o_bus_icb_cmd_size  = i_icb_cmd_size ;
     assign o_bus_icb_cmd_usr   = i_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+    assign o_bus_icb_cmd_id    = i_icb_cmd_id;
+    assign o_bus_icb_cmd_len   = i_icb_cmd_len;
+    assign o_bus_icb_cmd_last  = i_icb_cmd_last;
+`endif //}
 
     assign o_bus_icb_rsp_ready = i_icb_rsp_ready; 
     assign i_icb_rsp_valid     = o_bus_icb_rsp_valid; 
@@ -779,6 +947,10 @@ generate //{
     assign i_icb_rsp_excl_ok   = o_bus_icb_rsp_excl_ok  ;
     assign i_icb_rsp_rdata     = o_bus_icb_rsp_rdata;
     assign i_icb_rsp_usr       = o_bus_icb_rsp_usr;
+`ifdef E203_HAS_ICBX //{
+    assign i_icb_rsp_id        = o_bus_icb_rsp_id;
+    assign i_icb_rsp_last      = o_bus_icb_rsp_last;
+`endif //}
 
   end//}
   else begin:splt_num_gt_1_gen//{
@@ -797,6 +969,11 @@ generate //{
       assign o_bus_icb_cmd_excl [(i+1)*1     -1 : i*1     ] = o_icb_cmd_excl [i];
       assign o_bus_icb_cmd_size [(i+1)*2     -1 : i*2     ] = o_icb_cmd_size [i];
       assign o_bus_icb_cmd_usr  [(i+1)*USR_W -1 : i*USR_W ] = o_icb_cmd_usr  [i];
+`ifdef E203_HAS_ICBX //{
+      assign o_bus_icb_cmd_id   [(i+1)*`E203_ICBX_ID_W  -1 : i*`E203_ICBX_ID_W  ] = o_icb_cmd_id  [i];
+      assign o_bus_icb_cmd_len  [(i+1)*`E203_ICBX_LEN_W -1 : i*`E203_ICBX_LEN_W ] = o_icb_cmd_len [i];
+      assign o_bus_icb_cmd_last [(i+1)*1                -1 : i*1                ] = o_icb_cmd_last_w[i];
+`endif //}
 
       assign o_bus_icb_rsp_ready[(i+1)*1-1 :i*1 ] = o_icb_rsp_ready[i]; 
       assign o_icb_rsp_valid[i]                   = o_bus_icb_rsp_valid[(i+1)*1-1 :i*1 ]; 
@@ -804,6 +981,10 @@ generate //{
       assign o_icb_rsp_excl_ok  [i]               = o_bus_icb_rsp_excl_ok  [(i+1)*1-1 :i*1 ];
       assign o_icb_rsp_rdata[i]                   = o_bus_icb_rsp_rdata[(i+1)*DW-1:i*DW];
       assign o_icb_rsp_usr  [i]                   = o_bus_icb_rsp_usr  [(i+1)*USR_W-1:i*USR_W];
+`ifdef E203_HAS_ICBX //{
+      assign o_icb_rsp_id_w  [i]                  = o_bus_icb_rsp_id   [(i+1)*`E203_ICBX_ID_W-1:i*`E203_ICBX_ID_W];
+      assign o_icb_rsp_last_w[i]                  = o_bus_icb_rsp_last [(i+1)*1-1:i*1];
+`endif //}
     end//}
 
     ///////////////////////
@@ -923,6 +1104,11 @@ generate //{
           assign o_icb_cmd_excl [i] = i_icb_cmd_excl ;
           assign o_icb_cmd_size [i] = i_icb_cmd_size ;
           assign o_icb_cmd_usr  [i] = i_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+          assign o_icb_cmd_id   [i] = i_icb_cmd_id   ;
+          assign o_icb_cmd_len  [i] = i_icb_cmd_len  ;
+          assign o_icb_cmd_last_w[i] = i_icb_cmd_last ;
+`endif //}
       end
       else begin: vld_msk_payload
           assign o_icb_cmd_read [i] = {1    {o_icb_cmd_valid[i]}} & i_icb_cmd_read ;
@@ -935,6 +1121,11 @@ generate //{
           assign o_icb_cmd_excl [i] = {1    {o_icb_cmd_valid[i]}} & i_icb_cmd_excl ;
           assign o_icb_cmd_size [i] = {2    {o_icb_cmd_valid[i]}} & i_icb_cmd_size ;
           assign o_icb_cmd_usr  [i] = {USR_W{o_icb_cmd_valid[i]}} & i_icb_cmd_usr  ;
+`ifdef E203_HAS_ICBX //{
+          assign o_icb_cmd_id   [i] = {`E203_ICBX_ID_W {o_icb_cmd_valid[i]}} & i_icb_cmd_id  ;
+          assign o_icb_cmd_len  [i] = {`E203_ICBX_LEN_W{o_icb_cmd_valid[i]}} & i_icb_cmd_len ;
+          assign o_icb_cmd_last_w[i] = {1               {o_icb_cmd_valid[i]}} & i_icb_cmd_last;
+`endif //}
       end
     end//}
     //
@@ -956,17 +1147,29 @@ generate //{
         reg sel_i_icb_rsp_excl_ok;
         reg [DW-1:0] sel_i_icb_rsp_rdata; 
         reg [USR_W-1:0] sel_i_icb_rsp_usr; 
+`ifdef E203_HAS_ICBX //{
+        reg [`E203_ICBX_ID_W-1:0] sel_i_icb_rsp_id;
+        reg                        sel_i_icb_rsp_last;
+`endif //}
 
         always @ (*) begin : sel_icb_rsp_PROC
           sel_i_icb_rsp_err   = 1'b0;
           sel_i_icb_rsp_excl_ok   = 1'b0;
           sel_i_icb_rsp_rdata = {DW   {1'b0}};
           sel_i_icb_rsp_usr   = {USR_W{1'b0}};
+`ifdef E203_HAS_ICBX //{
+          sel_i_icb_rsp_id    = {`E203_ICBX_ID_W{1'b0}};
+          sel_i_icb_rsp_last  = 1'b0;
+`endif //}
           for(j = 0; j < SPLT_NUM; j = j+1) begin//{
             sel_i_icb_rsp_err     = sel_i_icb_rsp_err     | (       o_icb_rsp_port_id[j]   & o_icb_rsp_err[j]);
             sel_i_icb_rsp_excl_ok = sel_i_icb_rsp_excl_ok | (       o_icb_rsp_port_id[j]   & o_icb_rsp_excl_ok[j]);
             sel_i_icb_rsp_rdata   = sel_i_icb_rsp_rdata   | ({DW   {o_icb_rsp_port_id[j]}} & o_icb_rsp_rdata[j]);
             sel_i_icb_rsp_usr     = sel_i_icb_rsp_usr     | ({USR_W{o_icb_rsp_port_id[j]}} & o_icb_rsp_usr[j]);
+`ifdef E203_HAS_ICBX //{
+            sel_i_icb_rsp_id      = sel_i_icb_rsp_id      | ({`E203_ICBX_ID_W{o_icb_rsp_port_id[j]}} & o_icb_rsp_id_w[j]);
+            sel_i_icb_rsp_last    = sel_i_icb_rsp_last    | (                  o_icb_rsp_port_id[j]   & o_icb_rsp_last_w[j]);
+`endif //}
           end//}
         end
 
@@ -974,6 +1177,10 @@ generate //{
         assign i_icb_rsp_excl_ok   = sel_i_icb_rsp_excl_ok  ;
         assign i_icb_rsp_rdata = sel_i_icb_rsp_rdata;
         assign i_icb_rsp_usr   = sel_i_icb_rsp_usr  ;
+`ifdef E203_HAS_ICBX //{
+        assign i_icb_rsp_id    = sel_i_icb_rsp_id   ;
+        assign i_icb_rsp_last  = sel_i_icb_rsp_last ;
+`endif //}
 
     end
     else begin:ptr_not_1hot_rsp//}{
@@ -990,6 +1197,10 @@ generate //{
         assign i_icb_rsp_excl_ok = o_icb_rsp_excl_ok[o_icb_rsp_port_id]; 
         assign i_icb_rsp_rdata   = o_icb_rsp_rdata  [o_icb_rsp_port_id]; 
         assign i_icb_rsp_usr     = o_icb_rsp_usr    [o_icb_rsp_port_id]; 
+`ifdef E203_HAS_ICBX //{
+        assign i_icb_rsp_id      = o_icb_rsp_id_w   [o_icb_rsp_port_id]; 
+        assign i_icb_rsp_last    = o_icb_rsp_last_w [o_icb_rsp_port_id]; 
+`endif //}
     end//}
     
   end//}
