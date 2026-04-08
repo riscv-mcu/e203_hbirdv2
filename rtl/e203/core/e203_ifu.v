@@ -67,6 +67,11 @@ module e203_ifu(
             // Note: The data on rdata or wdata channel must be naturally
             //       aligned, this is in line with the AXI definition
   output [`E203_ADDR_SIZE-1:0]   ifu2biu_icb_cmd_addr, // Bus transaction start addr 
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   ifu2biu_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  ifu2biu_icb_cmd_len,
+  output                          ifu2biu_icb_cmd_last,
+`endif //}
 
   //    * Bus RSP channel
   input  ifu2biu_icb_rsp_valid, // Response valid 
@@ -74,6 +79,10 @@ module e203_ifu(
   input  ifu2biu_icb_rsp_err,   // Response error
             // Note: the RSP rdata is inline with AXI definition
   input  [`E203_SYSMEM_DATA_WIDTH-1:0] ifu2biu_icb_rsp_rdata, 
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   ifu2biu_icb_rsp_id,
+  input                           ifu2biu_icb_rsp_last,
+`endif //}
 
   //input  ifu2biu_replay,
   `endif//}
@@ -222,10 +231,19 @@ module e203_ifu(
     .ifu2biu_icb_cmd_valid(ifu2biu_icb_cmd_valid),
     .ifu2biu_icb_cmd_ready(ifu2biu_icb_cmd_ready),
     .ifu2biu_icb_cmd_addr (ifu2biu_icb_cmd_addr ),
+`ifdef E203_HAS_ICBX //{
+    .ifu2biu_icb_cmd_id   (ifu2biu_icb_cmd_id),
+    .ifu2biu_icb_cmd_len  (ifu2biu_icb_cmd_len),
+    .ifu2biu_icb_cmd_last (ifu2biu_icb_cmd_last),
+`endif //}
     .ifu2biu_icb_rsp_valid(ifu2biu_icb_rsp_valid),
     .ifu2biu_icb_rsp_ready(ifu2biu_icb_rsp_ready),
     .ifu2biu_icb_rsp_err  (ifu2biu_icb_rsp_err  ),
     .ifu2biu_icb_rsp_rdata(ifu2biu_icb_rsp_rdata),
+`ifdef E203_HAS_ICBX //{
+    .ifu2biu_icb_rsp_id   (ifu2biu_icb_rsp_id),
+    .ifu2biu_icb_rsp_last (ifu2biu_icb_rsp_last),
+`endif //}
     //.ifu2biu_replay (ifu2biu_replay),
   `endif//}
 

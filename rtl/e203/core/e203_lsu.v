@@ -147,6 +147,11 @@ module e203_lsu(
   output                         biu_icb_cmd_lock,
   output                         biu_icb_cmd_excl,
   output [1:0]                   biu_icb_cmd_size,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   biu_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  biu_icb_cmd_len,
+  output                          biu_icb_cmd_last,
+`endif //}
   //
   //    * Bus RSP channel
   input                          biu_icb_rsp_valid,
@@ -154,6 +159,10 @@ module e203_lsu(
   input                          biu_icb_rsp_err  ,
   input                          biu_icb_rsp_excl_ok  ,
   input  [`E203_XLEN-1:0]        biu_icb_rsp_rdata,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   biu_icb_rsp_id,
+  input                           biu_icb_rsp_last,
+`endif //}
 
 `ifdef E203_HAS_NICE//{
   input                          nice_mem_holdup,
@@ -328,12 +337,21 @@ module e203_lsu(
     .biu_icb_cmd_lock      (biu_icb_cmd_lock),
     .biu_icb_cmd_excl      (biu_icb_cmd_excl),
     .biu_icb_cmd_size      (biu_icb_cmd_size),
+`ifdef E203_HAS_ICBX //{
+    .biu_icb_cmd_id        (biu_icb_cmd_id),
+    .biu_icb_cmd_len       (biu_icb_cmd_len),
+    .biu_icb_cmd_last      (biu_icb_cmd_last),
+`endif //}
    
     .biu_icb_rsp_valid     (biu_icb_rsp_valid),
     .biu_icb_rsp_ready     (biu_icb_rsp_ready),
     .biu_icb_rsp_err       (biu_icb_rsp_err  ),
     .biu_icb_rsp_excl_ok   (biu_icb_rsp_excl_ok  ),
     .biu_icb_rsp_rdata     (biu_icb_rsp_rdata),
+`ifdef E203_HAS_ICBX //{
+    .biu_icb_rsp_id        (biu_icb_rsp_id),
+    .biu_icb_rsp_last      (biu_icb_rsp_last),
+`endif //}
  
 
     .clk                   (clk),

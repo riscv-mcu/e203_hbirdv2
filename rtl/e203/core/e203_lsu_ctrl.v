@@ -192,6 +192,11 @@ module e203_lsu_ctrl(
   output                         biu_icb_cmd_lock,
   output                         biu_icb_cmd_excl,
   output [1:0]                   biu_icb_cmd_size,
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   biu_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  biu_icb_cmd_len,
+  output                          biu_icb_cmd_last,
+`endif //}
   //
   //    * Bus RSP channel
   input                          biu_icb_rsp_valid,
@@ -199,6 +204,10 @@ module e203_lsu_ctrl(
   input                          biu_icb_rsp_err  ,
   input                          biu_icb_rsp_excl_ok  ,
   input  [`E203_XLEN-1:0]        biu_icb_rsp_rdata,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   biu_icb_rsp_id,
+  input                           biu_icb_rsp_last,
+`endif //}
 
   input  clk,
   input  rst_n
@@ -316,6 +325,11 @@ module e203_lsu_ctrl(
   wire [1:0] arbt_icb_cmd_burst;
   wire [1:0] arbt_icb_cmd_beat;
   wire [USR_W-1:0] arbt_icb_cmd_usr;
+`ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0] arbt_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0] arbt_icb_cmd_len;
+  wire arbt_icb_cmd_last;
+`endif //}
 
   wire arbt_icb_rsp_valid;
   wire arbt_icb_rsp_ready;
@@ -323,6 +337,10 @@ module e203_lsu_ctrl(
   wire arbt_icb_rsp_excl_ok;
   wire [`E203_XLEN-1:0] arbt_icb_rsp_rdata;
   wire [USR_W-1:0] arbt_icb_rsp_usr;
+`ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0] arbt_icb_rsp_id;
+  wire arbt_icb_rsp_last;
+`endif //}
 
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_cmd_valid;
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_cmd_ready;
@@ -336,6 +354,11 @@ module e203_lsu_ctrl(
   wire [LSU_ARBT_I_NUM*USR_W-1:0] arbt_bus_icb_cmd_usr;
   wire [LSU_ARBT_I_NUM*2-1:0] arbt_bus_icb_cmd_burst;
   wire [LSU_ARBT_I_NUM*2-1:0] arbt_bus_icb_cmd_beat;
+`ifdef E203_HAS_ICBX //{
+  wire [LSU_ARBT_I_NUM*`E203_ICBX_ID_W-1:0] arbt_bus_icb_cmd_id;
+  wire [LSU_ARBT_I_NUM*`E203_ICBX_LEN_W-1:0] arbt_bus_icb_cmd_len;
+  wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_cmd_last;
+`endif //}
 
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_rsp_valid;
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_rsp_ready;
@@ -343,6 +366,10 @@ module e203_lsu_ctrl(
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_rsp_excl_ok;
   wire [LSU_ARBT_I_NUM*`E203_XLEN-1:0] arbt_bus_icb_rsp_rdata;
   wire [LSU_ARBT_I_NUM*USR_W-1:0] arbt_bus_icb_rsp_usr;
+`ifdef E203_HAS_ICBX //{
+  wire [LSU_ARBT_I_NUM*`E203_ICBX_ID_W-1:0] arbt_bus_icb_rsp_id;
+  wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_rsp_last;
+`endif //}
 
   //CMD Channel
   wire [LSU_ARBT_I_NUM*1-1:0] arbt_bus_icb_cmd_valid_raw;
@@ -444,6 +471,12 @@ module e203_lsu_ctrl(
                            `endif//}
                            } ;
 
+`ifdef E203_HAS_ICBX //{
+  assign arbt_bus_icb_cmd_id   = {LSU_ARBT_I_NUM*`E203_ICBX_ID_W{1'b0}};
+  assign arbt_bus_icb_cmd_len  = {LSU_ARBT_I_NUM*`E203_ICBX_LEN_W{1'b0}};
+  assign arbt_bus_icb_cmd_last = {LSU_ARBT_I_NUM{1'b1}};
+`endif //}
+
   assign                   {
                              agu_icb_cmd_ready_pos
                            `ifdef E203_HAS_NICE//{
@@ -521,6 +554,11 @@ module e203_lsu_ctrl(
   .o_icb_cmd_lock         (arbt_icb_cmd_lock )     ,
   .o_icb_cmd_size         (arbt_icb_cmd_size )     ,
   .o_icb_cmd_usr          (arbt_icb_cmd_usr  )     ,
+`ifdef E203_HAS_ICBX //{
+  .o_icb_cmd_id           (arbt_icb_cmd_id  )      ,
+  .o_icb_cmd_len          (arbt_icb_cmd_len )      ,
+  .o_icb_cmd_last         (arbt_icb_cmd_last)      ,
+`endif //}
                                 
   .o_icb_rsp_valid        (arbt_icb_rsp_valid )     ,
   .o_icb_rsp_ready        (arbt_icb_rsp_ready )     ,
@@ -528,6 +566,10 @@ module e203_lsu_ctrl(
   .o_icb_rsp_excl_ok      (arbt_icb_rsp_excl_ok)    ,
   .o_icb_rsp_rdata        (arbt_icb_rsp_rdata )     ,
   .o_icb_rsp_usr          (arbt_icb_rsp_usr   )     ,
+`ifdef E203_HAS_ICBX //{
+  .o_icb_rsp_id           (arbt_icb_rsp_id  )      ,
+  .o_icb_rsp_last         (arbt_icb_rsp_last)      ,
+`endif //}
                                
   .i_bus_icb_cmd_ready    (arbt_bus_icb_cmd_ready ) ,
   .i_bus_icb_cmd_valid    (arbt_bus_icb_cmd_valid ) ,
@@ -541,6 +583,11 @@ module e203_lsu_ctrl(
   .i_bus_icb_cmd_lock     (arbt_bus_icb_cmd_lock )  ,
   .i_bus_icb_cmd_size     (arbt_bus_icb_cmd_size )  ,
   .i_bus_icb_cmd_usr      (arbt_bus_icb_cmd_usr  )  ,
+`ifdef E203_HAS_ICBX //{
+  .i_bus_icb_cmd_id       (arbt_bus_icb_cmd_id  )  ,
+  .i_bus_icb_cmd_len      (arbt_bus_icb_cmd_len )  ,
+  .i_bus_icb_cmd_last     (arbt_bus_icb_cmd_last)  ,
+`endif //}
                                 
   .i_bus_icb_rsp_valid    (arbt_bus_icb_rsp_valid ) ,
   .i_bus_icb_rsp_ready    (arbt_bus_icb_rsp_ready ) ,
@@ -548,6 +595,10 @@ module e203_lsu_ctrl(
   .i_bus_icb_rsp_excl_ok  (arbt_bus_icb_rsp_excl_ok),
   .i_bus_icb_rsp_rdata    (arbt_bus_icb_rsp_rdata ) ,
   .i_bus_icb_rsp_usr      (arbt_bus_icb_rsp_usr) ,
+`ifdef E203_HAS_ICBX //{
+  .i_bus_icb_rsp_id       (arbt_bus_icb_rsp_id  )  ,
+  .i_bus_icb_rsp_last     (arbt_bus_icb_rsp_last)  ,
+`endif //}
                              
   .clk                    (clk  ),
   .rst_n                  (rst_n)
@@ -769,6 +820,11 @@ module e203_lsu_ctrl(
   assign biu_icb_cmd_lock  = arbt_icb_cmd_lock ;
   assign biu_icb_cmd_excl  = arbt_icb_cmd_excl ;
   assign biu_icb_cmd_size  = arbt_icb_cmd_size ;
+`ifdef E203_HAS_ICBX //{
+  assign biu_icb_cmd_id    = arbt_icb_cmd_id   ;
+  assign biu_icb_cmd_len   = arbt_icb_cmd_len  ;
+  assign biu_icb_cmd_last  = arbt_icb_cmd_last ;
+`endif //}
   
   ////assign arbt_icb_cmd_ready_pos =  
   ////          (arbt_icb_cmd_biu & biu_icb_cmd_ready ) 
@@ -896,6 +952,37 @@ module e203_lsu_ctrl(
             ) 
              `endif//}
              ;
+
+`ifdef E203_HAS_ICBX //{
+  assign {arbt_icb_rsp_id, arbt_icb_rsp_last} =
+            ({`E203_ICBX_ID_W+1{arbt_icb_rsp_biu}} &
+                        { biu_icb_rsp_id
+                        , biu_icb_rsp_last
+                        }
+            )
+             `ifdef E203_HAS_DCACHE //{
+          | ({`E203_ICBX_ID_W+1{arbt_icb_rsp_dcache}} &
+                        { {`E203_ICBX_ID_W{1'b0}}
+                        , 1'b1
+                        }
+            )
+             `endif//}
+             `ifdef E203_HAS_DTCM //{
+          | ({`E203_ICBX_ID_W+1{arbt_icb_rsp_dtcm}} &
+                        { {`E203_ICBX_ID_W{1'b0}}
+                        , 1'b1
+                        }
+            )
+             `endif//}
+             `ifdef E203_HAS_ITCM //{
+          | ({`E203_ICBX_ID_W+1{arbt_icb_rsp_itcm}} &
+                        { {`E203_ICBX_ID_W{1'b0}}
+                        , 1'b1
+                        }
+            )
+             `endif//}
+             ;
+`endif //}
 
   assign biu_icb_rsp_ready    = arbt_icb_rsp_biu    & arbt_icb_rsp_ready;
              `ifdef E203_HAS_DCACHE //{
