@@ -35,11 +35,20 @@ module e203_subsys_clint(
   input                          clint_icb_cmd_read, 
   input  [`E203_XLEN-1:0]        clint_icb_cmd_wdata,
   input  [`E203_XLEN/8-1:0]      clint_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   clint_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0]  clint_icb_cmd_len,
+  input                          clint_icb_cmd_last,
+  `endif//}
   //
   output                         clint_icb_rsp_valid,
   input                          clint_icb_rsp_ready,
   output                         clint_icb_rsp_err,
   output [`E203_XLEN-1:0]        clint_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   clint_icb_rsp_id,
+  output                         clint_icb_rsp_last,
+  `endif//}
 
   output  clint_tmr_irq,
   output  clint_sft_irq,
@@ -63,6 +72,11 @@ module e203_subsys_clint(
       .clk      (clk  ),
       .rst_n    (rst_n) 
   );
+
+  `ifdef E203_HAS_ICBX //{
+  assign clint_icb_rsp_id   = {`E203_ICBX_ID_W{1'b0}};
+  assign clint_icb_rsp_last = 1'b1;
+  `endif//}
 
   sirv_clint_top u_sirv_clint_top(
   .clk             (clk   ),

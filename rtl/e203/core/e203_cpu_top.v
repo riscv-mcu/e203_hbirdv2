@@ -148,10 +148,21 @@ module e203_cpu_top(
   output [`E203_XLEN/8-1:0]      ppi_icb_cmd_wmask,
   //
   //    * Bus RSP channel
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   ppi_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  ppi_icb_cmd_len,
+  output                         ppi_icb_cmd_last,
+  `endif//}
+  //
+  //    * Bus RSP channel
   input                          ppi_icb_rsp_valid,
   output                         ppi_icb_rsp_ready,
   input                          ppi_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        ppi_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   ppi_icb_rsp_id,
+  input                          ppi_icb_rsp_last,
+  `endif//}
   // The Private Peripheral Interface (ICB): End
 
   //////////////////////////////////////////////////////////////
@@ -164,10 +175,21 @@ module e203_cpu_top(
   output [`E203_XLEN/8-1:0]      clint_icb_cmd_wmask,
   //
   //    * Bus RSP channel
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   clint_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  clint_icb_cmd_len,
+  output                         clint_icb_cmd_last,
+  `endif//}
+  //
+  //    * Bus RSP channel
   input                          clint_icb_rsp_valid,
   output                         clint_icb_rsp_ready,
   input                          clint_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        clint_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   clint_icb_rsp_id,
+  input                          clint_icb_rsp_last,
+  `endif//}
   // The CLINT Interface (ICB): End
 
   //////////////////////////////////////////////////////////////
@@ -180,10 +202,21 @@ module e203_cpu_top(
   output [`E203_XLEN/8-1:0]      plic_icb_cmd_wmask,
   //
   //    * Bus RSP channel
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   plic_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  plic_icb_cmd_len,
+  output                         plic_icb_cmd_last,
+  `endif//}
+  //
+  //    * Bus RSP channel
   input                          plic_icb_rsp_valid,
   output                         plic_icb_rsp_ready,
   input                          plic_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        plic_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   plic_icb_rsp_id,
+  input                          plic_icb_rsp_last,
+  `endif//}
   // The PLIC Interface (ICB): End
 
 
@@ -199,10 +232,21 @@ module e203_cpu_top(
   output [`E203_XLEN/8-1:0]      fio_icb_cmd_wmask,
   //
   //    * Bus RSP channel
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   fio_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  fio_icb_cmd_len,
+  output                         fio_icb_cmd_last,
+  `endif//}
+  //
+  //    * Bus RSP channel
   input                          fio_icb_rsp_valid,
   output                         fio_icb_rsp_ready,
   input                          fio_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        fio_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   fio_icb_rsp_id,
+  input                          fio_icb_rsp_last,
+  `endif//}
   // The Fast IO Interface (ICB): End
 
   //////////////////////////////////////////////////////////////
@@ -217,10 +261,21 @@ module e203_cpu_top(
   output [`E203_XLEN/8-1:0]      mem_icb_cmd_wmask,
   //
   //    * Bus RSP channel
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   mem_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  mem_icb_cmd_len,
+  output                         mem_icb_cmd_last,
+  `endif//}
+  //
+  //    * Bus RSP channel
   input                          mem_icb_rsp_valid,
   output                         mem_icb_rsp_ready,
   input                          mem_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        mem_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   mem_icb_rsp_id,
+  input                          mem_icb_rsp_last,
+  `endif//}
   // The System Memory Interface (ICB): End
 
 
@@ -435,12 +490,21 @@ module e203_cpu_top(
     .ppi_icb_cmd_lock      (),
     .ppi_icb_cmd_excl      (),
     .ppi_icb_cmd_size      (),
+    `ifdef E203_HAS_ICBX //{
+    .ppi_icb_cmd_id        (ppi_icb_cmd_id  ),
+    .ppi_icb_cmd_len       (ppi_icb_cmd_len ),
+    .ppi_icb_cmd_last      (ppi_icb_cmd_last),
+    `endif//}
     
     .ppi_icb_rsp_valid     (ppi_icb_rsp_valid),
     .ppi_icb_rsp_ready     (ppi_icb_rsp_ready),
     .ppi_icb_rsp_err       (ppi_icb_rsp_err  ),
     .ppi_icb_rsp_excl_ok   (ppi_icb_rsp_excl_ok  ),
     .ppi_icb_rsp_rdata     (ppi_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .ppi_icb_rsp_id        (ppi_icb_rsp_id  ),
+    .ppi_icb_rsp_last      (ppi_icb_rsp_last),
+    `endif//}
 
     .clint_region_indic      (clint_region_indic),
     .clint_icb_enable        (clint_icb_enable),
@@ -453,12 +517,21 @@ module e203_cpu_top(
     .clint_icb_cmd_lock      (),
     .clint_icb_cmd_excl      (),
     .clint_icb_cmd_size      (),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_cmd_id        (clint_icb_cmd_id  ),
+    .clint_icb_cmd_len       (clint_icb_cmd_len ),
+    .clint_icb_cmd_last      (clint_icb_cmd_last),
+    `endif//}
     
     .clint_icb_rsp_valid     (clint_icb_rsp_valid),
     .clint_icb_rsp_ready     (clint_icb_rsp_ready),
     .clint_icb_rsp_err       (clint_icb_rsp_err  ),
     .clint_icb_rsp_excl_ok   (clint_icb_rsp_excl_ok  ),
     .clint_icb_rsp_rdata     (clint_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_rsp_id        (clint_icb_rsp_id  ),
+    .clint_icb_rsp_last      (clint_icb_rsp_last),
+    `endif//}
 
     .plic_region_indic      (plic_region_indic),
     .plic_icb_enable        (plic_icb_enable),
@@ -471,12 +544,21 @@ module e203_cpu_top(
     .plic_icb_cmd_lock      (),
     .plic_icb_cmd_excl      (),
     .plic_icb_cmd_size      (),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_cmd_id        (plic_icb_cmd_id  ),
+    .plic_icb_cmd_len       (plic_icb_cmd_len ),
+    .plic_icb_cmd_last      (plic_icb_cmd_last),
+    `endif//}
     
     .plic_icb_rsp_valid     (plic_icb_rsp_valid),
     .plic_icb_rsp_ready     (plic_icb_rsp_ready),
     .plic_icb_rsp_err       (plic_icb_rsp_err  ),
     .plic_icb_rsp_excl_ok   (plic_icb_rsp_excl_ok  ),
     .plic_icb_rsp_rdata     (plic_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_rsp_id        (plic_icb_rsp_id  ),
+    .plic_icb_rsp_last      (plic_icb_rsp_last),
+    `endif//}
 
 
   `ifdef E203_HAS_FIO //{
@@ -491,12 +573,21 @@ module e203_cpu_top(
     .fio_icb_cmd_lock      (),
     .fio_icb_cmd_excl      (),
     .fio_icb_cmd_size      (),
+    `ifdef E203_HAS_ICBX //{
+    .fio_icb_cmd_id        (fio_icb_cmd_id  ),
+    .fio_icb_cmd_len       (fio_icb_cmd_len ),
+    .fio_icb_cmd_last      (fio_icb_cmd_last),
+    `endif//}
     
     .fio_icb_rsp_valid     (fio_icb_rsp_valid),
     .fio_icb_rsp_ready     (fio_icb_rsp_ready),
     .fio_icb_rsp_err       (fio_icb_rsp_err  ),
     .fio_icb_rsp_excl_ok   (fio_icb_rsp_excl_ok  ),
     .fio_icb_rsp_rdata     (fio_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .fio_icb_rsp_id        (fio_icb_rsp_id  ),
+    .fio_icb_rsp_last      (fio_icb_rsp_last),
+    `endif//}
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
@@ -512,12 +603,21 @@ module e203_cpu_top(
     .mem_icb_cmd_size   (),
     .mem_icb_cmd_burst  (),
     .mem_icb_cmd_beat   (),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_cmd_id     (mem_icb_cmd_id  ),
+    .mem_icb_cmd_len    (mem_icb_cmd_len ),
+    .mem_icb_cmd_last   (mem_icb_cmd_last),
+    `endif//}
     
     .mem_icb_rsp_valid  (mem_icb_rsp_valid),
     .mem_icb_rsp_ready  (mem_icb_rsp_ready),
     .mem_icb_rsp_err    (mem_icb_rsp_err  ),
     .mem_icb_rsp_excl_ok(mem_icb_rsp_excl_ok  ),
     .mem_icb_rsp_rdata  (mem_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_rsp_id     (mem_icb_rsp_id  ),
+    .mem_icb_rsp_last   (mem_icb_rsp_last),
+    `endif//}
   `endif//}
 
   `ifdef E203_HAS_ITCM //{

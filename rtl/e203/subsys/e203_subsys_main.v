@@ -182,12 +182,21 @@ module e203_subsys_main(
   output                         sysper_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysper_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysper_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysper_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysper_icb_cmd_len,
+  output                         sysper_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysper_icb_rsp_valid,
   output                         sysper_icb_rsp_ready,
   input                          sysper_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysper_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysper_icb_rsp_id,
+  input                          sysper_icb_rsp_last,
+  `endif//}
 
   `ifdef E203_HAS_FIO //{
   //////////////////////////////////////////////////////////////
@@ -201,12 +210,21 @@ module e203_subsys_main(
   output                         sysfio_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysfio_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysfio_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysfio_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysfio_icb_cmd_len,
+  output                         sysfio_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysfio_icb_rsp_valid,
   output                         sysfio_icb_rsp_ready,
   input                          sysfio_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysfio_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysfio_icb_rsp_id,
+  input                          sysfio_icb_rsp_last,
+  `endif//}
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
@@ -221,12 +239,21 @@ module e203_subsys_main(
   output                         sysmem_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysmem_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysmem_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysmem_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysmem_icb_cmd_len,
+  output                         sysmem_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysmem_icb_rsp_valid,
   output                         sysmem_icb_rsp_ready,
   input                          sysmem_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysmem_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysmem_icb_rsp_id,
+  input                          sysmem_icb_rsp_last,
+  `endif//}
   `endif//}
 
   input  test_mode,
@@ -391,6 +418,14 @@ module e203_subsys_main(
   wire                         ppi_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        ppi_icb_rsp_rdata;
 
+  `ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0]   ppi_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0]  ppi_icb_cmd_len;
+  wire                         ppi_icb_cmd_last;
+  wire [`E203_ICBX_ID_W-1:0]   ppi_icb_rsp_id;
+  wire                         ppi_icb_rsp_last;
+  `endif//}
+
   
   wire                         clint_icb_cmd_valid;
   wire                         clint_icb_cmd_ready;
@@ -403,6 +438,14 @@ module e203_subsys_main(
   wire                         clint_icb_rsp_ready;
   wire                         clint_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        clint_icb_rsp_rdata;
+
+  `ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0]   clint_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0]  clint_icb_cmd_len;
+  wire                         clint_icb_cmd_last;
+  wire [`E203_ICBX_ID_W-1:0]   clint_icb_rsp_id;
+  wire                         clint_icb_rsp_last;
+  `endif//}
 
   
   wire                         plic_icb_cmd_valid;
@@ -417,6 +460,14 @@ module e203_subsys_main(
   wire                         plic_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        plic_icb_rsp_rdata;
 
+  `ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0]   plic_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0]  plic_icb_cmd_len;
+  wire                         plic_icb_cmd_last;
+  wire [`E203_ICBX_ID_W-1:0]   plic_icb_rsp_id;
+  wire                         plic_icb_rsp_last;
+  `endif//}
+
   `ifdef E203_HAS_FIO //{
   wire                         fio_icb_cmd_valid;
   wire                         fio_icb_cmd_ready;
@@ -430,6 +481,14 @@ module e203_subsys_main(
   wire                         fio_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        fio_icb_rsp_rdata;
 
+  `ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0]   fio_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0]  fio_icb_cmd_len;
+  wire                         fio_icb_cmd_last;
+  wire [`E203_ICBX_ID_W-1:0]   fio_icb_rsp_id;
+  wire                         fio_icb_rsp_last;
+  `endif//}
+
   assign sysfio_icb_cmd_valid = fio_icb_cmd_valid;
   assign fio_icb_cmd_ready    = sysfio_icb_cmd_ready;
   assign sysfio_icb_cmd_addr  = fio_icb_cmd_addr ; 
@@ -441,6 +500,13 @@ module e203_subsys_main(
   assign sysfio_icb_rsp_ready = fio_icb_rsp_ready;
   assign fio_icb_rsp_err      = sysfio_icb_rsp_err  ;
   assign fio_icb_rsp_rdata    = sysfio_icb_rsp_rdata;
+  `ifdef E203_HAS_ICBX //{
+  assign sysfio_icb_cmd_id    = fio_icb_cmd_id;
+  assign sysfio_icb_cmd_len   = fio_icb_cmd_len;
+  assign sysfio_icb_cmd_last  = fio_icb_cmd_last;
+  assign fio_icb_rsp_id       = sysfio_icb_rsp_id;
+  assign fio_icb_rsp_last     = sysfio_icb_rsp_last;
+  `endif//}
   `endif//}
 
   wire                         mem_icb_cmd_valid;
@@ -454,6 +520,14 @@ module e203_subsys_main(
   wire                         mem_icb_rsp_ready;
   wire                         mem_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        mem_icb_rsp_rdata;
+
+  `ifdef E203_HAS_ICBX //{
+  wire [`E203_ICBX_ID_W-1:0]   mem_icb_cmd_id;
+  wire [`E203_ICBX_LEN_W-1:0]  mem_icb_cmd_len;
+  wire                         mem_icb_cmd_last;
+  wire [`E203_ICBX_ID_W-1:0]   mem_icb_rsp_id;
+  wire                         mem_icb_rsp_last;
+  `endif//}
 
   wire  plic_ext_irq;
   wire  clint_sft_irq;
@@ -569,11 +643,20 @@ module e203_subsys_main(
     .plic_icb_cmd_read      (plic_icb_cmd_read ),
     .plic_icb_cmd_wdata     (plic_icb_cmd_wdata),
     .plic_icb_cmd_wmask     (plic_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_cmd_id        (plic_icb_cmd_id  ),
+    .plic_icb_cmd_len       (plic_icb_cmd_len ),
+    .plic_icb_cmd_last      (plic_icb_cmd_last),
+    `endif//}
     
     .plic_icb_rsp_valid     (plic_icb_rsp_valid),
     .plic_icb_rsp_ready     (plic_icb_rsp_ready),
     .plic_icb_rsp_err       (plic_icb_rsp_err  ),
     .plic_icb_rsp_rdata     (plic_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_rsp_id        (plic_icb_rsp_id  ),
+    .plic_icb_rsp_last      (plic_icb_rsp_last),
+    `endif//}
 
     .clint_icb_cmd_valid     (clint_icb_cmd_valid),
     .clint_icb_cmd_ready     (clint_icb_cmd_ready),
@@ -581,11 +664,20 @@ module e203_subsys_main(
     .clint_icb_cmd_read      (clint_icb_cmd_read ),
     .clint_icb_cmd_wdata     (clint_icb_cmd_wdata),
     .clint_icb_cmd_wmask     (clint_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_cmd_id        (clint_icb_cmd_id  ),
+    .clint_icb_cmd_len       (clint_icb_cmd_len ),
+    .clint_icb_cmd_last      (clint_icb_cmd_last),
+    `endif//}
     
     .clint_icb_rsp_valid     (clint_icb_rsp_valid),
     .clint_icb_rsp_ready     (clint_icb_rsp_ready),
     .clint_icb_rsp_err       (clint_icb_rsp_err  ),
     .clint_icb_rsp_rdata     (clint_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_rsp_id        (clint_icb_rsp_id  ),
+    .clint_icb_rsp_last      (clint_icb_rsp_last),
+    `endif//}
 
     .fio_icb_cmd_valid     (fio_icb_cmd_valid),
     .fio_icb_cmd_ready     (fio_icb_cmd_ready),
@@ -593,11 +685,20 @@ module e203_subsys_main(
     .fio_icb_cmd_read      (fio_icb_cmd_read ),
     .fio_icb_cmd_wdata     (fio_icb_cmd_wdata),
     .fio_icb_cmd_wmask     (fio_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .fio_icb_cmd_id        (fio_icb_cmd_id  ),
+    .fio_icb_cmd_len       (fio_icb_cmd_len ),
+    .fio_icb_cmd_last      (fio_icb_cmd_last),
+    `endif//}
     
     .fio_icb_rsp_valid     (fio_icb_rsp_valid),
     .fio_icb_rsp_ready     (fio_icb_rsp_ready),
     .fio_icb_rsp_err       (fio_icb_rsp_err  ),
     .fio_icb_rsp_rdata     (fio_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .fio_icb_rsp_id        (fio_icb_rsp_id  ),
+    .fio_icb_rsp_last      (fio_icb_rsp_last),
+    `endif//}
 
     .mem_icb_cmd_valid  (mem_icb_cmd_valid),
     .mem_icb_cmd_ready  (mem_icb_cmd_ready),
@@ -605,11 +706,20 @@ module e203_subsys_main(
     .mem_icb_cmd_read   (mem_icb_cmd_read ),
     .mem_icb_cmd_wdata  (mem_icb_cmd_wdata),
     .mem_icb_cmd_wmask  (mem_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_cmd_id     (mem_icb_cmd_id  ),
+    .mem_icb_cmd_len    (mem_icb_cmd_len ),
+    .mem_icb_cmd_last   (mem_icb_cmd_last),
+    `endif//}
     
     .mem_icb_rsp_valid  (mem_icb_rsp_valid),
     .mem_icb_rsp_ready  (mem_icb_rsp_ready),
     .mem_icb_rsp_err    (mem_icb_rsp_err  ),
     .mem_icb_rsp_rdata  (mem_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_rsp_id     (mem_icb_rsp_id  ),
+    .mem_icb_rsp_last   (mem_icb_rsp_last),
+    `endif//}
 
     .test_mode     (test_mode), 
     .clk           (hfclk  ),
@@ -643,11 +753,20 @@ module e203_subsys_main(
     .plic_icb_cmd_read      (plic_icb_cmd_read ),
     .plic_icb_cmd_wdata     (plic_icb_cmd_wdata),
     .plic_icb_cmd_wmask     (plic_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_cmd_id        (plic_icb_cmd_id  ),
+    .plic_icb_cmd_len       (plic_icb_cmd_len ),
+    .plic_icb_cmd_last      (plic_icb_cmd_last),
+    `endif//}
     
     .plic_icb_rsp_valid     (plic_icb_rsp_valid),
     .plic_icb_rsp_ready     (plic_icb_rsp_ready),
     .plic_icb_rsp_err       (plic_icb_rsp_err  ),
     .plic_icb_rsp_rdata     (plic_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .plic_icb_rsp_id        (plic_icb_rsp_id  ),
+    .plic_icb_rsp_last      (plic_icb_rsp_last),
+    `endif//}
 
     .plic_ext_irq           (plic_ext_irq),
 
@@ -686,11 +805,20 @@ e203_subsys_clint u_e203_subsys_clint(
     .clint_icb_cmd_read      (clint_icb_cmd_read ),
     .clint_icb_cmd_wdata     (clint_icb_cmd_wdata),
     .clint_icb_cmd_wmask     (clint_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_cmd_id        (clint_icb_cmd_id  ),
+    .clint_icb_cmd_len       (clint_icb_cmd_len ),
+    .clint_icb_cmd_last      (clint_icb_cmd_last),
+    `endif//}
     
     .clint_icb_rsp_valid     (clint_icb_rsp_valid),
     .clint_icb_rsp_ready     (clint_icb_rsp_ready),
     .clint_icb_rsp_err       (clint_icb_rsp_err  ),
     .clint_icb_rsp_rdata     (clint_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .clint_icb_rsp_id        (clint_icb_rsp_id  ),
+    .clint_icb_rsp_last      (clint_icb_rsp_last),
+    `endif//}
 
     .clint_tmr_irq           (clint_tmr_irq),
     .clint_sft_irq           (clint_sft_irq),
@@ -730,11 +858,20 @@ e203_subsys_clint u_e203_subsys_clint(
     .ppi_icb_cmd_read      (ppi_icb_cmd_read ),
     .ppi_icb_cmd_wdata     (ppi_icb_cmd_wdata),
     .ppi_icb_cmd_wmask     (ppi_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .ppi_icb_cmd_id        (ppi_icb_cmd_id  ),
+    .ppi_icb_cmd_len       (ppi_icb_cmd_len ),
+    .ppi_icb_cmd_last      (ppi_icb_cmd_last),
+    `endif//}
     
     .ppi_icb_rsp_valid     (ppi_icb_rsp_valid),
     .ppi_icb_rsp_ready     (ppi_icb_rsp_ready),
     .ppi_icb_rsp_err       (ppi_icb_rsp_err  ),
     .ppi_icb_rsp_rdata     (ppi_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .ppi_icb_rsp_id        (ppi_icb_rsp_id  ),
+    .ppi_icb_rsp_last      (ppi_icb_rsp_last),
+    `endif//}
 
   
     .sysper_icb_cmd_valid  (sysper_icb_cmd_valid),
@@ -743,11 +880,20 @@ e203_subsys_clint u_e203_subsys_clint(
     .sysper_icb_cmd_read   (sysper_icb_cmd_read ), 
     .sysper_icb_cmd_wdata  (sysper_icb_cmd_wdata),
     .sysper_icb_cmd_wmask  (sysper_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .sysper_icb_cmd_id     (sysper_icb_cmd_id  ),
+    .sysper_icb_cmd_len    (sysper_icb_cmd_len ),
+    .sysper_icb_cmd_last   (sysper_icb_cmd_last),
+    `endif//}
                                                 
     .sysper_icb_rsp_valid  (sysper_icb_rsp_valid),
     .sysper_icb_rsp_ready  (sysper_icb_rsp_ready),
     .sysper_icb_rsp_err    (sysper_icb_rsp_err  ),
     .sysper_icb_rsp_rdata  (sysper_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .sysper_icb_rsp_id     (sysper_icb_rsp_id  ),
+    .sysper_icb_rsp_last   (sysper_icb_rsp_last),
+    `endif//}
 
     .aon_icb_cmd_valid     (aon_icb_cmd_valid),
     .aon_icb_cmd_ready     (aon_icb_cmd_ready),
@@ -843,11 +989,20 @@ e203_subsys_mems u_e203_subsys_mems(
     .mem_icb_cmd_read   (mem_icb_cmd_read ),
     .mem_icb_cmd_wdata  (mem_icb_cmd_wdata),
     .mem_icb_cmd_wmask  (mem_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_cmd_id     (mem_icb_cmd_id  ),
+    .mem_icb_cmd_len    (mem_icb_cmd_len ),
+    .mem_icb_cmd_last   (mem_icb_cmd_last),
+    `endif//}
     
     .mem_icb_rsp_valid  (mem_icb_rsp_valid),
     .mem_icb_rsp_ready  (mem_icb_rsp_ready),
     .mem_icb_rsp_err    (mem_icb_rsp_err  ),
     .mem_icb_rsp_rdata  (mem_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .mem_icb_rsp_id     (mem_icb_rsp_id  ),
+    .mem_icb_rsp_last   (mem_icb_rsp_last),
+    `endif//}
 
     .sysmem_icb_cmd_valid  (sysmem_icb_cmd_valid),
     .sysmem_icb_cmd_ready  (sysmem_icb_cmd_ready),
@@ -855,11 +1010,20 @@ e203_subsys_mems u_e203_subsys_mems(
     .sysmem_icb_cmd_read   (sysmem_icb_cmd_read ),
     .sysmem_icb_cmd_wdata  (sysmem_icb_cmd_wdata),
     .sysmem_icb_cmd_wmask  (sysmem_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .sysmem_icb_cmd_id     (sysmem_icb_cmd_id  ),
+    .sysmem_icb_cmd_len    (sysmem_icb_cmd_len ),
+    .sysmem_icb_cmd_last   (sysmem_icb_cmd_last),
+    `endif//}
     
     .sysmem_icb_rsp_valid  (sysmem_icb_rsp_valid),
     .sysmem_icb_rsp_ready  (sysmem_icb_rsp_ready),
     .sysmem_icb_rsp_err    (sysmem_icb_rsp_err  ),
     .sysmem_icb_rsp_rdata  (sysmem_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .sysmem_icb_rsp_id     (sysmem_icb_rsp_id  ),
+    .sysmem_icb_rsp_last   (sysmem_icb_rsp_last),
+    `endif//}
  
     .qspi0_ro_icb_cmd_valid  (qspi0_ro_icb_cmd_valid), 
     .qspi0_ro_icb_cmd_ready  (qspi0_ro_icb_cmd_ready),

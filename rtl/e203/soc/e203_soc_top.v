@@ -138,11 +138,20 @@ module e203_soc_top(
   .sysper_icb_cmd_addr  (), 
   .sysper_icb_cmd_wdata (), 
   .sysper_icb_cmd_wmask (), 
+  `ifdef E203_HAS_ICBX //{
+  .sysper_icb_cmd_id    (),
+  .sysper_icb_cmd_len   (),
+  .sysper_icb_cmd_last  (),
+  `endif//}
   
   .sysper_icb_rsp_valid (sysper_icb_cmd_valid),
   .sysper_icb_rsp_ready (sysper_icb_cmd_ready),
   .sysper_icb_rsp_err   (1'b0  ),
   .sysper_icb_rsp_rdata (32'b0),
+  `ifdef E203_HAS_ICBX //{
+  .sysper_icb_rsp_id    ({`E203_ICBX_ID_W{1'b0}}),
+  .sysper_icb_rsp_last  (1'b1),
+  `endif//}
 
 
   .sysfio_icb_cmd_valid(sysfio_icb_cmd_valid),
@@ -151,11 +160,20 @@ module e203_soc_top(
   .sysfio_icb_cmd_addr (), 
   .sysfio_icb_cmd_wdata(), 
   .sysfio_icb_cmd_wmask(), 
+  `ifdef E203_HAS_ICBX //{
+  .sysfio_icb_cmd_id   (),
+  .sysfio_icb_cmd_len  (),
+  .sysfio_icb_cmd_last (),
+  `endif//}
    
   .sysfio_icb_rsp_valid(sysfio_icb_cmd_valid),
   .sysfio_icb_rsp_ready(sysfio_icb_cmd_ready),
   .sysfio_icb_rsp_err  (1'b0  ),
   .sysfio_icb_rsp_rdata(32'b0),
+  `ifdef E203_HAS_ICBX //{
+  .sysfio_icb_rsp_id   ({`E203_ICBX_ID_W{1'b0}}),
+  .sysfio_icb_rsp_last (1'b1),
+  `endif//}
 
   .sysmem_icb_cmd_valid(sysmem_icb_cmd_valid),
   .sysmem_icb_cmd_ready(sysmem_icb_cmd_ready),
@@ -163,11 +181,20 @@ module e203_soc_top(
   .sysmem_icb_cmd_addr (), 
   .sysmem_icb_cmd_wdata(), 
   .sysmem_icb_cmd_wmask(), 
+  `ifdef E203_HAS_ICBX //{
+  .sysmem_icb_cmd_id   (),
+  .sysmem_icb_cmd_len  (),
+  .sysmem_icb_cmd_last (),
+  `endif//}
 
   .sysmem_icb_rsp_valid(sysmem_icb_cmd_valid),
   .sysmem_icb_rsp_ready(sysmem_icb_cmd_ready),
   .sysmem_icb_rsp_err  (1'b0  ),
   .sysmem_icb_rsp_rdata(32'b0),
+  `ifdef E203_HAS_ICBX //{
+  .sysmem_icb_rsp_id   ({`E203_ICBX_ID_W{1'b0}}),
+  .sysmem_icb_rsp_last (1'b1),
+  `endif//}
 
   .io_pads_jtag_TCK_i_ival    (io_pads_jtag_TCK_i_ival    ),
   .io_pads_jtag_TCK_o_oval    (),

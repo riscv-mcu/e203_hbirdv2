@@ -36,11 +36,20 @@ module e203_subsys_mems(
   input                          mem_icb_cmd_read, 
   input  [`E203_XLEN-1:0]        mem_icb_cmd_wdata,
   input  [`E203_XLEN/8-1:0]      mem_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   mem_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0]  mem_icb_cmd_len,
+  input                          mem_icb_cmd_last,
+  `endif//}
   //
   output                         mem_icb_rsp_valid,
   input                          mem_icb_rsp_ready,
   output                         mem_icb_rsp_err,
   output [`E203_XLEN-1:0]        mem_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   mem_icb_rsp_id,
+  output                         mem_icb_rsp_last,
+  `endif//}
   
   //////////////////////////////////////////////////////////
   output                         sysmem_icb_cmd_valid,
@@ -49,11 +58,20 @@ module e203_subsys_mems(
   output                         sysmem_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysmem_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysmem_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysmem_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysmem_icb_cmd_len,
+  output                         sysmem_icb_cmd_last,
+  `endif//}
   //
   input                          sysmem_icb_rsp_valid,
   output                         sysmem_icb_rsp_ready,
   input                          sysmem_icb_rsp_err,
   input  [`E203_XLEN-1:0]        sysmem_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysmem_icb_rsp_id,
+  input                          sysmem_icb_rsp_last,
+  `endif//}
 
     //////////////////////////////////////////////////////////
   output                         qspi0_ro_icb_cmd_valid,
@@ -88,6 +106,17 @@ module e203_subsys_mems(
 
       
   wire                         mrom_icb_cmd_valid;
+
+  `ifdef E203_HAS_ICBX //{
+  // MEM bus response: defaults since internal splitter doesn't support ICB-X yet
+  assign mem_icb_rsp_id       = {`E203_ICBX_ID_W{1'b0}};
+  assign mem_icb_rsp_last     = 1'b1;
+  // Sysmem external output: defaults since internal splitter doesn't support ICB-X yet
+  assign sysmem_icb_cmd_id    = {`E203_ICBX_ID_W{1'b0}};
+  assign sysmem_icb_cmd_len   = {`E203_ICBX_LEN_W{1'b0}};
+  assign sysmem_icb_cmd_last  = 1'b1;
+  `endif//}
+
   wire                         mrom_icb_cmd_ready;
   wire [`E203_ADDR_SIZE-1:0]   mrom_icb_cmd_addr; 
   wire                         mrom_icb_cmd_read; 

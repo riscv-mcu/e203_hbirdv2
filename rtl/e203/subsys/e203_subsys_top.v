@@ -130,12 +130,21 @@ module e203_subsys_top(
   output                         sysper_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysper_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysper_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysper_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysper_icb_cmd_len,
+  output                         sysper_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysper_icb_rsp_valid,
   output                         sysper_icb_rsp_ready,
   input                          sysper_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysper_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysper_icb_rsp_id,
+  input                          sysper_icb_rsp_last,
+  `endif//}
 
   `ifdef E203_HAS_FIO //{
   //////////////////////////////////////////////////////////////
@@ -149,12 +158,21 @@ module e203_subsys_top(
   output                         sysfio_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysfio_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysfio_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysfio_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysfio_icb_cmd_len,
+  output                         sysfio_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysfio_icb_rsp_valid,
   output                         sysfio_icb_rsp_ready,
   input                          sysfio_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysfio_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysfio_icb_rsp_id,
+  input                          sysfio_icb_rsp_last,
+  `endif//}
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
@@ -169,12 +187,21 @@ module e203_subsys_top(
   output                         sysmem_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysmem_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysmem_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysmem_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysmem_icb_cmd_len,
+  output                         sysmem_icb_cmd_last,
+  `endif//}
   //
   //    * Bus RSP channel
   input                          sysmem_icb_rsp_valid,
   output                         sysmem_icb_rsp_ready,
   input                          sysmem_icb_rsp_err  ,
   input  [`E203_XLEN-1:0]        sysmem_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysmem_icb_rsp_id,
+  input                          sysmem_icb_rsp_last,
+  `endif//}
   `endif//}
 
   input  [32-1:0] io_pads_gpioA_i_ival,
@@ -442,11 +469,20 @@ module e203_subsys_top(
     .sysper_icb_cmd_read      (sysper_icb_cmd_read ),
     .sysper_icb_cmd_wdata     (sysper_icb_cmd_wdata),
     .sysper_icb_cmd_wmask     (sysper_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .sysper_icb_cmd_id         (sysper_icb_cmd_id  ),
+    .sysper_icb_cmd_len        (sysper_icb_cmd_len ),
+    .sysper_icb_cmd_last       (sysper_icb_cmd_last),
+    `endif//}
     
     .sysper_icb_rsp_valid     (sysper_icb_rsp_valid),
     .sysper_icb_rsp_ready     (sysper_icb_rsp_ready),
     .sysper_icb_rsp_err       (sysper_icb_rsp_err  ),
     .sysper_icb_rsp_rdata     (sysper_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .sysper_icb_rsp_id         (sysper_icb_rsp_id  ),
+    .sysper_icb_rsp_last       (sysper_icb_rsp_last),
+    `endif//}
 
     .sysfio_icb_cmd_valid     (sysfio_icb_cmd_valid),
     .sysfio_icb_cmd_ready     (sysfio_icb_cmd_ready),
@@ -454,11 +490,20 @@ module e203_subsys_top(
     .sysfio_icb_cmd_read      (sysfio_icb_cmd_read ),
     .sysfio_icb_cmd_wdata     (sysfio_icb_cmd_wdata),
     .sysfio_icb_cmd_wmask     (sysfio_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .sysfio_icb_cmd_id         (sysfio_icb_cmd_id  ),
+    .sysfio_icb_cmd_len        (sysfio_icb_cmd_len ),
+    .sysfio_icb_cmd_last       (sysfio_icb_cmd_last),
+    `endif//}
     
     .sysfio_icb_rsp_valid     (sysfio_icb_rsp_valid),
     .sysfio_icb_rsp_ready     (sysfio_icb_rsp_ready),
     .sysfio_icb_rsp_err       (sysfio_icb_rsp_err  ),
     .sysfio_icb_rsp_rdata     (sysfio_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .sysfio_icb_rsp_id         (sysfio_icb_rsp_id  ),
+    .sysfio_icb_rsp_last       (sysfio_icb_rsp_last),
+    `endif//}
 
 
 
@@ -468,11 +513,20 @@ module e203_subsys_top(
     .sysmem_icb_cmd_read   (sysmem_icb_cmd_read ),
     .sysmem_icb_cmd_wdata  (sysmem_icb_cmd_wdata),
     .sysmem_icb_cmd_wmask  (sysmem_icb_cmd_wmask),
+    `ifdef E203_HAS_ICBX //{
+    .sysmem_icb_cmd_id     (sysmem_icb_cmd_id  ),
+    .sysmem_icb_cmd_len    (sysmem_icb_cmd_len ),
+    .sysmem_icb_cmd_last   (sysmem_icb_cmd_last),
+    `endif//}
     
     .sysmem_icb_rsp_valid  (sysmem_icb_rsp_valid),
     .sysmem_icb_rsp_ready  (sysmem_icb_rsp_ready),
     .sysmem_icb_rsp_err    (sysmem_icb_rsp_err  ),
     .sysmem_icb_rsp_rdata  (sysmem_icb_rsp_rdata),
+    `ifdef E203_HAS_ICBX //{
+    .sysmem_icb_rsp_id     (sysmem_icb_rsp_id  ),
+    .sysmem_icb_rsp_last   (sysmem_icb_rsp_last),
+    `endif//}
 
     .test_mode     (test_mode), 
     .ls_clk        (lfextclk), 

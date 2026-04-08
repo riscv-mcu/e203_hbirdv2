@@ -35,11 +35,20 @@ module e203_subsys_perips(
   input                          ppi_icb_cmd_read, 
   input  [`E203_XLEN-1:0]        ppi_icb_cmd_wdata,
   input  [`E203_XLEN/8-1:0]      ppi_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   ppi_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0]  ppi_icb_cmd_len,
+  input                          ppi_icb_cmd_last,
+  `endif//}
   //
   output                         ppi_icb_rsp_valid,
   input                          ppi_icb_rsp_ready,
   output                         ppi_icb_rsp_err,
   output [`E203_XLEN-1:0]        ppi_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   ppi_icb_rsp_id,
+  output                         ppi_icb_rsp_last,
+  `endif//}
   
   //////////////////////////////////////////////////////////
   output                         sysper_icb_cmd_valid,
@@ -48,11 +57,20 @@ module e203_subsys_perips(
   output                         sysper_icb_cmd_read, 
   output [`E203_XLEN-1:0]        sysper_icb_cmd_wdata,
   output [`E203_XLEN/8-1:0]      sysper_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   sysper_icb_cmd_id,
+  output [`E203_ICBX_LEN_W-1:0]  sysper_icb_cmd_len,
+  output                         sysper_icb_cmd_last,
+  `endif//}
   //
   input                          sysper_icb_rsp_valid,
   output                         sysper_icb_rsp_ready,
   input                          sysper_icb_rsp_err,
   input  [`E203_XLEN-1:0]        sysper_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   sysper_icb_rsp_id,
+  input                          sysper_icb_rsp_last,
+  `endif//}
 
   //////////////////////////////////////////////////////////
   output                         aon_icb_cmd_valid,
@@ -141,6 +159,17 @@ module e203_subsys_perips(
 
   
   wire                         i_aon_icb_cmd_valid;
+
+  `ifdef E203_HAS_ICBX //{
+  // PPI is a register-based peripheral bus, always single-beat response
+  assign ppi_icb_rsp_id      = {`E203_ICBX_ID_W{1'b0}};
+  assign ppi_icb_rsp_last    = 1'b1;
+  // Sysper external output: defaults since internal splitter doesn't support ICB-X yet
+  assign sysper_icb_cmd_id   = {`E203_ICBX_ID_W{1'b0}};
+  assign sysper_icb_cmd_len  = {`E203_ICBX_LEN_W{1'b0}};
+  assign sysper_icb_cmd_last = 1'b1;
+  `endif//}
+
   wire                         i_aon_icb_cmd_ready;
   wire [`E203_ADDR_SIZE-1:0]   i_aon_icb_cmd_addr; 
   wire                         i_aon_icb_cmd_read; 

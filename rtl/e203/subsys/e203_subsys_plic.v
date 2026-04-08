@@ -36,11 +36,20 @@ module e203_subsys_plic(
   input                          plic_icb_cmd_read, 
   input  [`E203_XLEN-1:0]        plic_icb_cmd_wdata,
   input  [`E203_XLEN/8-1:0]      plic_icb_cmd_wmask,
+  `ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   plic_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0]  plic_icb_cmd_len,
+  input                          plic_icb_cmd_last,
+  `endif//}
   //
   output                         plic_icb_rsp_valid,
   input                          plic_icb_rsp_ready,
   output                         plic_icb_rsp_err,
   output [`E203_XLEN-1:0]        plic_icb_rsp_rdata,
+  `ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   plic_icb_rsp_id,
+  output                         plic_icb_rsp_last,
+  `endif//}
 
   output plic_ext_irq,
 
@@ -71,6 +80,10 @@ module e203_subsys_plic(
   );
 
   assign plic_icb_rsp_err     = 1'b0;
+  `ifdef E203_HAS_ICBX //{
+  assign plic_icb_rsp_id      = {`E203_ICBX_ID_W{1'b0}};
+  assign plic_icb_rsp_last    = 1'b1;
+  `endif//}
 
   wire  wdg_irq_r;
   wire  rtc_irq_r;
