@@ -1232,11 +1232,21 @@ module sirv_gnrl_icb2axi # (
   input  [DW-1:0]    i_icb_cmd_wdata, 
   input  [DW/8-1:0]  i_icb_cmd_wmask,
   input  [1:0]       i_icb_cmd_size,
+`ifdef E203_HAS_ICBX //{
+  input  [`E203_ICBX_ID_W-1:0]   i_icb_cmd_id,
+  input  [`E203_ICBX_LEN_W-1:0]  i_icb_cmd_len,
+  input  [1:0]                    i_icb_cmd_burst,
+  input                           i_icb_cmd_last,
+`endif //}
 
   output             i_icb_rsp_valid, 
   input              i_icb_rsp_ready, 
   output             i_icb_rsp_err,
   output [DW-1:0]    i_icb_rsp_rdata, 
+`ifdef E203_HAS_ICBX //{
+  output [`E203_ICBX_ID_W-1:0]   i_icb_rsp_id,
+  output                          i_icb_rsp_last,
+`endif //}
   
   output o_axi_arvalid,
   input  o_axi_arready,
@@ -1315,10 +1325,64 @@ module sirv_gnrl_icb2axi # (
   wire [1:0] i_axi_bresp;
 
 
+`ifdef E203_HAS_ICBX //{
+  //////////////////////////////////////////////////////////////////
+  // ICB-X burst tracking state machine
+  //   burst_wr_active: high during a multi-beat write burst (after first beat accepted)
+  //   burst_rd_active: high during a multi-beat read burst  (after first beat accepted)
+  reg burst_wr_active;
+  reg burst_rd_active;
+
+  wire cmd_fire = i_icb_cmd_valid & i_icb_cmd_ready;
+
+  always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+      burst_wr_active <= 1'b0;
+    end else if (cmd_fire & (~i_icb_cmd_read)) begin
+      if (~burst_wr_active & (|i_icb_cmd_len) & (~i_icb_cmd_last))
+        burst_wr_active <= 1'b1;
+      else if (i_icb_cmd_last)
+        burst_wr_active <= 1'b0;
+    end
+  end
+
+  always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+      burst_rd_active <= 1'b0;
+    end else if (cmd_fire & i_icb_cmd_read) begin
+      if (~burst_rd_active & (|i_icb_cmd_len) & (~i_icb_cmd_last))
+        burst_rd_active <= 1'b1;
+      else if (i_icb_cmd_last)
+        burst_rd_active <= 1'b0;
+    end
+  end
+`endif //}
+
+
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
   // Convert the ICB to AXI Read/Write address and Wdata channel
   //
+  wire rw_fifo_full;
+
+`ifdef E203_HAS_ICBX //{
+  // AR: only on first beat of read burst or single read
+  assign i_axi_arvalid = i_icb_cmd_valid & i_icb_cmd_read
+                         & (~burst_rd_active) & (~rw_fifo_full);
+  // AW: only on first beat of write burst or single write
+  assign i_axi_awvalid = i_icb_cmd_valid & (~i_icb_cmd_read)
+                         & (~burst_wr_active) & i_axi_wready & (~rw_fifo_full);
+  // W: every write beat (subsequent beats skip AW, only need wready)
+  assign i_axi_wvalid  = i_icb_cmd_valid & (~i_icb_cmd_read)
+                         & (burst_wr_active ? (~rw_fifo_full)
+                                            : (i_axi_awready & (~rw_fifo_full)));
+  // CMD ready
+  assign i_icb_cmd_ready = (~rw_fifo_full) & (
+    i_icb_cmd_read ?
+      (burst_rd_active ? 1'b1 : i_axi_arready) :
+      (burst_wr_active ? i_axi_wready : (i_axi_awready & i_axi_wready))
+  );
+`else
   //   Generate the AXI address channel valid which is direct got 
   //     from ICB command channel
   assign i_axi_arvalid = i_icb_cmd_valid & i_icb_cmd_read;
@@ -1326,11 +1390,11 @@ module sirv_gnrl_icb2axi # (
   // If it is the read transaction, need to pass to AR channel only
   // If it is the write transaction, need to pass to AW and W channel both
       // But in all case, need to check FIFO is not ful
-  wire rw_fifo_full;
   assign i_icb_cmd_ready = (~rw_fifo_full) & 
              (i_icb_cmd_read ? i_axi_arready : (i_axi_awready & i_axi_wready));
   assign i_axi_awvalid = i_icb_cmd_valid & (~i_icb_cmd_read) & i_axi_wready  & (~rw_fifo_full);
   assign i_axi_wvalid  = i_icb_cmd_valid & (~i_icb_cmd_read) & i_axi_awready & (~rw_fifo_full); 
+`endif //}
   //
   
   //   Generate the AXI address channel address which is direct got 
@@ -1347,11 +1411,19 @@ module sirv_gnrl_icb2axi # (
   assign i_axi_arlock = 2'b0;
   assign i_axi_awlock = 2'b0;
   //
+`ifdef E203_HAS_ICBX //{
+  // Map ICB-X burst attributes to AXI
+  assign i_axi_arburst = i_icb_cmd_burst;
+  assign i_axi_awburst = i_icb_cmd_burst;
+  assign i_axi_arlen = i_icb_cmd_len[3:0]; // AXI3 compatible: 4-bit len
+  assign i_axi_awlen = i_icb_cmd_len[3:0];
+`else
   // The ICB does not support burst now, so just make it fixed
   assign i_axi_arburst = 2'b0;
   assign i_axi_awburst = 2'b0;
   assign i_axi_arlen = 4'b0;
   assign i_axi_awlen = 4'b0;
+`endif //}
   
   generate 
     if(DW==32) begin:dw_32
@@ -1367,7 +1439,11 @@ module sirv_gnrl_icb2axi # (
   // Generate the Write data channel
   assign i_axi_wdata = i_icb_cmd_wdata;
   assign i_axi_wstrb = i_icb_cmd_wmask;
+`ifdef E203_HAS_ICBX //{
+  assign i_axi_wlast = i_icb_cmd_last;
+`else
   assign i_axi_wlast = 1'b1;
+`endif //}
 
   wire rw_fifo_wen = i_icb_cmd_valid & i_icb_cmd_ready;
   wire rw_fifo_ren = i_icb_rsp_valid & i_icb_rsp_ready;
@@ -1380,20 +1456,52 @@ module sirv_gnrl_icb2axi # (
   assign rw_fifo_full    = (~rw_fifo_i_ready);
   wire rw_fifo_empty   = (~rw_fifo_o_valid);
 
-  wire i_icb_rsp_read;
+`ifdef E203_HAS_ICBX //{
+  // FIFO stores {cmd_id, rsp_type[1:0]}
+  //   rsp_type: 2'b10 = read             (RSP from AXI R channel)
+  //             2'b01 = write burst mid   (immediate RSP, no AXI response needed)
+  //             2'b00 = write single/last (RSP from AXI B channel)
+  localparam RW_FIFO_W = `E203_ICBX_ID_W + 2;
+
+  wire is_wr_burst_nolast = (~i_icb_cmd_read) &
+       ((~burst_wr_active & (|i_icb_cmd_len) & (~i_icb_cmd_last))   // first beat of burst
+       |( burst_wr_active & (~i_icb_cmd_last)));                     // middle beat of burst
+
+  wire [1:0] rw_fifo_rsp_type = i_icb_cmd_read    ? 2'b10 :
+                                 is_wr_burst_nolast ? 2'b01 :
+                                                      2'b00;
+
+  wire [RW_FIFO_W-1:0] rw_fifo_i_dat = {i_icb_cmd_id, rw_fifo_rsp_type};
+  wire [RW_FIFO_W-1:0] rw_fifo_o_dat;
+
+  wire [1:0] rsp_type         = rw_fifo_o_dat[1:0];
+  wire i_icb_rsp_read         = rsp_type[1];         // 2'b1x
+  wire i_icb_rsp_wr_immed     = (rsp_type == 2'b01);
+
+  assign i_icb_rsp_id   = rw_fifo_o_dat[RW_FIFO_W-1:2];
+  assign i_icb_rsp_last = i_icb_rsp_read    ? i_axi_rlast :
+                           i_icb_rsp_wr_immed ? 1'b0 :
+                                                1'b1;
+`else
+  localparam RW_FIFO_W = 1;
+  wire [RW_FIFO_W-1:0] rw_fifo_i_dat = i_icb_cmd_read;
+  wire [RW_FIFO_W-1:0] rw_fifo_o_dat;
+  wire i_icb_rsp_read     = rw_fifo_o_dat[0];
+  wire i_icb_rsp_wr_immed = 1'b0;
+`endif //}
 
   sirv_gnrl_fifo # (
     .CUT_READY (FIFO_CUT_READY),
     .MSKO      (1),
     .DP  (FIFO_OUTS_NUM),
-    .DW  (1)
+    .DW  (RW_FIFO_W)
   ) u_sirv_gnrl_rw_fifo (
     .i_vld(rw_fifo_i_valid),
     .i_rdy(rw_fifo_i_ready),
-    .i_dat(i_icb_cmd_read ),
+    .i_dat(rw_fifo_i_dat  ),
     .o_vld(rw_fifo_o_valid),
     .o_rdy(rw_fifo_o_ready),  
-    .o_dat(i_icb_rsp_read ),  
+    .o_dat(rw_fifo_o_dat  ),  
   
     .clk  (clk),
     .rst_n(rst_n)
@@ -1403,12 +1511,18 @@ module sirv_gnrl_icb2axi # (
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 // Generate the response channel
-  assign i_icb_rsp_valid = i_icb_rsp_read ? i_axi_rvalid : i_axi_bvalid;
+  //   For read:              wait for AXI R channel
+  //   For write burst mid:   FIFO output valid = RSP valid (immediate)
+  //   For write single/last: wait for AXI B channel
+  assign i_icb_rsp_valid = i_icb_rsp_read    ? i_axi_rvalid  :
+                            i_icb_rsp_wr_immed ? rw_fifo_o_valid :
+                                                 i_axi_bvalid;
   assign i_axi_rready = i_icb_rsp_read & i_icb_rsp_ready;
-  assign i_axi_bready = (~i_icb_rsp_read) & i_icb_rsp_ready;
+  assign i_axi_bready = (~i_icb_rsp_read) & (~i_icb_rsp_wr_immed) & i_icb_rsp_ready;
 
-  assign i_icb_rsp_err = i_icb_rsp_read ? i_axi_rresp[1] //SLVERR or DECERR 
-                                        : i_axi_bresp[1];
+  assign i_icb_rsp_err = i_icb_rsp_read    ? i_axi_rresp[1] //SLVERR or DECERR
+                        : i_icb_rsp_wr_immed ? 1'b0
+                                             : i_axi_bresp[1];
   assign i_icb_rsp_rdata = i_icb_rsp_read ? i_axi_rdata : {DW{1'b0}}; 
   
 
