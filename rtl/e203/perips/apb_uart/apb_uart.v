@@ -184,8 +184,10 @@ module apb_uart_sv
 		    if (regs_q[(LCR * 8) + 7]) begin // Divisor Latch Access Bit (DLAB)
                         regs_n[(DLL + 'd8) * 8+:8] = PWDATA[7:0];
 		    end else begin
-                        fifo_tx_data  = PWDATA[7:0];
-                        fifo_tx_valid = 1'b1;
+                        if (tx_elements < TX_FIFO_DEPTH) begin
+                          fifo_tx_data  = PWDATA[7:0];
+                          fifo_tx_valid = 1'b1;
+                        end
                     end
                 end
 
