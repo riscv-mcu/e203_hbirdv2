@@ -160,6 +160,7 @@ module apb_uart_sv
     // UART Registers
     // register write and update logic
     always @(*) begin
+        pslverr_reg     = 1'b0;
         regs_n          = regs_q;
         trigger_level_n = trigger_level_q;
 
@@ -207,7 +208,9 @@ module apb_uart_sv
                     tx_fifo_clr_n   = PWDATA[2];
                     trigger_level_n = PWDATA[7:6];
                 end
-                default: ;
+                default: begin 
+                    pslverr_reg = 1'b1;
+                end
             endcase
         end
 
@@ -216,6 +219,7 @@ module apb_uart_sv
 
     // register read logic
     always @(*) begin
+        pslverr_reg     = 1'b0;
         PRDATA        = 'b0;
         apb_rx_ready  = 1'b0;
         fifo_rx_ready = 1'b0;
@@ -260,6 +264,7 @@ module apb_uart_sv
 
                 default: begin 
                     PRDATA = 'b0;
+                    pslverr_reg = 1'b1;
                 end
             endcase
         end
@@ -280,6 +285,7 @@ module apb_uart_sv
             regs_q[(DLM + 'd8) * 8+:8] <= 8'h00;
             regs_q[(DLL + 'd8) * 8+:8] <= 8'h00;
 
+            pslverr_reg       <= 1'b0;
             trigger_level_q   <= 2'b00;
             tx_fifo_clr_q     <= 1'b0;
             rx_fifo_clr_q     <= 1'b0;
@@ -297,6 +303,6 @@ module apb_uart_sv
     // APB logic: we are always ready to capture the data into our regs
     // not supporting transfare failure
     assign PREADY       = 1'b1;
-    assign PSLVERR      = 1'b0;
+    assign PSLVERR      = pslverr_reg;
 
 endmodule
