@@ -261,6 +261,7 @@ module apb_uart_sv
                 default:  begin
                     PRDATA = 'b0;
                     pslverr_reg = 1'b1;
+                end
             endcase
         end
     end
