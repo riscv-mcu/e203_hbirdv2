@@ -41,19 +41,19 @@ module uart_interrupt
     always @(*) begin
         trigger_level_reached = 1'b0;
         case (trigger_level_i)
-            2'b00:
-                if ($unsigned(rx_elements_i) == 1)
-            	    trigger_level_reached = 1'b1;
-            2'b01:
-                if ($unsigned(rx_elements_i) == 4)
-            	    trigger_level_reached = 1'b1;
-            2'b10:
-                if ($unsigned(rx_elements_i) == 8)
-            	    trigger_level_reached = 1'b1;
-            2'b11:
-                if ($unsigned(rx_elements_i) == 14)
-            	    trigger_level_reached = 1'b1;
-        endcase
+    2'b00:
+        if ($unsigned(rx_elements_i) >= 1)
+            trigger_level_reached = 1'b1;
+    2'b01:
+        if ($unsigned(rx_elements_i) >= 4)
+            trigger_level_reached = 1'b1;
+    2'b10:
+        if ($unsigned(rx_elements_i) >= 8)
+            trigger_level_reached = 1'b1;
+    2'b11:
+        if ($unsigned(rx_elements_i) >= 14)
+            trigger_level_reached = 1'b1;
+endcase
     end
 
 
