@@ -381,9 +381,9 @@ module e203_exu_excp(
 
   assign irq_cause[31] = 1'b1;
   assign irq_cause[30:4] = 27'b0;
-  assign irq_cause[3:0]  =  (sft_irq_r & msie_r) ? 4'd3  :  // 3  Machine software interrupt
+  assign irq_cause[3:0]  =  (ext_irq_r & meie_r) ? 4'd11 :  // 11 Machine external interrupt
+                            (sft_irq_r & msie_r) ? 4'd3  :  // 3  Machine software interrupt
                             (tmr_irq_r & mtie_r) ? 4'd7  :  // 7  Machine timer interrupt
-                            (ext_irq_r & meie_r) ? 4'd11 :  // 11 Machine external interrupt
                                         4'b0;
 
   ////////////////////////////////////////////////////////////////////////////
